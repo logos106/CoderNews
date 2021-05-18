@@ -15,7 +15,7 @@ export default class extends Component {
 
     return {
       items: apiResult && apiResult.items,
-      authUserData: apiResult && apiResult.authUser ? apiResult.authUser : {},
+      authUserData: {userSignedIn: true, karma: 120, username: 'Joe'}, //apiResult && apiResult.authUser ? apiResult.authUser : {},
       page: page,
       isMore: apiResult && apiResult.isMore,
       getDataError: apiResult && apiResult.getDataError,

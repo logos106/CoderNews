@@ -5,6 +5,7 @@ import createNewUser from "../api/users/createNewUser.js"
 import loginUser from "../api/users/loginUser.js"
 import authUser from "../api/users/authUser.js"
 import removeUserCookieData from "../api/users/removeUserCookieData.js"
+import Router from "next/router"
 
 import styles from '../styles/pages/login.module.css';
 
@@ -108,8 +109,8 @@ export default class extends Component {
           })
         } else {
           console.log(`/${self.props.goto}`)
-          window.location.href = `/${self.props.goto}`
-
+          // window.location.href = `/${self.props.goto}`
+          Router.push('/')
         }
       })
     }
