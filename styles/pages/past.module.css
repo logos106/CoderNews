@@ -1,0 +1,23 @@
+.past_items_top-header,
+.past_items_bottom_header {
+  margin-top: 10px;
+  margin-left: 47.5px;
+  color: #828282;
+  font-size: 13.5px;
+}
+
+.past_items_bottom_header {
+  margin-bottom: 15px;
+}
+
+.past_items_bottom_header a {
+  text-decoration: underline;
+  color: #828282;
+}
+
+@media only screen and (max-width: 750px) and (min-width: 0px) {
+  .past_items_top_header,
+  .past_items_bottom_header {
+    margin-left: 52.5px;
+  }
+}
