@@ -20,7 +20,7 @@ export default async function loginUser(username, password, callback) {
   });
 
   // Search the user table
-  const user = await directus.items('user').readMany({
+  const user = await directus.items('users').readMany({
     filter: {
       username: {
         _eq: username,
@@ -36,6 +36,11 @@ export default async function loginUser(username, password, callback) {
     // Save user data as cookie
     cookieCutter.set('username', user.data[0].username)
     cookieCutter.set('karma', user.data[0].karma)
+    cookieCutter.set('containsEmail', user.data[0].containsEmail)
+    cookieCutter.set('showDead', user.data[0].showDead)
+    cookieCutter.set('showDownvote', user.data[0].karma >= user.data[0].minimumKarmaToDownvot)
+    cookieCutter.set('isModerator', user.data[0].isModerator)
+    cookieCutter.set('shadowBanned', user.data[0].shadowBanned)
 
     callback({
       credentialError: false,

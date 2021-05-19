@@ -13,26 +13,29 @@ export async function getServerSideProps(context) {
   const cookies = new Cookies(context.req, context.res)
 
   let username = cookies.get('username')
+  let signedIn = true
+  if (typeof username === 'undefined') {
+    username = ''
+    signedIn = false
+  }
   let karma = cookies.get('karma')
-  let signedIn = false
-  if (username != 'undefined')
-    signedIn = true
+  if (typeof karma === 'undefined')
+    karma = 0
 
-  const userData =  {userSignedIn: signedIn, karma: karma, username: username}
-  console.log(userData)
+  const userData = {userSignedIn: signedIn, karma: 0, username: username}
 
   // Fetch data from external API
   const page = 1
-  const apiResult = null //await getRankedItemsByPage(page, context.req)
+  const result = await getRankedItemsByPage(page, signedIn)
 
   // Pass data to the page via props
   return {
     props: {
-      items: apiResult && apiResult.items,
+      items: typeof result.items === 'undefined' ? null : result.items,
       authUserData: userData,
       page: page,
-      isMore: apiResult && apiResult.isMore,
-      getDataError: apiResult && apiResult.getDataError,
+      isMore: typeof result.isMore === 'undefined' ? false : result.isMore,
+      getDataError: typeof result.getDataError === 'undefined' ? false : result.getDataError,
       goToString: ""
     }
   }

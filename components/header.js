@@ -19,9 +19,11 @@ export default class extends Component {
         <tbody>
           <tr>
             <td className={styles.header_logo}>
-              <a href="/">
-                <img src="/coder-news-icon.png" />
-              </a>
+              <Link href="/">
+                <a>
+                  <img src="/coder-news-icon.png" />
+                </a>
+              </Link>
             </td>
             <td className={styles.header_links}>
               <span className={styles.header_links_items}>
