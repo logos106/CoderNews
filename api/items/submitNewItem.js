@@ -1,6 +1,6 @@
 import axios from "axios"
 
-import apiBaseUrl from "../../utils/apiBaseUrl.js"
+import apiBaseUrl from "../../utils/apiCredential.js"
 
 export default function submitNewItem(title, url, text, callback) {
   axios.post(apiBaseUrl + "/items/submit-new-item", {

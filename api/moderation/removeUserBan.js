@@ -1,6 +1,6 @@
 import axios from "axios"
 
-import apiBaseUrl from "../../utils/apiBaseUrl.js"
+import apiBaseUrl from "../../utils/apiCredential.js"
 
 export default function removeUserBan(username, callback) {
   axios.put(apiBaseUrl + "/moderation/remove-user-ban", {

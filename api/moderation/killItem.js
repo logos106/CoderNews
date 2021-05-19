@@ -1,6 +1,6 @@
 import axios from "axios"
 
-import apiBaseUrl from "../../utils/apiBaseUrl.js"
+import apiBaseUrl from "../../utils/apiCredential.js"
 
 export default function killItem(itemId, callback) {
   axios.put(apiBaseUrl + "/moderation/kill-item", {

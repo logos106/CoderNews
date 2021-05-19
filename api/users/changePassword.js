@@ -1,6 +1,6 @@
 import axios from "axios"
 
-import apiBaseUrl from "../../utils/apiBaseUrl.js"
+import apiBaseUrl from "../../utils/apiCredential.js"
 
 export default function changePassword(currentPassword, newPassword, callback) {
   axios.put(apiBaseUrl + "/users/change-password", {

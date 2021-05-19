@@ -1,13 +1,13 @@
 import axios from "axios"
 
-import apiBaseUrl from "../../utils/apiBaseUrl.js"
+import apiBaseUrl from "../../utils/apiCredential.js"
 
 export default async function getUserData(username, req) {
   try {
     const cookie = req.headers.cookie ? req.headers.cookie : ""
 
     const response = await axios({
-      url: `${apiBaseUrl}/users/get-user-data?username=${username}`,
+      url: `${apiCredential.baseURL}/users/get-user-data?username=${username}`,
       headers: req ? {cookie: cookie} : "",
       withCredentials: true
     })

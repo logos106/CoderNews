@@ -10,22 +10,6 @@ import Router from "next/router"
 import styles from '../styles/pages/login.module.css';
 
 export default class extends Component {
-  static async getInitialProps ({req, res, query}) {
-    const authResult = await authUser(req)
-
-    if (authResult.success) {
-      res.writeHead(302, {
-        Location: "/"
-      })
-
-      res.end()
-    }
-
-    return {
-      goto: query.goto ? decodeURIComponent(query.goto) : ""
-    }
-  }
-
   constructor(props) {
     super(props)
     this.state = {

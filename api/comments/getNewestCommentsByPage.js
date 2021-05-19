@@ -1,13 +1,13 @@
 import axios from "axios"
 
-import apiBaseUrl from "../../utils/apiBaseUrl.js"
+import apiBaseUrl from "../../utils/apiCredential.js"
 
 export default async function getNewestCommentsByPage(page, req) {
   try {
     const cookie = req.headers.cookie ? req.headers.cookie : ""
 
     const response = await axios({
-      url: `${apiBaseUrl}/comments/get-newest-comments-by-page?page=${page}`,
+      url: `${apiCredential.baseURL}/comments/get-newest-comments-by-page?page=${page}`,
       headers: req ? {cookie: cookie} : "",
       withCredentials: true
     })

@@ -1,4 +1,5 @@
 import { Component } from "react"
+import Cookies from "cookies"
 
 import HeadMetadata from "../components/headMetadata.js"
 import Header from "../components/header.js"
@@ -7,22 +8,37 @@ import ItemsList from "../components/itemsList.js"
 import GoogleAnalytics from "../components/googleAnalytics.js"
 import getRankedItemsByPage from "../api/items/getRankedItemsByPage.js"
 
-export default class extends Component {
-  static async getInitialProps ({req, query}) {
-    const page = 1
+export async function getServerSideProps(context) {
+  // Get user data from cookie
+  const cookies = new Cookies(context.req, context.res)
 
-    const apiResult = await getRankedItemsByPage(page, req)
+  let username = cookies.get('username')
+  let karma = cookies.get('karma')
+  let signedIn = false
+  if (username != 'undefined')
+    signedIn = true
 
-    return {
+  const userData =  {userSignedIn: signedIn, karma: karma, username: username}
+  console.log(userData)
+
+  // Fetch data from external API
+  const page = 1
+  const apiResult = null //await getRankedItemsByPage(page, context.req)
+
+  // Pass data to the page via props
+  return {
+    props: {
       items: apiResult && apiResult.items,
-      authUserData: {userSignedIn: true, karma: 120, username: 'Joe'}, //apiResult && apiResult.authUser ? apiResult.authUser : {},
+      authUserData: userData,
       page: page,
       isMore: apiResult && apiResult.isMore,
       getDataError: apiResult && apiResult.getDataError,
       goToString: ""
     }
   }
+}
 
+export default class extends Component {
   render () {
     return (
       <div className="layout-wrapper">

@@ -1,6 +1,6 @@
 import axios from "axios"
 
-import apiBaseUrl from "../../utils/apiBaseUrl.js"
+import apiBaseUrl from "../../utils/apiCredential.js"
 
 export default function resetPassword(username, newPassword, resetToken, callback) {
   axios.put(apiBaseUrl + "/users/reset-password", {

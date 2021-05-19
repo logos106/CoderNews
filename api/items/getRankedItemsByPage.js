@@ -1,13 +1,13 @@
 import axios from "axios"
 
-import apiBaseUrl from "../../utils/apiBaseUrl.js"
+import credential from "../../utils/apiCredential.js"
 
 export default async function getRankedItemsByPage(page, req) {
   try {
     const cookie = req.headers.cookie ? req.headers.cookie : ""
 
     const response = await axios({
-      url: `${apiBaseUrl}/items/get-ranked-items-by-page?page=${page}`,
+      url: `${credential.baseURL}/items/get-ranked-items-by-page?page=${page}`,
       headers: req ? {cookie: cookie} : "",
       withCredentials: true
     })

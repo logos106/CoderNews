@@ -1,12 +1,15 @@
 import { Component } from "react"
 import Link from 'next/link'
 import logoutUser from "../api/users/logoutUser.js"
+import Router from "next/router"
+
 import styles from "../styles/components/header.module.css"
 
 export default class extends Component {
   requestLogout = () => {
     logoutUser(function() {
-      window.location.reload()
+      // window.location.reload()
+      Router.push('/')
     })
   }
 

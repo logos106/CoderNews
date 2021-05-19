@@ -1,6 +1,6 @@
 import axios from "axios"
 
-import apiBaseUrl from "../../utils/apiBaseUrl.js"
+import apiBaseUrl from "../../utils/apiCredential.js"
 
 export default function addUserShadowBan(username, callback) {
   axios.put(apiBaseUrl + "/moderation/add-user-shadow-ban", {
