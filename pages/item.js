@@ -1,6 +1,7 @@
 import { Component } from "react"
 
-import "../styles/pages/item.css"
+import authUser from "../api/users/authUser.js"
+import getItemById from "../api/items/getItemById.js"
 
 import Header from "../components/header.js"
 import Footer from "../components/footer.js"
@@ -9,27 +10,28 @@ import Item from "../components/item.js"
 import CommentSection from "../components/commentSection.js"
 import GoogleAnalytics from "../components/googleAnalytics.js"
 
-import getItemById from "../api/items/getItemById.js"
+export async function getServerSideProps (context) {
+  const itemId = context.query.id ? context.query.id : ""
+  const page = context.query.page ? parseInt(context.query.page) : 1
 
-export default class extends Component {
-  static async getInitialProps ({ req, query }) {
-    const itemId = query.id ? query.id : ""
-    const page = query.page ? parseInt(query.page) : 1
+  const authResult = authUser(context)
 
-    const apiResult = await getItemById(itemId, page, req)
+  const result = await getItemById(itemId, page, authUser)
 
-    return {
-      item: apiResult && apiResult.item,
-      authUserData: apiResult && apiResult.authUser ? apiResult.authUser : {},
-      getDataError: apiResult && apiResult.getDataError,
-      notFoundError: apiResult && apiResult.notFoundError,
-      goToString: page > 1 ? `item?id=${itemId}&page=${page}` : `item?id=${itemId}`,
+  return {
+    props: {
+      item: typeof result.item === 'undefined' ? null : result.item,
       page: page,
-      comments: apiResult && apiResult.comments,
-      isMoreComments: apiResult && apiResult.isMoreComments
+      authUserData: authResult,
+      getDataError: typeof result.getDataError === 'undefined' ? false : result.getDataError,
+      goToString: typeof result.goToString === 'undefined' ? false : result.goToString,
+      comments: typeof result.comments === 'undefined' ? false : result.comments,
+      isMoreComments: typeof result.isMoreComments === 'undefined' ? false : result.isMoreComments,
     }
   }
+}
 
+export default class extends Component {
   render () {
     const item = this.props.item
 

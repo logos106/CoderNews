@@ -1,6 +1,6 @@
 import Cookies from "cookies"
 
-export default async function authUser(context) {
+export default function authUser(context) {
   // Get user data from cookie
   const cookies = new Cookies(context.req, context.res)
 

@@ -1,31 +1,39 @@
 import { Component } from "react"
+import Router from "next/router"
 
-import "../styles/pages/edit-item.css"
-
+import authUser from "../api/users/authUser.js"
 import renderCreatedTime from "../utils/renderCreatedTime.js"
+import getEditItemPageData from "../api/items/getEditItemPageData.js"
+import editItem from "../api/items/editItem.js"
 
 import Header from "../components/header.js"
 import Footer from "../components/footer.js"
 import HeadMetadata from "../components/headMetadata.js"
 import GoogleAnalytics from "../components/googleAnalytics.js"
 
-import getEditItemPageData from "../api/items/getEditItemPageData.js"
-import editItem from "../api/items/editItem.js"
+import "../styles/pages/edit-item.module.css"
 
-export default class extends Component {
-  static async getInitialProps({ query, req }) {
-    const apiResult = await getEditItemPageData(query.id, req)
+export async function getServerSideProps(context) {
+  const authResult = authUser(context)
 
-    return {
-      item: apiResult && apiResult.item,
-      authUserData: apiResult && apiResult.authUser ? apiResult.authUser : {},
-      getDataError: apiResult && apiResult.getDataError,
-      notAllowedError: apiResult && apiResult.notAllowedError,
-      notFoundError: apiResult && apiResult.notFoundError,
-      goToString: `edit-item?id=${query.id}`
+  // Get the Item data with ID
+  const id = context.query.id
+
+  const result = await getEditItemPageData(id, authResult.username)
+
+  return {
+    props: {
+      item: typeof result.item === 'undefined' ? null : result.item,
+      authUserData: authResult,
+      getDataError: typeof result.getDataError === 'undefined' ? false : result.getDataError,
+      notAllowedError: typeof result.notAllowedError === 'undefined' ? false : result.notAllowedError,
+      notFoundError:  typeof result.notFoundError === 'undefined' ? false : result.notFoundError,
+      goToString: `edit-item?id=${id}`
     }
   }
+}
 
+export default class extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -121,7 +129,7 @@ export default class extends Component {
             submitError: true
           })
         } else {
-          window.location.href = `/item?id=${self.props.item.id}`
+          Router.push(`/item?id=${self.props.item.id}`)
         }
       })
     }
@@ -213,7 +221,7 @@ export default class extends Component {
                     </tr> : null
                   }
                   {
-                    !item.url ?
+                    item.url == '' ?
                     <tr>
                       <td className="edit-item-text-input-label">text:</td>
                       <td className="edit-item-text-input">

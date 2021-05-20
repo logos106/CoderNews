@@ -1,6 +1,6 @@
 import { Component } from "react"
 
-import "../styles/pages/delete-comment.css"
+import "../styles/pages/delete-comment.module.css"
 
 import AlternateHeader from "../components/alternateHeader.js"
 import HeadMetadata from "../components/headMetadata.js"

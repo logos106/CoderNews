@@ -1,9 +1,9 @@
 import { Directus, Auth } from '@directus/sdk';
 import moment from "moment"
-import apiBaseUrl from "../../utils/apiCredential.js"
-import helper from "../../utils/helpler.js"
+import credential from "../../utils/apiCredential.js"
+import helper from "../../utils/helper.js"
 
-export default function submitNewItem(authUser, title, url, text, callback) {
+export default async function submitNewItem(authUser, title, url, text, callback) {
   // Instantiate a new Directus object
   const directus = new Directus(credential.baseURL)
 
@@ -15,7 +15,6 @@ export default function submitNewItem(authUser, title, url, text, callback) {
 
   // Fetch items with conditions
   try {
-    const startDate = moment().unix() - (86400 * maxAgeOfRankedItemsInDays)
     const items = directus.items('items')
     await items.createOne({
     	by: authUser.username,
@@ -25,11 +24,14 @@ export default function submitNewItem(authUser, title, url, text, callback) {
       domain: url ? utils.getDomainFromUrl(url) : "",
       text: text,
       created: moment().unix(),
-      dead: authUser.shadowBanned ? true : false
+      dead: authUser.shadowBanned ? true : false,
+      score: 1,
+      points: 2,
+      comment_count: 3
     });
 
-    return { success: true }
+    callback({ success: true })
   } catch(error) {
-    return { submitError: true }
+    callback ({ submitError: true })
   }
 }

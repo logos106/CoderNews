@@ -1,9 +1,9 @@
-const nanoid = require("nanoid")
-const url = require("url")
-const psl = require("psl")
-const validator = require("validator")
+import nanoid from "nanoid"
+import url from "url"
+import psl from "psl"
+import validator from "validator"
 
-module.exports = {
+export default {
   directusBaseUrl: 'http://localhost:8055/',
   generateUniqueId: function(length) {
     const alphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"

@@ -17,11 +17,6 @@ export default async function getRankedItemsByPage(page, signedIn) {
   await directus.auth.login({
     email: credential.email,
     password: credential.password,
-  },
-  {
-  	refresh: {
-  		auto: true,   // Refresh token automatically
-  	},
   });
 
   // Fetch items with conditions
@@ -29,7 +24,6 @@ export default async function getRankedItemsByPage(page, signedIn) {
     const startDate = moment().unix() - (86400 * maxAgeOfRankedItemsInDays)
     const items = directus.items('items')
     const result = await items.readMany({
-    	// search: 'Directus',
     	filter: {
     		created: {
     			_gte: startDate,
@@ -38,6 +32,8 @@ export default async function getRankedItemsByPage(page, signedIn) {
           _eq: false
         }
     	},
+      skip: (page - 1) * itemsPerPage,
+      take: itemsPerPage
     });
 
     return {

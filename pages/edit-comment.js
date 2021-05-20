@@ -1,6 +1,6 @@
 import { Component } from "react"
 
-import "../styles/pages/edit-comment.css"
+import "../styles/pages/edit-comment.module.css"
 
 import Header from "../components/header.js"
 import Footer from "../components/footer.js"

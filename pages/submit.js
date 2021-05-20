@@ -8,21 +8,21 @@ import Router from "next/router"
 import authUser from "../api/users/authUser.js"
 import submitNewItem from "../api/items/submitNewItem.js"
 
-export default class extends Component {
-  static async getStaticProps (context) {
-    const result = await authUser(context)
+export async function getServerSideProps (context) {
+  const result = authUser(context)
 
-    if (!result.userSignedIn) {
-      Router.push('/')
-    }
-
-    return {
-      props: {
-        authUser: result
-      }
-    }
+  if (!result.userSignedIn) {
+    Router.push('/')
   }
 
+  return {
+    props: {
+      authUser: result
+    }
+  }
+}
+
+export default class extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -95,7 +95,7 @@ export default class extends Component {
 
       const self = this
 
-      submitNewItem(authUser.username, this.state.titleInputValue, this.state.urlInputValue, this.state.textInputValue, function(response) {
+      submitNewItem(this.props.authUser, this.state.titleInputValue, this.state.urlInputValue, this.state.textInputValue, function(response) {
         if (response.authError) {
           window.location.href = "/login?goto=submit"
         } else if (response.titleRequiredError) {
@@ -159,7 +159,7 @@ export default class extends Component {
             submitError: true
           })
         } else {
-          window.location.href = "/newest"
+          Router.push('/newest')
         }
       })
     }

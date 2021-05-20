@@ -1,6 +1,6 @@
 import { Component } from "react"
 
-import "../styles/pages/delete-item.css"
+import "../styles/pages/delete-item.module.css"
 
 import renderCreatedTime from "../utils/renderCreatedTime.js"
 

@@ -1,4 +1,5 @@
 import { Component } from "react"
+import Link from 'next/link'
 import upvoteItem from "../api/items/upvoteItem.js"
 import unvoteItem from "../api/items/unvoteItem.js"
 import unfavoriteItem from "../api/items/unfavoriteItem.js"
@@ -252,7 +253,9 @@ export default class extends Component {
                           <>
                             <span> | </span>
                             <span>
-                              <a href={`/edit-item?id=${item.id}`}>edit</a>
+                              <Link href={`/edit-item?id=${item.id}`}>
+                                <a>edit</a>
+                              </Link>
                             </span>
                           </> : null
                         }

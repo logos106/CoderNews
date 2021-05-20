@@ -10,7 +10,7 @@ import GoogleAnalytics from "../components/googleAnalytics.js"
 import getRankedItemsByPage from "../api/items/getRankedItemsByPage.js"
 
 export async function getServerSideProps(context) {
-  const authResult = await authUser(context)
+  const authResult = authUser(context)
 
   // Fetch data from external API
   const page = 1
