@@ -159,7 +159,8 @@ export default class extends Component {
             createAccountSubmitError: true
           })
         } else {
-          window.location.href = `/${self.props.goto}`
+          // window.location.href = `/${self.props.goto}`
+          Router.push('/')
         }
       })
     }
