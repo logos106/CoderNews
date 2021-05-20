@@ -57,7 +57,7 @@
   margin-top: 20px;
 }
 
-.login_submit_btn input {
+/* .login_submit_btn input {
   -webkit-appearance: push-button;
   user-select: none;
   white-space: pre;
@@ -77,11 +77,11 @@
 .login_submit_btn input[type="submit"] {
   font-family: monospace;
   font-size: 13.5px;
-}
+} */
 
-.login_input_item_login_btn input[type="submit"]:active {
+/* .login_input_item_login_btn input[type="submit"]:active {
   border-style: inset;
-}
+} */
 
 .login_input_item_forgot_text {
   font-size: 13.5px;

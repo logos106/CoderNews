@@ -1,15 +1,15 @@
 * {
-  margin: 0;
+  /* margin: 0;
   padding: 0;
-  border-width: 0px;
-  border-style: initial;
+  border-width: 0px; */
+  /* border-style: initial;
   border-color: initial;
-  border-image: initial;
-  -webkit-font-smoothing: antialiased;
+  border-image: initial; */
+  /* -webkit-font-smoothing: antialiased; */
   font-family: Verdana, Geneva, sans-serif;
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
+  /* -webkit-box-sizing: border-box; */
+  /* -moz-box-sizing: border-box; */
+  /* box-sizing: border-box; */
 }
 
 table {
