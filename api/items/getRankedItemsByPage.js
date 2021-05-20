@@ -24,6 +24,7 @@ export default async function getRankedItemsByPage(page, signedIn) {
   	},
   });
 
+  // Fetch items with conditions
   try {
     const startDate = moment().unix() - (86400 * maxAgeOfRankedItemsInDays)
     const items = directus.items('items')

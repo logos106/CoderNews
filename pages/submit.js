@@ -3,23 +3,24 @@ import { Component } from "react"
 import HeadMetadata from "../components/headMetadata.js"
 import AlternateHeader from "../components/alternateHeader.js"
 import GoogleAnalytics from "../components/googleAnalytics.js"
+import Router from "next/router"
 
 import authUser from "../api/users/authUser.js"
 import submitNewItem from "../api/items/submitNewItem.js"
 
 export default class extends Component {
-  static async getInitialProps ({req, res, query}) {
-    const authResult = await authUser(req)
+  static async getStaticProps (context) {
+    const result = await authUser(context)
 
-    if (!authResult.success) {
-      res.writeHead(302, {
-        Location: "/login?goto=submit"
-      })
-
-      res.end()
+    if (!result.userSignedIn) {
+      Router.push('/')
     }
 
-    return {}
+    return {
+      props: {
+        authUser: result
+      }
+    }
   }
 
   constructor(props) {
@@ -94,7 +95,7 @@ export default class extends Component {
 
       const self = this
 
-      submitNewItem(this.state.titleInputValue, this.state.urlInputValue, this.state.textInputValue, function(response) {
+      submitNewItem(authUser.username, this.state.titleInputValue, this.state.urlInputValue, this.state.textInputValue, function(response) {
         if (response.authError) {
           window.location.href = "/login?goto=submit"
         } else if (response.titleRequiredError) {
@@ -254,7 +255,7 @@ export default class extends Component {
             <input
               type="submit"
               value="submit"
-              onClick={() => this.submitRequest()}
+              onClick={() => this.submitRequest(this.props.authUser)}
             />
           </div>
           <div className="submit-content-bottom-instructions">
