@@ -1,6 +1,7 @@
 import { Component } from "react"
 import Cookies from "cookies"
 
+import authUser from "../api/users/authUser.js"
 import HeadMetadata from "../components/headMetadata.js"
 import Header from "../components/header.js"
 import Footer from "../components/footer.js"
@@ -9,30 +10,17 @@ import GoogleAnalytics from "../components/googleAnalytics.js"
 import getRankedItemsByPage from "../api/items/getRankedItemsByPage.js"
 
 export async function getServerSideProps(context) {
-  // Get user data from cookie
-  const cookies = new Cookies(context.req, context.res)
-
-  let username = cookies.get('username')
-  let signedIn = true
-  if (typeof username === 'undefined') {
-    username = ''
-    signedIn = false
-  }
-  let karma = cookies.get('karma')
-  if (typeof karma === 'undefined')
-    karma = 0
-
-  const userData = {userSignedIn: signedIn, karma: 0, username: username}
+  const authResult = await authUser(context)
 
   // Fetch data from external API
   const page = 1
-  const result = await getRankedItemsByPage(page, signedIn)
+  const result = await getRankedItemsByPage(page, authResult.success)
 
   // Pass data to the page via props
   return {
     props: {
       items: typeof result.items === 'undefined' ? null : result.items,
-      authUserData: userData,
+      authUserData: authResult,
       page: page,
       isMore: typeof result.isMore === 'undefined' ? false : result.isMore,
       getDataError: typeof result.getDataError === 'undefined' ? false : result.getDataError,
