@@ -18,6 +18,7 @@ export default function authUser(context) {
     userSignedIn: signedIn,
     username: username,
     karma: karma,
-    shadowBanned: false
+    shadowBanned: false,
+    isModerator: typeof isModerator === 'undefined'? false: isModerator
   }
 }

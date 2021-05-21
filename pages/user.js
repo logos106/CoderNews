@@ -1,8 +1,8 @@
 import { Component } from "react"
 import moment from "moment"
 
-import "../styles/pages/user.css"
-
+// import "../styles/pages/user.css"
+import authUser from "../api/users/authUser.js"
 import Header from "../components/header.js"
 import Footer from "../components/footer.js"
 import HeadMetadata from "../components/headMetadata.js"
@@ -15,20 +15,23 @@ import removeUserShadowBan from "../api/moderation/removeUserShadowBan.js"
 import addUserBan from "../api/moderation/addUserBan.js"
 import removeUserBan from "../api/moderation/removeUserBan.js"
 
-export default class extends Component {
-  static async getInitialProps ({ req, query }) {
-    const apiResult = await getUserData(query.id, req)
-
-    return {
-      username: query.id,
-      userData: apiResult && apiResult.user,
+export async function getServerSideProps (context) {
+  const apiResult = await getUserData(context)
+  const authResult = authUser(context)
+  return {
+    props: {
+      username: context.query.id,
+      userData: apiResult.user,
       showPrivateUserData: apiResult && apiResult.showPrivateUserData,
-      authUserData: apiResult && apiResult.authUser ? apiResult.authUser : {},
-      getDataError: apiResult && apiResult.getDataError,
-      notFoundError: apiResult && apiResult.notFoundError,
-      goToString: `user?id=${query.id}`
+      authUserData: authResult ,
+      getDataError: typeof apiResult.getDataError === 'undefined' ? false : apiResult.getDataError,
+      notFoundError: typeof apiResult.notFoundError === 'undefined' ? false : apiResult.notFoundError,
+      goToString: `user?id=${context.query.id}`
     }
   }
+}
+
+export default class extends Component {
 
   constructor(props) {
     super(props)
@@ -69,13 +72,13 @@ export default class extends Component {
     this.setState({loading: true})
 
     const inputData = {
+      id: this.props.userData.id,
       about: this.state.aboutInputValue,
       email: this.state.emailInputValue,
       showDead: this.state.showDeadValue === "yes" ? true : false
     }
-
+    
     const self = this
-
     updateUserData(inputData, function(response) {
       if (response.submitError) {
         self.setState({
@@ -131,14 +134,294 @@ export default class extends Component {
   render () {
     return (
       <div className="layout-wrapper">
+        <style jsx>{`
+          .user-content-container {
+            padding: 10px 5px 10px 5px;
+          }
+          
+          .user-public-data {
+            padding-bottom: 15px;
+          }
+          
+          .user-add-email-address-msg {
+            display: inline-block;
+            background-color: rgb(255, 255, 170);
+            color: #828282;
+            font-size: 13.5px;
+            margin-bottom: 10px;
+            padding: 8px;
+          }
+          
+          .user-item {
+            width: 100%;
+            font-size: 13.5px;
+            margin-top: 5px;
+            margin-bottom: 5px;
+          }
+          
+          .user-item-label {
+            display: inline-block;
+            width: 80px;
+            color: rgb(130, 130, 130);
+          }
+          
+          .user-item-label.public {
+            width: 70px;
+          }
+          
+          .user-item-content {
+            display: inline-block;
+          }
+          
+          .user-item-content.about.public {
+            width: 85%;
+            margin-bottom: 10px;
+            white-space: pre-line;
+          }
+          
+          .user-item-content.about.public a {
+            color: #000000;
+            text-decoration: underline;
+          }
+          
+          .user-item-content.about.public a:visited {
+            color: #828282;
+          }
+          
+          .user-item-content.username {
+            color: rgb(130, 130, 130);
+          }
+          
+          .user-item-content.created {
+            color: #000000
+          }
+          
+          .user-item-content.karma {
+            color: rgb(130, 130, 130);
+          }
+          
+          .user-item-label.about {
+            height: 100%;
+            vertical-align: top;
+          }
+          
+          .user-item-content.about textarea {
+            width: 500px;
+            max-width: 98%;
+            height: auto;
+            vertical-align: middle;
+            -webkit-writing-mode: horizontal-tb;
+            text-rendering: auto;
+            color: initial;
+            letter-spacing: normal;
+            word-spacing: normal;
+            text-transform: none;
+            text-indent: 0px;
+            text-shadow: none;
+            display: inline-block;
+            text-align: start;
+            -webkit-appearance: textarea;
+            background-color: white;
+            -webkit-rtl-ordering: logical;
+            flex-direction: column;
+            resize: auto;
+            cursor: text;
+            white-space: pre-wrap;
+            overflow-wrap: break-word;
+            box-sizing: border-box;
+            margin: 0em;
+            border-width: 1px;
+            border-style: solid;
+            border-color: rgb(169, 169, 169);
+            border-image: initial;
+            padding: 2px 0px 0px 2px;
+          }
+          
+          .user-item-content.about textarea[type="text"] {
+            font-family: monospace;
+            font-size: 13.5px;
+          }
+          
+          .user-item-about-help {
+            vertical-align: bottom;
+            margin-left: 2.5px;
+          }
+          
+          .user-item-about-help a {
+            text-decoration: none;
+            font-size: 10px;
+            color: rgb(175, 175, 175);;
+          }
+          
+          .user-item-content input {
+            height: 20px;
+            -webkit-writing-mode: horizontal-tb;
+            text-rendering: auto;
+            color: initial;
+            letter-spacing: normal;
+            word-spacing: normal;
+            text-transform: none;
+            text-indent: 0px;
+            text-shadow: none;
+            display: inline-block;
+            text-align: start;
+            -webkit-appearance: textfield;
+            background-color: white;
+            -webkit-rtl-ordering: logical;
+            cursor: text;
+            margin: 0em;
+            padding: 1px;
+            border: 1px solid #a6a4a4;
+          }
+          
+          .user-item-content select {
+            background-color: buttonface;
+            border-width: 1px;
+            border-style: solid;
+            border-color: rgb(169, 169, 169);
+          }
+          
+          .user-item-content input[type="text"] {
+            font-family: monospace;
+            font-size: 13.5px;
+          }
+          
+          .user-item-content.email input {
+            width: 475px;
+          }
+          
+          .user-item-content {
+            color: #828282;
+          }
+          
+          .user-item-content a,
+          .user-item-content a:visited,
+          .user-item-content a:link {
+            color: #828282;
+          }
+          
+          .user-submit-btn {
+            margin-top: 20px;
+            margin-bottom: 10px;
+          }
+          
+          .user-submit-btn input {
+            -webkit-appearance: push-button;
+            user-select: none;
+            white-space: pre;
+            align-items: flex-start;
+            text-align: center;
+            cursor: default;
+            color: buttontext;
+            background-color: buttonface;
+            box-sizing: border-box;
+            padding: 1px 6px;
+            border-width: 2px;
+            border-style: outset;
+            border-color: buttonface;
+            border-image: initial;
+          }
+          
+          .user-submit-btn input[type="submit"] {
+            font-family: monospace;
+            font-size: 13.5px;
+          }
+          
+          .user-submit-btn input[type="submit"]:active {
+            border-style: inset;
+          }
+          
+          .user-submit-error-msg {
+            color: #828282;
+            font-size: 13.5px;
+            margin: 12.5px 0px 5px 0px;
+          }
+          
+          .user-moderator-section {
+            margin-top: 35px;
+          }
+          
+          .user-item-ban-btn {
+            color: #b82727;
+          }
+          
+          .user-item-ban-btn:hover {
+            text-decoration: underline;
+            cursor: pointer;
+          }
+          
+          .user-get-data-error-msg {
+            margin: 8px;
+            font-size: 13.5px;
+            color: #828282;
+          }
+          
+          @media only screen and (max-width: 750px) and (min-width: 0px) {
+            .user-item {
+              font-size: 13px;
+            }
+          
+            .user-item-label {
+              width: 70px;
+            }
+          
+            .user-item-content input[type="text"] {
+              height: 24px;
+              font-size: 16px;
+            }
+          
+            .user-item-content.about textarea[type="text"] {
+              font-size: 16px;
+            }
+          }
+          
+          @media only screen and (max-width: 600px) and (min-width: 500px) {
+            .user-item-content.email input {
+              width: 400px;
+            }
+          
+            .user-item-content.about textarea {
+              width: 390px;
+            }
+          }
+          
+          @media only screen and (max-width: 500px) and (min-width: 400px) {
+            .user-item-content.about.public {
+              width: 75%;
+            }
+          
+            .user-item-content.email input {
+              width: 300px;
+            }
+          
+            .user-item-content.about textarea {
+              width: 290px;
+            }
+          }
+          
+          @media only screen and (max-width: 400px) and (min-width: 0px) {
+            .user-item-content.about.public {
+              width: 75%;
+            }
+          
+            .user-item-content.email input {
+              width: 225px;
+            }
+          
+            .user-item-content.about textarea {
+              width: 215px;
+            }
+          }
+        
+        `}</style>
         <HeadMetadata
           title={this.props.userData ? `Profile: ${this.props.username} | Coder News` : "User Profile | Coder News"}
         />
         <GoogleAnalytics />
         <Header
-          userSignedIn={this.props.authUserData && this.props.authUserData.userSignedIn}
-          username={this.props.authUserData && this.props.authUserData.username}
-          karma={this.props.authUserData && this.props.authUserData.karma}
+          userSignedIn={this.props.authUserData.userSignedIn}
+          username={this.props.authUserData.username}
+          karma={this.props.authUserData.karma}
           goto={this.props.goToString}
         />
         <div className="user-content-container">
@@ -152,7 +435,8 @@ export default class extends Component {
                     !this.props.userData.email ?
                     <div className="user-add-email-address-msg">
                       <span>Please put a valid address in the email field, or we won't be able to send you a new password if you forget yours. Your address is only visible to you and us. Crawlers and other users can't see it.</span>
-                    </div> : null
+                    </div> :
+                    null
                   }
                   <div className="user-item">
                     <div className="user-item-label">
