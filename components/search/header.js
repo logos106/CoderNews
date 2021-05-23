@@ -1,6 +1,6 @@
 import { Component } from "react"
 
-import "../../styles/components/search/header.module.css"
+import styles from "../../styles/components/search/header.module.css"
 
 import SearchBarIcon from "./svg/searchBarIcon.js"
 import AlgoliaLogo from "./svg/algoliaLogo.js"

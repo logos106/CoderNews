@@ -14,7 +14,7 @@ export async function getServerSideProps (context) {
   const itemId = context.query.id ? context.query.id : ""
   const page = context.query.page ? parseInt(context.query.page) : 1
 
-  const authResult = authUser(context)
+  const authResult = await authUser()
 
   const result = await getItemById(itemId, page, authUser)
 

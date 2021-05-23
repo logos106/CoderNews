@@ -1,6 +1,6 @@
 import { Component } from "react"
 
-import "../../styles/pages/moderation/banned-users.css"
+import styles from "../../styles/pages/moderation/banned-users.module.css"
 
 import AlternateHeader from "../../components/alternateHeader.js"
 import HeadMetadata from "../../components/headMetadata.js"

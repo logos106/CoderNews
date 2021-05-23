@@ -5,6 +5,7 @@ export default async function authUser() {
   const directus = credential.directus
 
   // Check auth token to see if anyone is signed in
+  // await directus.auth.refresh(true)
   const token = directus.auth.token
   if (token) {
     // Check the role to see if admin
@@ -26,6 +27,8 @@ export default async function authUser() {
   }
 
   // Log in to Directus as admin
+  directus.auth.logout
+  
   await directus.auth.login({
     email: credential.email,
     password: credential.password,

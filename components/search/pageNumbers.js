@@ -1,6 +1,6 @@
 import { Component } from "react"
 
-import "../../styles/components/search/pageNumbers.module.css"
+import styles from "../../styles/components/search/pageNumbers.module.css"
 
 import DoubleLeftArrowsIcon from "./svg/doubleLeftArrowsIcon.js"
 import DoubleRightArrowsIcon from "./svg/doubleRightArrowsIcon.js"

@@ -1,6 +1,6 @@
 import { Component } from "react"
 
-import "../styles/pages/formatdoc.css"
+import styles from "../styles/pages/formatdoc.module.css"
 
 import AlternateHeader from "../components/alternateHeader.js"
 import HeadMetadata from "../components/headMetadata.js"

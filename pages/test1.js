@@ -1,35 +1,26 @@
 import { Component } from "react"
-import { ApolloClient, InMemoryCache } from '@apollo/client'
-import { client, cache } from '../components/authdirectus.js'
-import { gql } from '@apollo/client'
+import credential from "../utils/apiCredential.js"
+import { Directus, Auth } from '@directus/sdk';
 
 export async function getServerSideProps(context) {
-  // console.log(cache)
-  let res = await client.mutate({
-    mutation: gql`
-    mutation {
-      auth_login(email: "logos106@outlook.com", password: "glowglow") {
-      access_token
-      refresh_token
-      }
-    }
-    `
-  })
-  console.log(res)
+  const directus = credential.directus
 
-  
-  res = await client.query({
-    query: gql`
-      query {
-        items {
-          title
-        }
-      }
-      `
-  })
+  const token = await directus.auth.login({
+    email: credential.email,
+    password: credential.password,
+  },
+  {
+		refresh: {
+			auto: true,
+		},
+	});
 
-  console.log("RESULT: ", res)
-  return { props: { data: "res" } }
+  const ddd = await directus.users.me.read();
+
+  console.log(ddd)
+
+  const data = null
+  return { props: { data } }
 }
 
 export default class extends Component {

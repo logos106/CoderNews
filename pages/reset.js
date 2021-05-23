@@ -1,6 +1,6 @@
 import { Component } from "react"
 
-import "../styles/pages/reset.css"
+import styles from "../styles/pages/reset.module.css"
 
 import HeadMetadata from "../components/headMetadata.js"
 import AlternateHeader from "../components/alternateHeader.js"

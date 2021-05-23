@@ -1,6 +1,6 @@
 import { Component } from "react"
 
-import "../styles/pages/favorites.css"
+import styles from "../styles/pages/favorites.module.css"
 
 import Header from "../components/header.js"
 import Footer from "../components/footer.js"
