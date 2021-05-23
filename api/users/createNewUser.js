@@ -30,7 +30,6 @@ export default async function createNewUser(username, password, callback) {
         }
       },
     });
-    console.log("-----------", user);
     // If user doesn't exist
     if (user.data.length == 0) {
       const users = directus.items('users')

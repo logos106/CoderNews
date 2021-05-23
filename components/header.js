@@ -78,15 +78,17 @@ export default class extends Component {
                 {
                   this.props.userSignedIn ?
                   <>
-                    <a href={`/user?id=${this.props.username}`}>{this.props.username}</a>
+                    <Link href={`/user?id=${this.props.username}`}>
+                      {this.props.username}
+                    </Link>
                     <span> ({this.props.karma.toLocaleString()})</span>
                     <span> | </span>
                     <span className={styles.header_logout} onClick={this.requestLogout}>logout</span>
                   </> :
                   <>
-                    <a href={`/login${this.props.goto ? "?goto=" + encodeURIComponent(this.props.goto) : ""}`}>
+                    <Link href={`/login${this.props.goto ? "?goto=" + encodeURIComponent(this.props.goto) : ""}`}>
                       <span>login</span>
-                    </a>
+                    </Link>
                   </>
                 }
               </span>
