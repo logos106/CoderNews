@@ -56,17 +56,18 @@ export default async function getRankedItemsByPage(page, user) {
         }
       });
 
+      let itemsDbQuery = {
+        created: { _gte: startDate },
+        id: { _nin: hiddenIds }
+      }
+
       let hiddenIds = []
       for (let hidden of hiddens.data) {
         hiddenIds.push(hidden.id)
       }
+      if (hiddenIds.length > 0) itemsDbQuery.id = { _nin: hiddenIds }
 
-      let itemsDbQuery = {
-        created: { _gte: startDate },
-        id: { _nin: ['1'] }
-      }
-
-      if (!user.showDead) itemsDbQuery.dead = {_eq: false}
+      if (!user.showDead) itemsDbQuery.dead = { _eq: false }
 
       // Get items
       const items = await directus.items('items').readMany({
@@ -119,7 +120,7 @@ export default async function getRankedItemsByPage(page, user) {
     }
 
   } catch(error) {
-    console.log(error)
+    // console.log(error)
     return {getDataError: true}
   }
 

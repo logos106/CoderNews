@@ -1,5 +1,4 @@
 import { Component } from "react"
-import Cookies from "cookies"
 
 import authUser from "../api/users/authUser.js"
 import HeadMetadata from "../components/headMetadata.js"

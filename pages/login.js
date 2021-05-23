@@ -2,7 +2,6 @@ import { Component } from "react"
 import HeadMetadata from "../components/headMetadata.js"
 import GoogleAnalytics from "../components/googleAnalytics.js"
 import createNewUser from "../api/users/createNewUser.js"
-import loginUser from "../api/users/loginUser.js"
 import authUser from "../api/users/authUser.js"
 import removeUserCookieData from "../api/users/removeUserCookieData.js"
 import Router from "next/router"
@@ -73,21 +72,10 @@ export default class extends Component {
         body: JSON.stringify({
           useremail: useremail,
           password: password,
-        }) 
-      })
-      let response = await res.json()
-      console.log("Login Result: ", response)
-      if (!response) {
-        self.setState({
-          loading: false,
-          loginCredentialError: true,
-          loginSubmitError: false,
-          bannedError: false
         })
-      } else {
-        Router.push('/')
-      }
-      /* 
+      })
+
+      let response = await res.json()
       if (response.credentialError) {
         self.setState({
           loading: false,
@@ -110,10 +98,8 @@ export default class extends Component {
           bannedError: false
         })
       } else {
-        // window.location.href = `/${self.props.goto}`
         Router.push('/')
-      } */
-      
+      }
     }
   }
 

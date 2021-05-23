@@ -87,7 +87,7 @@ export default class extends Component {
                   </> :
                   <>
                     <Link href={`/login${this.props.goto ? "?goto=" + encodeURIComponent(this.props.goto) : ""}`}>
-                      <span>login</span>
+                      <a>login</a>
                     </Link>
                   </>
                 }

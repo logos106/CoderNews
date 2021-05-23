@@ -9,17 +9,18 @@ export default async function authUser() {
   if (token) {
     // Check the role to see if admin
     const me = await directus.users.me.read();
-
     const role = await directus.roles.readOne(me.role)
-    if (role.name != 'Administrator')
+    if (role.name != 'Administrator') {
       // It means user signed in
       return {
         userSignedIn: true,
-        username: res.username,
-        karma: res.karma,
-        shadowBanned: res.shadow_banned,
-        showDead: res.show_dead
+        username: !me.username ? '' : me.username,
+        karma: !me.karma ? 0 : me.karma,
+        shadowBanned: me.shadow_banned,
+        showDead: me.show_dead,
+        isModerator: me.is_moderator
       }
+    }
     else
       return { userSignedIn: false, username: 'guest', karma: 0, isModerator: false }
   }
