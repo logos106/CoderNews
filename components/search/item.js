@@ -1,7 +1,7 @@
 import { Component } from "react"
 import Highlighter from "react-highlight-words"
 
-import "../../styles/components/search/item.module.css"
+import styles from "../../styles/components/search/item.module.css"
 
 import renderCreatedTime from "../../utils/renderCreatedTime.js"
 

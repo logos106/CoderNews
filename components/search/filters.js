@@ -1,7 +1,7 @@
 import React, { Component } from "react"
 import moment from "moment"
 
-import "../../styles/components/search/filters.module.css"
+import styles from "../../styles/components/search/filters.module.css"
 
 import UpArrow from "../../components/search/svg/upArrow.js"
 import DownArrow from "../../components/search/svg/downArrow.js"

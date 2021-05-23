@@ -1,24 +1,23 @@
 import { Component } from "react"
 import credential from "../utils/apiCredential.js"
 import { Directus, Auth } from '@directus/sdk';
-// import dd from './test3.js'
 
 export async function getServerSideProps(context) {
-  const directus = new Directus(credential.baseURL);
+  const directus = credential.directus
+
   const token = await directus.auth.login({
-    // email: 'ujin518@outlook.com', //credential.email,
     email: credential.email,
     password: credential.password,
   },
   {
-  	refresh: {
-  		auto: true,   // Refresh token automatically
-  	},
-  });
+		refresh: {
+			auto: true,
+		},
+	});
 
   const ddd = await directus.users.me.read();
 
-  console.log(token)
+  console.log(ddd)
 
   const data = null
   return { props: { data } }

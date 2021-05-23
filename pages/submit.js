@@ -1,23 +1,24 @@
 import { Component } from "react"
+import Router from "next/router"
 
 import HeadMetadata from "../components/headMetadata.js"
 import AlternateHeader from "../components/alternateHeader.js"
 import GoogleAnalytics from "../components/googleAnalytics.js"
-import Router from "next/router"
 
 import authUser from "../api/users/authUser.js"
 import submitNewItem from "../api/items/submitNewItem.js"
 
-export async function getServerSideProps (context) {
-  const result = authUser(context)
+export async function getServerSideProps(context) {
+  const authResult = await authUser()
 
-  if (!result.userSignedIn) {
-    Router.push('/')
+  if (!authResult.userSignedIn) {
+    context.res.writeHead(302, { Location: '/' });
+    context.res.end();
   }
 
   return {
     props: {
-      authUser: result
+      authUser: authResult
     }
   }
 }

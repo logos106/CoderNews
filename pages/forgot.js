@@ -1,6 +1,6 @@
 import { Component } from "react"
 
-import "../styles/pages/forgot.css"
+import styles from "../styles/pages/forgot.module.css"
 
 import HeadMetadata from "../components/headMetadata.js"
 import GoogleAnalytics from "../components/googleAnalytics.js"

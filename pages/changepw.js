@@ -1,6 +1,6 @@
 import { Component } from "react"
 
-import "../styles/pages/changepw.css"
+import styles from "../styles/pages/changepw.module.css"
 
 import HeadMetadata from "../components/headMetadata.js"
 import AlternateHeader from "../components/alternateHeader.js"
@@ -111,33 +111,33 @@ export default class extends Component {
         <AlternateHeader
           displayMessage={`Change Password for ${this.props.username}`}
         />
-        <div className="changepw-content-container">
+      <div className={styles.changepw-content-container}>
           {
             !this.props.userContainsEmail ?
-            <div className="changepw-error-msg">
+            <div className={styles.changepw-error-msg}>
               <span>First, please put a valid email address in your <a href={`/user?id=${this.props.username}`}>profile</a>. Otherwise you could lose your account if you mistype your new password.</span>
             </div> : null
           }
           {
             this.state.invalidCurrentPassword ?
-            <div className="changepw-error-msg">
+            <div className={styles.changepw-error-msg}>
               <span>Invalid current password.</span>
             </div> : null
           }
           {
             this.state.newPasswordLengthError ?
-            <div className="changepw-error-msg">
+            <div className={styles.changepw-error-msg}>
               <span>Passwords should be at least 8 characters.</span>
             </div> : null
           }
           {
             this.state.submitError ?
-            <div className="changepw-error-msg">
+            <div className={styles.changepw-error-msg}>
               <span>An error occurred.</span>
             </div> : null
           }
-          <div className="changepw-input-item">
-            <div className="changepw-input-item-label">
+          <div className={styles.changepw_input_item}>
+            <div className={styles.changepw_input_item_label}>
               <span>Current Password:</span>
             </div>
             <div className="changepw-input-item-input">
@@ -148,8 +148,8 @@ export default class extends Component {
               />
             </div>
           </div>
-          <div className="changepw-input-item">
-            <div className="changepw-input-item-label">
+          <div className={styles.changepw_input_item}>
+            <div className={styles.changepw_input_item_label}>
               <span>New Password:</span>
             </div>
             <div className="changepw-input-item-input">

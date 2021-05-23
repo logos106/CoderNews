@@ -1,6 +1,6 @@
 import { Component } from "react"
 
-import "../../styles/components/search/noResults.module.css"
+import styles from "../../styles/components/search/noResults.module.css"
 
 export default class extends Component {
   renderNoResultsTopMsg = () => {

@@ -1,7 +1,7 @@
 import { Component } from "react"
 import Cookie from "js-cookie"
 
-import "../../styles/pages/search/settings.css"
+import styles from "../../styles/pages/search/settings.module.css"
 
 import HeadMetadata from "../../components/headMetadata.js"
 import SearchPageHeader from "../../components/search/header.js"

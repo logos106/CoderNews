@@ -1,6 +1,6 @@
 import { Component } from "react"
 
-import "../../styles/pages/search/index.css"
+import styles from "../../styles/pages/search/index.module.css"
 
 import HeadMetadata from "../../components/headMetadata.js"
 import SearchPageHeader from "../../components/search/header.js"

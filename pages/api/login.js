@@ -25,19 +25,21 @@ export default async function handler(req, res) {
     if (the_user.data[0].banned || useremail == credential.email)
       return res.status(200).json({ bannedError: true })
 
+    directus.auth.logout
     // Login with this credential
     await directus.auth.login({
       email: useremail,
       password: password
     }, {
       refresh: {
-        auto: true
+        auto: true,
+        time: 30000
       }
     })
 
     return res.status(200).json({ success: true })
   } catch (error) {
-    console.log(error)
+
     res.status(200).json({ submitError: true })
   }
 

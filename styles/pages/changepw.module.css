@@ -5,26 +5,26 @@
   color: #828282;
 }
 
-.changepw-error-msg,
-.changepw-error-msg a {
+.changepw_error_msg,
+.changepw_error_msg a {
   margin-bottom: 25px;
   color: #828282;
 }
 
-.changepw-input-item {
+.changepw_input_item {
   margin: 4px 0px 4px 0px;
 }
 
-.changepw-input-item-label {
+.changepw_input_item_label {
   display: inline-block;
   width: 135px;
 }
 
-.changepw-input-item-input {
+.changepw_input_item_input {
   display: inline-block;
 }
 
-.changepw-input-item-input input {
+.changepw_input_item_input input {
   height: 20px;
   width: 225px;
   -webkit-writing-mode: horizontal-tb;
@@ -45,17 +45,17 @@
   border: 1px solid #a6a4a4;
 }
 
-.changepw-input-item-input input[type="password"] {
+.changepw_input_item_input input[type="password"] {
   font-family: monospace;
   font-size: 13.5px;
 }
 
-.changepw-submit-btn {
+.changepw_submit_btn {
   margin-top: 7.5px;
   margin-left: 135px;
 }
 
-.changepw-submit-btn input {
+.changepw_submit_btn input {
   -webkit-appearance: push-button;
   user-select: none;
   white-space: pre;
@@ -72,36 +72,36 @@
   border-image: initial;
 }
 
-.changepw-submit-btn input[type="submit"] {
+.changepw_submit_btn input[type="submit"] {
   font-family: monospace;
   font-size: 13.5px;
 }
 
-.changepw-submit-btn input[type="submit"]:active {
+.changepw_submit_btn input[type="submit"]:active {
   border-style: inset;
 }
 
 @media only screen and (max-width: 750px) and (min-width: 0px) {
-  .changepw-content-container {
+  .changepw_content_container {
     font-size: 13px;
   }
 
-  .changepw-input-item-label {
+  .changepw_input_item_label {
     display: inline-block;
     width: 120px;
     font-size: 12.5px;
   }
 
-  .changepw-input-item-input input {
+  .changepw_input_item_input input {
     height: 24px;
     width: 175px;
   }
 
-  .changepw-input-item-input input[type="password"] {
+  .changepw_input_item_input input[type="password"] {
     font-size: 16px;
   }
 
-  .changepw-submit-btn {
+  .changepw_submit_btn {
     margin-left: 120px;
   }
 }

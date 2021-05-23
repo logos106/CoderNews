@@ -8,8 +8,8 @@ import styles from "../styles/components/header.module.css"
 export default class extends Component {
   requestLogout = () => {
     logoutUser(function() {
-      // window.location.reload()
-      Router.push('/')
+      fetch("/api/logout")
+        .then(() => Router.push('/'))      
     })
   }
 
