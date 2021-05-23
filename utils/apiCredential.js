@@ -1,3 +1,5 @@
+import { Directus, Auth } from '@directus/sdk';
+
 let baseURL
 
 if (process.env.NODE_ENV === "development") {
@@ -9,8 +11,11 @@ if (process.env.NODE_ENV === "development") {
 let email = 'logos106@outlook.com'
 let password = 'glowglow'
 
+const directus = new Directus(baseURL);
+
 export default {
   baseURL: baseURL,
   email: email,
-  password: password
+  password: password,
+  directus: directus
 }

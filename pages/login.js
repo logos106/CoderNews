@@ -92,7 +92,6 @@ export default class extends Component {
             bannedError: false
           })
         } else {
-          console.log(`/${self.props.goto}`)
           // window.location.href = `/${self.props.goto}`
           Router.push('/')
         }

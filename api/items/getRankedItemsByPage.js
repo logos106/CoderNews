@@ -14,11 +14,11 @@ export default async function getRankedItemsByPage(page, signedIn) {
   const directus = new Directus(credential.baseURL)
 
   // Login to Directus
-  await directus.auth.login({
-    email: credential.email,
-    password: credential.password,
-  });
-
+  // await directus.auth.login({
+  //   email: credential.email,
+  //   password: credential.password,
+  // });
+await directus.auth.refresh();
   // Fetch items with conditions
   try {
     const startDate = moment().unix() - (86400 * maxAgeOfRankedItemsInDays)

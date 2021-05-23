@@ -10,11 +10,11 @@ import GoogleAnalytics from "../components/googleAnalytics.js"
 import getRankedItemsByPage from "../api/items/getRankedItemsByPage.js"
 
 export async function getServerSideProps(context) {
-  const authResult = authUser(context)
+  const authResult = await authUser()
 
   // Fetch data from external API
   const page = 1
-  const result = await getRankedItemsByPage(page, authResult.success)
+  const result = await getRankedItemsByPage(page, authResult.userSignedIn)
 
   // Pass data to the page via props
   return {
