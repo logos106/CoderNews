@@ -17,7 +17,7 @@ export default async function getUserData(context) {
         auto: true,   // Refresh token automatically
       },
     });
-
+    console.log("username: ", context.query.id)
     if (!context.query.id) {
       return {
         notFoundError: true,
@@ -38,7 +38,7 @@ export default async function getUserData(context) {
     if (users.data.length > 0) {
       user = users.data[0]
     }
-    // console.log("Show dead: ", user.showDead, user);
+    // console.log("Show dead: ", user.show_dead, user);
     if (!authResult.userSignedIn || authResult.username != context.query.id) {
       if (authResult.isModerator) 
         return {
@@ -65,9 +65,10 @@ export default async function getUserData(context) {
           showPrivateUserData: false
         }
     } else {
-      const aboutText = user.about
+      const aboutText = user.about ? user.about
           .replace(/<a\b[^>]*>/i,"").replace(/<\/a>/i, "")
           .replace(/<i\b[^>]*>/i,"*").replace(/<\/i>/i, "*")
+          : ""
       return {
         user: {
           id: user.id,
@@ -82,6 +83,7 @@ export default async function getUserData(context) {
       }
     }  
   } catch(error) {
+    console.log("Error: ", error)
     return {getDataError: true}
   }
 }
