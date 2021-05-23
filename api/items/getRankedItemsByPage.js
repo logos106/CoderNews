@@ -45,12 +45,12 @@ export default async function getRankedItemsByPage(page, user) {
     }
     else {
       // Get hidden * for this user
-      const hiddens = await user_hiddens.readMany({
+      const hiddens = await directus.items('user_hiddens').readMany({
         filter: {
           username: {
             _eq: user.username
           },
-          itemCreationDate: {
+          item_creation_date: {
             _gte: startDate,
           }
         }
@@ -62,30 +62,26 @@ export default async function getRankedItemsByPage(page, user) {
       }
 
       let itemsDbQuery = {
-        created: {
-          _gte: startDate
-        },
-        id: {
-          _nin: hiddenIds
-        }
+        created: { _gte: startDate },
+        id: { _nin: ['1'] }
       }
 
       if (!user.showDead) itemsDbQuery.dead = {_eq: false}
 
       // Get items
-      const items = await directus.items.readMany({
-        filter: iteemsDbQuery,
+      const items = await directus.items('items').readMany({
+        filter: itemsDbQuery,
         skip: (page - 1) * itemsPerPage,
         take: itemsPerPage
       })
 
       let itemIds = []
-      for (let hidden of items.data) {
+      for (let item of items.data) {
         itemIds.push(item.id)
       }
 
       // Votes
-      const votes = await directus.user_votes.readMany({
+      const votes = await directus.items('user_votes').readMany({
         filter: {
           username: user.username,
           date: { _gte: startDate },
@@ -94,7 +90,7 @@ export default async function getRankedItemsByPage(page, user) {
         }
       })
 
-      for (let item of items) {
+      for (let [i, item] of items.data.entries()) {
         item.rank = ((page - 1) * itemsPerPage) + (i + 1)
 
         if (item.by === user.username) {
@@ -117,12 +113,13 @@ export default async function getRankedItemsByPage(page, user) {
 
       return {
         success: true,
-        items: items,
+        items: items.data,
         isMore: items.length > (((page - 1) * itemsPerPage) + itemsPerPage) ? true : false
       }
     }
 
   } catch(error) {
+    console.log(error)
     return {getDataError: true}
   }
 
