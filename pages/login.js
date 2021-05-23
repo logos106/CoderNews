@@ -22,9 +22,12 @@ export default class extends Component {
       bannedError: false,
 
       //create account
+      createAccountUsernameInputValue: "",
       createAccountUseremailInputValue: "",
       createAcountPasswordInputValue: "",
+      createAccountUsernameExistsError: false,
       createAccountUseremailExistsError: false,
+      createAccountUsernameLengthError: false,
       createAccountUseremailLengthError: false,
       createAccountPasswordLengthError: false,
       createAccountSubmitError: false
@@ -41,6 +44,10 @@ export default class extends Component {
 
   updateLoginPasswordInputValue = (event) => {
     this.setState({loginPasswordInputValue: event.target.value})
+  }
+
+  updateCreateAccountUsernameInputValue = (event) => {
+    this.setState({createAccountUsernameInputValue: event.target.value})
   }
 
   updateCreateAccountUseremailInputValue = (event) => {
@@ -103,13 +110,22 @@ export default class extends Component {
     }
   }
 
-  submitCreateAccount = () => {
+  submitCreateAccount = async () => {
     if (this.state.loading) return
-
+    const username = this.state.createAccountUsernameInputValue
     const useremail = this.state.createAccountUseremailInputValue
     const password = this.state.createAcountPasswordInputValue
-
-    if (useremail.length < 2 || useremail.length > 15) {
+    
+    if (username.length < 2 || username.length > 15) {
+      this.setState({
+        createAccountUsernameExistsError: false,
+        createAccountUsernameLengthError: true,
+        createAccountUseremailExistsError: false,
+        createAccountPasswordLengthError: false,
+        createAccountSubmitError: false
+      })
+    }
+    else if (useremail.length < 5) {
       this.setState({
         createAccountUseremailExistsError: false,
         createAccountUseremailLengthError: true,
@@ -125,47 +141,53 @@ export default class extends Component {
       })
     } else {
       this.setState({loading: true})
-
       const self = this
-
-      createNewUser(useremail, password, function(response) {
-        if (response.useremailLengthError) {
-          self.setState({
-            loading: false,
-            createAccountUseremailExistsError: false,
-            createAccountUseremailLengthError: true,
-            createAccountPasswordLengthError: false,
-            createAccountSubmitError: false
-          })
-        } else if (response.passwordLengthError) {
-          self.setState({
-            loading: false,
-            createAccountUseremailExistsError: false,
-            createAccountUseremailLengthError: false,
-            createAccountPasswordLengthError: true,
-            createAccountSubmitError: false
-          })
-        } else if (response.alreadyExistsError) {
-          self.setState({
-            loading: false,
-            createAccountUseremailExistsError: true,
-            createAccountUseremailLengthError: false,
-            createAccountPasswordLengthError: false,
-            createAccountSubmitError: false
-          })
-        } else if (response.submitError || !response.success) {
-          self.setState({
-            loading: false,
-            createAccountUseremailExistsError: false,
-            createAccountUseremailLengthError: false,
-            createAccountPasswordLengthError: false,
-            createAccountSubmitError: true
-          })
-        } else {
-          // window.location.href = `/${self.props.goto}`
-          Router.push('/')
-        }
+      let res = await fetch("/api/signup", {
+        method: "POST",
+        body: JSON.stringify({
+          username: username,
+          useremail: useremail,
+          password: password,
+        })
       })
+      let response = await res.json()
+    
+      if (response.useremailLengthError) {
+        self.setState({
+          loading: false,
+          createAccountUseremailExistsError: false,
+          createAccountUseremailLengthError: true,
+          createAccountPasswordLengthError: false,
+          createAccountSubmitError: false
+        })
+      } else if (response.passwordLengthError) {
+        self.setState({
+          loading: false,
+          createAccountUseremailExistsError: false,
+          createAccountUseremailLengthError: false,
+          createAccountPasswordLengthError: true,
+          createAccountSubmitError: false
+        })
+      } else if (response.alreadyExistsError) {
+        self.setState({
+          loading: false,
+          createAccountUseremailExistsError: true,
+          createAccountUseremailLengthError: false,
+          createAccountPasswordLengthError: false,
+          createAccountSubmitError: false
+        })
+      } else if (response.submitError || !response.success) {
+        self.setState({
+          loading: false,
+          createAccountUseremailExistsError: false,
+          createAccountUseremailLengthError: false,
+          createAccountPasswordLengthError: false,
+          createAccountSubmitError: true
+        })
+      } else {
+        // window.location.href = `/${self.props.goto}`
+        Router.push('/')
+      }
     }
   }
 
@@ -234,6 +256,18 @@ export default class extends Component {
           </span>
         </div>
         {
+          this.state.createAccountUsernameExistsError ?
+          <div className={styles.login_error_msg}>
+            <span>That username is taken.</span>
+          </div> : null
+        }
+        {
+          this.state.createAccountUsernameLengthError ?
+          <div className={styles.login_error_msg}>
+            <span>Userename must be between 2 and 15 characters long.</span>
+          </div> : null
+        }
+        {
           this.state.createAccountUseremailExistsError ?
           <div className={styles.login_error_msg}>
             <span>That useremail is taken.</span>
@@ -242,7 +276,7 @@ export default class extends Component {
         {
           this.state.createAccountUseremailLengthError ?
           <div className={styles.login_error_msg}>
-            <span>Useremail must be between 2 and 15 characters long.</span>
+            <span>Useremail must be at least 5 characters long.</span>
           </div> : null
         }
         {
@@ -259,6 +293,18 @@ export default class extends Component {
         }
         <div className={styles.login_header}>
           <span>Create Account</span>
+        </div>
+        <div className={styles.login_input_item}>
+          <div className={styles.login_input_item_label}>
+            <span>username:</span>
+          </div>
+          <div className={styles.login_input_item_input}>
+            <input
+              type="text"
+              value={this.state.createAccountUsernameInputValue}
+              onChange={this.updateCreateAccountUsernameInputValue}
+            />
+          </div>
         </div>
         <div className={styles.login_input_item}>
           <div className={styles.login_input_item_label}>

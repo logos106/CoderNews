@@ -8,10 +8,12 @@
     "start": "next start"
   },
   "dependencies": {
+    "@apollo/client": "^3.3.19",
     "@directus/sdk": "^9.0.0-rc.69",
     "algoliasearch": "^4.9.1",
     "cookie-cutter": "^0.2.0",
     "cookies": "^0.8.0",
+    "graphql": "^15.5.0",
     "moment": "^2.29.1",
     "next": "10.2.0",
     "next-iron-session": "^4.1.13",
