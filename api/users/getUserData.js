@@ -5,42 +5,38 @@ import credential from "../../utils/apiCredential.js"
 export default async function getUserData(context) {
   try {
     // Instantiate a new Directus object
-    const directus = new Directus(credential.baseURL);
-    const authResult = authUser(context)
-    // Login to Directus
-    await directus.auth.login({
-      email: credential.email,
-      password: credential.password,
-    },
-    {
-      refresh: {
-        auto: true,   // Refresh token automatically
-      },
-    });
-    console.log("username: ", context.query.id)
+    const directus = credential.directus
+    const authResult = await authUser()
+    
     if (!context.query.id) {
       return {
-        notFoundError: true,
         getDataError: true,
       }
     }
-
+    
     // Search the user table
-    const users = await directus.items('users').readMany({
+    const users = await directus.items('directus_users').readMany({
       filter: {
         username: {
           _eq: context.query.id,
         }
       }
     });
-
+    
+    if (users.data.length == 0) {
+      return {
+        notFoundError: true,
+      }
+    }
+    
     let user;
     if (users.data.length > 0) {
       user = users.data[0]
     }
+
     // console.log("Show dead: ", user.show_dead, user);
     if (!authResult.userSignedIn || authResult.username != context.query.id) {
-      if (authResult.isModerator) 
+      if (authResult.isModerator) {
         return {
           user: {
             id: user.id,
@@ -53,7 +49,7 @@ export default async function getUserData(context) {
           },
           showPrivateUserData: false
         }
-      else
+      } else {
         return {
           user: {
             id: user.id,
@@ -64,6 +60,7 @@ export default async function getUserData(context) {
           },
           showPrivateUserData: false
         }
+      }
     } else {
       const aboutText = user.about ? user.about
           .replace(/<a\b[^>]*>/i,"").replace(/<\/a>/i, "")

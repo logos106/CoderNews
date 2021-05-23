@@ -9,6 +9,8 @@ export default async function handler(req, res) {
 
   if (username.length < 2 || username.length > 15) {
     return res.status(200).json({usernameLengthError: true})
+  } else if (useremail.length < 5) {
+    return res.status(200).json({useremailLengthError: true})
   } else if (password.length < 8) {
     return res.status(200).json({passwordLengthError: true})
   }
@@ -30,20 +32,23 @@ export default async function handler(req, res) {
       return res.status(200).json({alreadyExistsError: true})
     }
 
-    if (the_user.data[0].banned || useremail == credential.email)
-      return res.status(200).json({ bannedError: true })
+    // Get the role
+    let readerRole = await directus.roles.readMany({filter: {name: 'reader'}})
+    console.log("Roles: ", readerRole.data[0])
 
-    // Login with this credential
-    await directus.auth.login({
+    const newuser = await directus.items('directus_users').createOne({
+      username: username,
       email: useremail,
-      password: password
-    }, {
-      refresh: {
-        auto: true
-      }
+      password: password,
+      role: readerRole.data[0].id
     })
 
-    return res.status(200).json({ success: true })
+    console.log("new user: ", newuser)
+    
+    return res.status(200).json({
+      success: true,
+      username: username,
+    })
   } catch (error) {
     console.log(error)
     res.status(200).json({ submitError: true })

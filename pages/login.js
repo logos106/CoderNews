@@ -152,7 +152,15 @@ export default class extends Component {
       })
       let response = await res.json()
     
-      if (response.useremailLengthError) {
+      if (response.usernameLengthError) {
+        self.setState({
+          loading: false,
+          createAccountUseremailExistsError: false,
+          createAccountUseremailLengthError: true,
+          createAccountPasswordLengthError: false,
+          createAccountSubmitError: false
+        })
+      } else if (response.useremailLengthError) {
         self.setState({
           loading: false,
           createAccountUseremailExistsError: false,

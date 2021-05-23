@@ -18,7 +18,7 @@ import removeUserBan from "../api/moderation/removeUserBan.js"
 
 export async function getServerSideProps (context) {
   const apiResult = await getUserData(context)
-  const authResult = authUser(context)
+  const authResult = await authUser()
   return {
     props: {
       username: context.query.id,
@@ -67,7 +67,7 @@ export default class extends Component {
     this.setState({showDeadValue: event.target.value})
   }
 
-  submitUpdateRequest = () => {
+  submitUpdateRequest = async () => {
     if (this.state.loading) return
 
     this.setState({loading: true})
@@ -80,16 +80,21 @@ export default class extends Component {
     }
     
     const self = this
-    updateUserData(inputData, function(response) {
-      if (response.submitError) {
-        self.setState({
-          loading: false,
-          submitError: true
-        })
-      } else {
-        window.location.href = ""
-      }
+    
+    let res = await fetch("/api/updateUserData", {
+      method: "POST",
+      body: JSON.stringify(inputData)
     })
+    let response = await res.json()
+
+    if (response.submitError) {
+      self.setState({
+        loading: false,
+        submitError: true
+      })
+    } else {
+      window.location.href = ""
+    }
   }
 
   requestAddShadowBan = () => {
