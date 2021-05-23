@@ -4,9 +4,19 @@ import { Directus, Auth } from '@directus/sdk';
 import dd from './test3.js'
 
 export async function getServerSideProps(context) {
-  const directus = new Directus(credential.baseURL);
-  const items = await directus.items('items').readMany()
-  items.data.map((item) => console.log(item.title))
+  const directus = dd.d
+
+  // const items = await directus.items('items').readMany()
+  // items.data.map((item) => console.log(item.title))
+
+  await directus.users.createOne({
+  	email: 'logos115@outlook.com',
+    password: 'glowglow',
+    status: 'active',
+    role: '878081e0-a827-4ad2-aca6-322189a93d6b'
+  });
+  const res = await directus.roles.readMany()
+  console.log(res)
 
   const data = null
   return { props: { data } }
