@@ -16,17 +16,17 @@ export default class extends Component {
       loading: false,
 
       // login
-      loginUsernameInputValue: "",
+      loginUseremailInputValue: "",
       loginPasswordInputValue: "",
       loginCredentialError: false,
       loginSubmitError: false,
       bannedError: false,
 
       //create account
-      createAccountUsernameInputValue: "",
+      createAccountUseremailInputValue: "",
       createAcountPasswordInputValue: "",
-      createAccountUsernameExistsError: false,
-      createAccountUsernameLengthError: false,
+      createAccountUseremailExistsError: false,
+      createAccountUseremailLengthError: false,
       createAccountPasswordLengthError: false,
       createAccountSubmitError: false
     }
@@ -36,29 +36,29 @@ export default class extends Component {
     //removeUserCookieData()
   }
 
-  updateLoginUsernameInputValue = (event) => {
-    this.setState({loginUsernameInputValue: event.target.value})
+  updateLoginUseremailInputValue = (event) => {
+    this.setState({loginUseremailInputValue: event.target.value})
   }
 
   updateLoginPasswordInputValue = (event) => {
     this.setState({loginPasswordInputValue: event.target.value})
   }
 
-  updateCreateAccountUsernameInputValue = (event) => {
-    this.setState({createAccountUsernameInputValue: event.target.value})
+  updateCreateAccountUseremailInputValue = (event) => {
+    this.setState({createAccountUseremailInputValue: event.target.value})
   }
 
   updateCreateAccountPasswordInputValue = (event) => {
     this.setState({createAcountPasswordInputValue: event.target.value})
   }
 
-  submitLogin = () => {
+  submitLogin = async () => {
     if (this.state.loading) return
 
-    const username = this.state.loginUsernameInputValue
+    const useremail = this.state.loginUseremailInputValue
     const password = this.state.loginPasswordInputValue
 
-    if (username.length === 0 || password.length === 0) {
+    if (useremail.length === 0 || password.length === 0) {
       this.setState({
         loginCredentialError: true,
         loginSubmitError: false,
@@ -68,54 +68,72 @@ export default class extends Component {
       this.setState({loading: true})
 
       const self = this
-
-      loginUser(username, password, function(response) {
-        if (response.credentialError) {
-          self.setState({
-            loading: false,
-            loginCredentialError: true,
-            loginSubmitError: false,
-            bannedError: false
-          })
-        } else if (response.bannedError) {
-          self.setState({
-            loading: false,
-            loginCredentialError: false,
-            loginSubmitError: false,
-            bannedError: true
-          })
-        } else if (response.submitError || !response.success) {
-          self.setState({
-            loading: false,
-            loginCredentialError: false,
-            loginSubmitError: true,
-            bannedError: false
-          })
-        } else {
-          // window.location.href = `/${self.props.goto}`
-          Router.push('/')
-        }
+      let res = await fetch("/api/login", {
+        method: "POST",
+        body: JSON.stringify({
+          useremail: useremail,
+          password: password,
+        }) 
       })
+      let response = await res.json()
+      console.log("Login Result: ", response)
+      if (!response) {
+        self.setState({
+          loading: false,
+          loginCredentialError: true,
+          loginSubmitError: false,
+          bannedError: false
+        })
+      } else {
+        Router.push('/')
+      }
+      /* 
+      if (response.credentialError) {
+        self.setState({
+          loading: false,
+          loginCredentialError: true,
+          loginSubmitError: false,
+          bannedError: false
+        })
+      } else if (response.bannedError) {
+        self.setState({
+          loading: false,
+          loginCredentialError: false,
+          loginSubmitError: false,
+          bannedError: true
+        })
+      } else if (response.submitError || !response.success) {
+        self.setState({
+          loading: false,
+          loginCredentialError: false,
+          loginSubmitError: true,
+          bannedError: false
+        })
+      } else {
+        // window.location.href = `/${self.props.goto}`
+        Router.push('/')
+      } */
+      
     }
   }
 
   submitCreateAccount = () => {
     if (this.state.loading) return
 
-    const username = this.state.createAccountUsernameInputValue
+    const useremail = this.state.createAccountUseremailInputValue
     const password = this.state.createAcountPasswordInputValue
 
-    if (username.length < 2 || username.length > 15) {
+    if (useremail.length < 2 || useremail.length > 15) {
       this.setState({
-        createAccountUsernameExistsError: false,
-        createAccountUsernameLengthError: true,
+        createAccountUseremailExistsError: false,
+        createAccountUseremailLengthError: true,
         createAccountPasswordLengthError: false,
         createAccountSubmitError: false
       })
     } else if (password.length < 8) {
       this.setState({
-        createAccountUsernameExistsError: false,
-        createAccountUsernameLengthError: false,
+        createAccountUseremailExistsError: false,
+        createAccountUseremailLengthError: false,
         createAccountPasswordLengthError: true,
         createAccountSubmitError: false
       })
@@ -124,36 +142,36 @@ export default class extends Component {
 
       const self = this
 
-      createNewUser(username, password, function(response) {
-        if (response.usernameLengthError) {
+      createNewUser(useremail, password, function(response) {
+        if (response.useremailLengthError) {
           self.setState({
             loading: false,
-            createAccountUsernameExistsError: false,
-            createAccountUsernameLengthError: true,
+            createAccountUseremailExistsError: false,
+            createAccountUseremailLengthError: true,
             createAccountPasswordLengthError: false,
             createAccountSubmitError: false
           })
         } else if (response.passwordLengthError) {
           self.setState({
             loading: false,
-            createAccountUsernameExistsError: false,
-            createAccountUsernameLengthError: false,
+            createAccountUseremailExistsError: false,
+            createAccountUseremailLengthError: false,
             createAccountPasswordLengthError: true,
             createAccountSubmitError: false
           })
         } else if (response.alreadyExistsError) {
           self.setState({
             loading: false,
-            createAccountUsernameExistsError: true,
-            createAccountUsernameLengthError: false,
+            createAccountUseremailExistsError: true,
+            createAccountUseremailLengthError: false,
             createAccountPasswordLengthError: false,
             createAccountSubmitError: false
           })
         } else if (response.submitError || !response.success) {
           self.setState({
             loading: false,
-            createAccountUsernameExistsError: false,
-            createAccountUsernameLengthError: false,
+            createAccountUseremailExistsError: false,
+            createAccountUseremailLengthError: false,
             createAccountPasswordLengthError: false,
             createAccountSubmitError: true
           })
@@ -195,13 +213,13 @@ export default class extends Component {
         </div>
         <div className={styles.login_input_item}>
           <div className={styles.login_input_item_label}>
-            <span>username:</span>
+            <span>useremail:</span>
           </div>
           <div className={styles.login_input_item_input}>
             <input
               type="text"
-              value={this.state.loginUsernameInputValue}
-              onChange={this.updateLoginUsernameInputValue}
+              value={this.state.loginUseremailInputValue}
+              onChange={this.updateLoginUseremailInputValue}
             />
           </div>
         </div>
@@ -230,15 +248,15 @@ export default class extends Component {
           </span>
         </div>
         {
-          this.state.createAccountUsernameExistsError ?
+          this.state.createAccountUseremailExistsError ?
           <div className={styles.login_error_msg}>
-            <span>That username is taken.</span>
+            <span>That useremail is taken.</span>
           </div> : null
         }
         {
-          this.state.createAccountUsernameLengthError ?
+          this.state.createAccountUseremailLengthError ?
           <div className={styles.login_error_msg}>
-            <span>Username must be between 2 and 15 characters long.</span>
+            <span>Useremail must be between 2 and 15 characters long.</span>
           </div> : null
         }
         {
@@ -258,13 +276,13 @@ export default class extends Component {
         </div>
         <div className={styles.login_input_item}>
           <div className={styles.login_input_item_label}>
-            <span>username:</span>
+            <span>useremail:</span>
           </div>
           <div className={styles.login_input_item_input}>
             <input
               type="text"
-              value={this.state.createAccountUsernameInputValue}
-              onChange={this.updateCreateAccountUsernameInputValue}
+              value={this.state.createAccountUseremailInputValue}
+              onChange={this.updateCreateAccountUseremailInputValue}
             />
           </div>
         </div>
