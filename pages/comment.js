@@ -1,35 +1,40 @@
 import { Component } from "react"
 
-import "../styles/pages/comment.module.css"
+import styles from "../styles/pages/comment.module.css"
 
+import authUser from "../api/users/authUser.js"
 import Header from "../components/header.js"
 import Footer from "../components/footer.js"
 import HeadMetadata from "../components/headMetadata.js"
 import Comment from "../components/comment.js"
 import CommentSection from "../components/commentSection.js"
 import GoogleAnalytics from "../components/googleAnalytics.js"
-
 import truncateCommentText from "../utils/truncateCommentText.js"
-
 import getCommentById from "../api/comments/getCommentById.js"
 
-export default class extends Component {
-  static async getInitialProps ({ req, query }) {
-    const commentId = query.id ? query.id : ""
-    const page = query.page ? parseInt(query.page) : 1
+export async function getServerSideProps(context) {
+  const authResult = await authUser()
 
-    const apiResult = await getCommentById(commentId, page, req)
+  const commentId = context.query.id ? context.query.id : ""
+  const page = context.query.page ? parseInt(context.query.page) : 1
 
-    return {
-      comment: apiResult && apiResult.comment,
-      authUserData: apiResult && apiResult.authUser ? apiResult.authUser : {},
-      notFoundError: apiResult && apiResult.notFoundError,
-      getDataError: apiResult && apiResult.getDataError,
-      goToString: page > 1 ? `comment?id=${commentId}&page=${page}` : `comment?id=${commentId}`,
+  const result = await getCommentById(commentId, page, context.req)
+
+  return {
+    props: {
+      authUserData: authResult,
+      comment: typeof result.comment === 'undefined' ? null : result.comment,
       page: page,
-      isMoreChildrenComments: apiResult && apiResult.isMoreChildrenComments
+      notFoundError: typeof result.notFoundError === 'undefined' ? false : result.notFoundError,
+      getDataError: typeof result.getDataError === 'undefined' ? false : result.getDataError,
+      isMoreChildrenComments: typeof result.isMoreChildrenComments === 'undefined' ? false : result.isMoreChildrenComments,
+      goToString: ""
     }
   }
+}
+
+export default class extends Component {
+
 
   render () {
     return (

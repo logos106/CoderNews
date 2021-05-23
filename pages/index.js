@@ -1,5 +1,4 @@
 import { Component } from "react"
-
 import authUser from "../api/users/authUser.js"
 import HeadMetadata from "../components/headMetadata.js"
 import Header from "../components/header.js"

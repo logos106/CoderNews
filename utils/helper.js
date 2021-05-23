@@ -4,14 +4,14 @@ import psl from "psl"
 import validator from "validator"
 
 export default {
-  directusBaseUrl: 'http://localhost:8055/',
-  generateUniqueId: function(length) {
-    const alphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
-
-    const generator = nanoid.customAlphabet(alphabet, length)
-
-    return generator()
-  },
+  // directusBaseUrl: 'http://localhost:8055/',
+  // generateUniqueId: function(length) {
+  //   const alphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+  //
+  //   const generator = nanoid.customAlphabet(alphabet, length)
+  //
+  //   return generator()
+  // },
   getDomainFromUrl: function(paramUrl) {
     const hostname = url.parse(paramUrl).hostname
 

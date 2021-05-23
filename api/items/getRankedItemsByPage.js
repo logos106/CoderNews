@@ -1,27 +1,25 @@
-import { Directus, Auth } from '@directus/sdk';
-import moment from "moment"
-
 import credential from "../../utils/apiCredential.js"
 import config from "../../utils/config.js"
+import moment from "moment"
 
 export default async function getRankedItemsByPage(page, user) {
   // Get config
+  const directus = credential.directus
+
   const maxAgeOfRankedItemsInDays = config.maxAgeOfRankedItemsInDays
   const itemsPerPage = config.itemsPerPage
   const commentsPerPage = config.commentsPerPage
-
-  const directus = credential.directus
+  const startDate = moment().unix() - (86400 * maxAgeOfRankedItemsInDays)
 
   // Fetch items with conditions
   try {
-    const startDate = moment().unix() - (86400 * maxAgeOfRankedItemsInDays)
     const items = directus.items('items')
 
     if (!user.signedIn) {  // If he is a guest
       const result = await items.readMany({
         filter: {
           created: {
-            _gte: startDate,
+            _gte: startDate
           },
           dead: {
             _eq: false
@@ -57,8 +55,7 @@ export default async function getRankedItemsByPage(page, user) {
       });
 
       let itemsDbQuery = {
-        created: { _gte: startDate },
-        id: { _nin: hiddenIds }
+        created: { _gte: startDate }
       }
 
       let hiddenIds = []
@@ -115,12 +112,11 @@ export default async function getRankedItemsByPage(page, user) {
       return {
         success: true,
         items: items.data,
-        isMore: items.length > (((page - 1) * itemsPerPage) + itemsPerPage) ? true : false
+        isMore: items.data.length > (((page - 1) * itemsPerPage) + itemsPerPage) ? true : false
       }
     }
 
   } catch(error) {
-    // console.log(error)
     return {getDataError: true}
   }
 
