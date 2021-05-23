@@ -1,35 +1,38 @@
 import { Component } from "react"
+import authUser from "../api/users/authUser.js"
 import moment from "moment"
-
-import "../styles/pages/past.module.css"
-
 import Header from "../components/header.js"
 import Footer from "../components/footer.js"
 import HeadMetadata from "../components/headMetadata.js"
 import ItemsList from "../components/itemsList.js"
 import GoogleAnalytics from "../components/googleAnalytics.js"
-
 import getRankedItemsByDay from "../api/items/getRankedItemsByDay.js"
 
-export default class extends Component {
-  static async getInitialProps ({ req, query }) {
-    const day = query.day ? query.day : moment().subtract(1, "day").format("YYYY-MM-DD")
-    const page = query.page ? parseInt(query.page) : 1
+import "../styles/pages/past.module.css"
 
-    const apiResult = await getRankedItemsByDay(day, page, req)
+export async function getServerSideProps(context) {
+  const day = context.query.day ? context.query.day : moment().subtract(1, "day").format("YYYY-MM-DD")
+  const page = context.query.page ? parseInt(context.query.page) : 1
 
-    return {
-      items: apiResult && apiResult.items,
-      authUserData: apiResult && apiResult.authUser ? apiResult.authUser : {},
+  const authResult = await authUser()
+
+  const result = await getRankedItemsByDay(day, page, authResult)
+
+  return {
+    props: {
+      items: typeof result.items === 'undefined' ? null : result.items,
+      authUserData: authResult,
       day: day,
       page: page,
-      isMore: apiResult && apiResult.isMore,
-      getDataError: apiResult && apiResult.getDataError,
-      invalidDateError: apiResult && apiResult.invalidDateError,
-      goToString: page > 1 ? `past?day=${day}&page=${page}` : `past?day=${day}`
+      isMore: typeof result.isMore === 'undefined' ? false : result.isMore,
+      getDataError: typeof result.getDataError === 'undefined' ? false : result.getDataError,
+      invalidDateError: typeof result.invalidDateError === 'undefined' ? false : result.invalidDateError,
+      goToString: page > 1 ? `newest?page=${page}` : "newest"
     }
   }
+}
 
+export default class extends Component {
   renderGoBackwardLinks = () => {
     const day = this.props.day
 

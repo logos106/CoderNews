@@ -1,29 +1,31 @@
 import { Component } from "react"
-
+import authUser from "../api/users/authUser.js"
 import HeadMetadata from "../components/headMetadata.js"
 import Header from "../components/header.js"
 import Footer from "../components/footer.js"
 import ItemsList from "../components/itemsList.js"
 import GoogleAnalytics from "../components/googleAnalytics.js"
-
 import getNewestItemsByPage from "../api/items/getNewestItemsByPage.js"
 
-export default class extends Component {
-  static async getInitialProps ({req, query}) {
-    const page = query.page ? parseInt(query.page) : 1
+export async function getServerSideProps(context) {
+  const authResult = await authUser()
 
-    const apiResult = await getNewestItemsByPage(page, req)
+  const page = context.query.page ? parseInt(context.query.page) : 1
+  const result = await getNewestItemsByPage(page, authResult)
 
-    return {
-      items: apiResult && apiResult.items,
-      authUserData: apiResult && apiResult.authUser ? apiResult.authUser : {},
+  return {
+    props: {
+      items: typeof result.items === 'undefined' ? null : result.items,
+      authUserData: authResult,
       page: page,
-      isMore: apiResult && apiResult.isMore,
-      getDataError: apiResult && apiResult.getDataError,
+      isMore: typeof result.isMore === 'undefined' ? false : result.isMore,
+      getDataError: typeof result.getDataError === 'undefined' ? false : result.getDataError,
       goToString: page > 1 ? `newest?page=${page}` : "newest"
     }
   }
+}
 
+export default class extends Component {
   render () {
     return (
       <div className="layout-wrapper">
