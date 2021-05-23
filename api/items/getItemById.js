@@ -25,29 +25,29 @@ export default async function getItemById(itemId, page, authUser) {
     if (!showDeadComments) commentsDbQuery.dead = false
 
     // Find the item by ID
-    const item = await directus.items('items').readOne(id)
+    const item = await directus.items('items').readOne(itemId)
 
     // Fetch the comments to the item
     const comments = await directus.items('comments').readMany({
-      filter: {
-        getChildrenComments: {
-          _eq : true
-        },
-        showDeadComments: {
-          _eq: showDeadComments,
-        }
-      },
+      // filter: {
+      //   getChildrenComments: {
+      //     _eq : true
+      //   },
+      //   showDeadComments: {
+      //     _eq: showDeadComments,
+      //   }
+      // },
       skip: (page - 1) * commentsPerPage,
       take: commentsPerPage
     });
 
     if (!authUser.userSignedIn) {
-      callback({
+      return {
         success: true,
         item: item,
-        comments: comments,
+        comments: comments.data,
         isMoreComments: comments.length > (((page - 1) * commentsPerPage) + commentsPerPage) ? true : false
-      })
+      }
     }
     else {
       const vote = await directus.items('user_votes').readOne({
@@ -133,12 +133,11 @@ export default async function getItemById(itemId, page, authUser) {
       return {
         success: true,
         item: item,
-        comments: comments,
+        comments: comments.data,
         isMoreComments: comments.length > (((page - 1) * commentsPerPage) + commentsPerPage) ? true : false
       }
     }
   } catch(error) {
-    console.log(error)
     return { getDataError: true }
   }
 }

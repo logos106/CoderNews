@@ -12,12 +12,16 @@ export default async function loginUser(username, password, callback) {
   await directus.auth.login({
     email: credential.email,
     password: credential.password,
+    mode: 'cookie'
   },
   {
   	refresh: {
   		auto: true,   // Refresh token automatically
   	},
   });
+
+  const token = directus.auth.token;
+  console.log('login', token)
 
   // Search the user table
   const user = await directus.items('users').readMany({

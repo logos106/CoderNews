@@ -1,24 +1,41 @@
-import Cookies from "cookies"
 
-export default function authUser(context) {
-  // Get user data from cookie
-  const cookies = new Cookies(context.req, context.res)
+import credential from '../../utils/apiCredential.js';
 
-  let username = cookies.get('username')
-  let signedIn = true
-  if (typeof username === 'undefined') {
-    username = ''
-    signedIn = false
+export default async function authUser() {
+  // Check auth token to see if admin is signed in
+  const directus = credential.directus
+  const token = directus.auth.token
+
+  // Sign in to Directus with admin
+  if (!token) {
+    await directus.auth.login({
+      email: credential.email,
+      password: credential.password,
+    },
+    {
+      refresh: {
+        auto: true,   // Refresh token automatically
+      },
+    });
+
+    return { userSignedIn: false }
   }
-  let karma = cookies.get('karma')
-  if (typeof karma === 'undefined')
-    karma = 0
+  else {
+    // Check the role to see if admin
+    const res = await directus.users.me.read({
+    	fields: ['role'],
+    });
 
-  return {
-    userSignedIn: signedIn,
-    username: username,
-    karma: karma,
-    shadowBanned: false,
-    isModerator: typeof isModerator === 'undefined'? false: isModerator
+    const role = await directus.roles.readOne(res.role)
+    if (role === 'Administrator')
+      return { userSignedIn: false }
+
+    return {
+      userSignedIn: true,
+      username: res.username,
+      karma: res.karma,
+      shadowBanned: res.shadow_banned
+    }
   }
+
 }
