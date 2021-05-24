@@ -28,7 +28,7 @@ export default async function authUser() {
 
   // Log in to Directus as admin
   directus.auth.logout
-  
+
   await directus.auth.login({
     email: credential.email,
     password: credential.password,

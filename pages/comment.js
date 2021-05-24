@@ -1,7 +1,4 @@
 import { Component } from "react"
-
-import styles from "../styles/pages/comment.module.css"
-
 import authUser from "../api/users/authUser.js"
 import Header from "../components/header.js"
 import Footer from "../components/footer.js"
@@ -11,6 +8,8 @@ import CommentSection from "../components/commentSection.js"
 import GoogleAnalytics from "../components/googleAnalytics.js"
 import truncateCommentText from "../utils/truncateCommentText.js"
 import getCommentById from "../api/comments/getCommentById.js"
+
+import styles from "../styles/pages/comment.module.css"
 
 export async function getServerSideProps(context) {
   const authResult = await authUser()

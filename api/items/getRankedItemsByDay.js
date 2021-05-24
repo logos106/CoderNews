@@ -83,7 +83,7 @@ export default async function getRankedItemsByDay(day, page, user) {
         }
       })
 
-      for (let [i, item] of items.data.entries()) {
+      for (let [i, item] of items.entries()) {
         item.rank = ((page - 1) * itemsPerPage) + (i + 1)
 
         if (item.by === user.username) {
@@ -106,8 +106,8 @@ export default async function getRankedItemsByDay(day, page, user) {
 
       return {
         success: true,
-        items: items.data,
-        isMore: items.data.length > (((page - 1) * itemsPerPage) + itemsPerPage) ? true : false
+        items: items,
+        isMore: items.length > (((page - 1) * itemsPerPage) + itemsPerPage) ? true : false
       }
     }
 
