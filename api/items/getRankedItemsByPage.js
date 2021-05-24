@@ -13,10 +13,8 @@ export default async function getRankedItemsByPage(page, user) {
 
   // Fetch items with conditions
   try {
-    const items = directus.items('items')
-
     if (!user.signedIn) {  // If he is a guest
-      const result = await items.readMany({
+      let result = await directus.items('items').readMany({
         filter: {
           created: {
             _gte: startDate
@@ -24,20 +22,22 @@ export default async function getRankedItemsByPage(page, user) {
           dead: {
             _eq: false
           }
-        },
-        skip: (page - 1) * itemsPerPage,
-        take: itemsPerPage
+        }
       });
 
+      const start = (page - 1) * itemsPerPage
+      const end = page * itemsPerPage
+      result = result.data.slice(start, end)
+
       // Set items' rank
-      for (let [i, item] of result.data.entries()) {
+      for (let [i, item] of result.entries()) {
         item.rank = (page - 1) * itemsPerPage + i + 1
       }
 
       return {
         success: true,
-        items: result.data,
-        isMore: result.data.length > (((page - 1) * itemsPerPage) + itemsPerPage) ? true : false,
+        items: result,
+        isMore: result.length > (((page - 1) * itemsPerPage) + itemsPerPage) ? true : false,
         getDataError: false
       }
     }
@@ -67,14 +67,16 @@ export default async function getRankedItemsByPage(page, user) {
       if (!user.showDead) itemsDbQuery.dead = { _eq: false }
 
       // Get items
-      const items = await directus.items('items').readMany({
+      let items = await directus.items('items').readMany({
         filter: itemsDbQuery,
-        skip: (page - 1) * itemsPerPage,
-        take: itemsPerPage
       })
 
+      start = (page - 1) * itemsPerPage
+      end = page * itemsPerPage
+      items = items.data.slice(start, end)
+
       let itemIds = []
-      for (let item of items.data) {
+      for (let item of items) {
         itemIds.push(item.id)
       }
 
@@ -88,7 +90,7 @@ export default async function getRankedItemsByPage(page, user) {
         }
       })
 
-      for (let [i, item] of items.data.entries()) {
+      for (let [i, item] of items.entries()) {
         item.rank = ((page - 1) * itemsPerPage) + (i + 1)
 
         if (item.by === user.username) {
@@ -111,8 +113,8 @@ export default async function getRankedItemsByPage(page, user) {
 
       return {
         success: true,
-        items: items.data,
-        isMore: items.data.length > (((page - 1) * itemsPerPage) + itemsPerPage) ? true : false
+        items: items,
+        isMore: items.length > (((page - 1) * itemsPerPage) + itemsPerPage) ? true : false
       }
     }
 
