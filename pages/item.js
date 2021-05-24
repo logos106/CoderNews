@@ -10,11 +10,10 @@ import GoogleAnalytics from "../components/googleAnalytics.js"
 
 export async function getServerSideProps (context) {
   const authResult = await authUser()
+
   const itemId = context.query.id ? context.query.id : ""
   const page = context.query.page ? parseInt(context.query.page) : 1
-
-
-  const result = await getItemById(itemId, page, authUser)
+  const result = await getItemById(itemId, page, authResult)
 
   return {
     props: {

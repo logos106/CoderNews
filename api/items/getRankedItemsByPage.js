@@ -25,6 +25,8 @@ export default async function getRankedItemsByPage(page, user) {
         }
       });
 
+      const totalItems = items.length
+
       const start = (page - 1) * itemsPerPage
       const end = page * itemsPerPage
       items = items.data.slice(start, end)
@@ -37,7 +39,7 @@ export default async function getRankedItemsByPage(page, user) {
       return {
         success: true,
         items: items,
-        isMore: items.length > (((page - 1) * itemsPerPage) + itemsPerPage) ? true : false,
+        isMore: totalItems > (((page - 1) * itemsPerPage) + itemsPerPage) ? true : false,
         getDataError: false
       }
     }

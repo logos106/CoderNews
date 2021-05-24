@@ -1,18 +1,15 @@
 import { Component } from "react"
-
-import "../styles/components/item.module.css"
-
 import renderCreatedTime from "../utils/renderCreatedTime.js"
-
 import upvoteItem from "../api/items/upvoteItem.js"
 import unvoteItem from "../api/items/unvoteItem.js"
 import favoriteItem from "../api/items/favoriteItem.js"
 import unfavoriteItem from "../api/items/unfavoriteItem.js"
 import hideItem from "../api/items/hideItem.js"
 import unhideItem from "../api/items/unhideItem.js"
-import addNewComment from "../api/comments/addNewComment.js"
 import killItem from "../api/moderation/killItem.js"
 import unkillItem from "../api/moderation/unkillItem.js"
+
+import "../styles/components/item.module.css"
 
 export default class extends Component {
   constructor(props) {
@@ -31,7 +28,7 @@ export default class extends Component {
     this.setState({commentInputValue: event.target.value})
   }
 
-  requestAddNewComment = () => {
+  requestAddNewComment = async () => {
     if (this.state.loading) return
 
     if (!this.props.userSignedIn) {
@@ -60,34 +57,40 @@ export default class extends Component {
 
       const self = this
 
-      addNewComment(commentData, function(response) {
-        if (response.authError) {
-          window.location.href = `/login?goto=${encodeURIComponent(self.props.goToString)}`
-        } else if (response.textRequiredError) {
-          self.setState({
-            loading: false,
-            commentTextRequiredError: true,
-            commentTextTooLongError: false,
-            commentSubmitError: false
-          })
-        } else if (response.textTooLongError) {
-          self.setState({
-            loading: false,
-            commentTextRequiredError: false,
-            commentTextTooLongError: true,
-            commentSubmitError: false
-          })
-        } else if (response.submitError || !response.success) {
-          self.setState({
-            loading: false,
-            commentTextRequiredError: false,
-            commentTextTooLongError: false,
-            commentSubmitError: true
-          })
-        } else {
-          window.location.href = ""
-        }
+      let res = await fetch("/api/comment/add", {
+        method: "POST",
+        body: JSON.stringify(commentData)
       })
+
+      let response = await res.json()
+
+      if (response.authError) {
+        window.location.href = `/login?goto=${encodeURIComponent(self.props.goToString)}`
+      } else if (response.textRequiredError) {
+        self.setState({
+          loading: false,
+          commentTextRequiredError: true,
+          commentTextTooLongError: false,
+          commentSubmitError: false
+        })
+      } else if (response.textTooLongError) {
+        self.setState({
+          loading: false,
+          commentTextRequiredError: false,
+          commentTextTooLongError: true,
+          commentSubmitError: false
+        })
+      } else if (response.submitError || !response.success) {
+        self.setState({
+          loading: false,
+          commentTextRequiredError: false,
+          commentTextTooLongError: false,
+          commentSubmitError: true
+        })
+      } else {
+        window.location.href = ""
+      }
+
     }
   }
 

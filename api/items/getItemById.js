@@ -1,92 +1,88 @@
-import { Directus, Auth } from '@directus/sdk';
 import credential from "../../utils/apiCredential.js"
 import config from "../../utils/config.js"
 
-export default async function getItemById(itemId, page, authUser) {
+export default async function getItemById(itemId, page, user) {
+  const directus = credential.directus
   const commentsPerPage = config.commentsPerPage
 
-  // Instantiate a new Directus object
-  const directus = new Directus(credential.baseURL)
-
   try {
-    // Login to Directus
-    await directus.auth.login({
-      email: credential.email,
-      password: credential.password,
-    });
-
-    const showDeadComments = authUser.showDead ? true : false
-
-    let commentsDbQuery = {
-      parentItemId: itemId,
-      isParent: true
-    }
-
-    if (!showDeadComments) commentsDbQuery.dead = false
-
     // Find the item by ID
-    const item = await directus.items('items').readOne(itemId)
+    let item = await directus.items('items').readOne(itemId)
+    item = item
 
     // Fetch the comments to the item
-    const comments = await directus.items('comments').readMany({
-      // filter: {
-      //   getChildrenComments: {
-      //     _eq : true
-      //   },
-      //   showDeadComments: {
-      //     _eq: showDeadComments,
-      //   }
-      // },
-      skip: (page - 1) * commentsPerPage,
-      take: commentsPerPage
+    let filterComments = {
+      parent_id: { _eq: itemId },
+      is_parent: { _eq: true }
+    }
+    if (!user.showDead) filterComments.dead = { _eq: false }
+
+    let comments = await directus.items('comments').readMany({
+      filter: filterComments
     });
 
-    if (!authUser.userSignedIn) {
+    const totalComments = comments.length
+
+    const start = (page - 1) * commentsPerPage
+    const end = page * commentsPerPage
+    comments = comments.data.slice(start, end)
+
+    if (!user.userSignedIn) {
       return {
         success: true,
         item: item,
-        comments: comments.data,
-        isMoreComments: comments.length > (((page - 1) * commentsPerPage) + commentsPerPage) ? true : false
+        comments: comments,
+        isMoreComments: totalComments > (((page - 1) * commentsPerPage) + commentsPerPage) ? true : false
       }
     }
     else {
-      const vote = await directus.items('user_votes').readOne({
+      let votes = await directus.items('user_votes').readMany({
         filter: {
-          username: { _eq : authUser.username },
+          username: { _eq : user.username },
           id: { _eq: itemId },
           type: { _eq: 'item' }
         }
       });
-
-      const fav = await directus.items('user_favorites').readOne({
+      votes = votes.data
+      return {
+        success: true,
+        item: item,
+        comments: comments,
+        isMoreComments: totalComments > (((page - 1) * commentsPerPage) + commentsPerPage) ? true : false
+      }
+      let favs = await directus.items('user_favorites').readMany({
         filter: {
-          username: { _eq : authUser.username },
+          username: { _eq : user.username },
           id: { _eq: itemId },
           type: { _eq: 'item' }
         }
       });
+      favs = favs.data
 
-      const hidden = await directus.items('user_hiddens').readOne({
+      let hiddens = await directus.items('user_hiddens').readMany({
         filter: {
-          username: { _eq : authUser.username },
+          username: { _eq : user.username },
           id: { _eq: itemId }
         }
       });
+      hiddens = hiddens.data
 
-      const commentVotes = await directus.items('user_votes').readMany({
+      let commentVotes = await directus.items('user_votes').readMany({
         filter: {
-          username: { _eq : authUser.username },
+          username: { _eq : user.username },
           parentItemId: { _eq: itemId },
           type: { _eq: 'comment' }
         }
       });
+      commentVotes = commentVotes.data
 
-      item.votedOnByUser = vote ? true : false
-      item.unvoteExpired = vote && vote.date + (3600 * config.hrsUntilUnvoteExpires) < moment().unix()
-      item.favoritedByUser = fav ? true : false
-      item.hiddenByUser = hidden ? true : false
+      // Set various properties of the item(article)
+      item.votedOnByUser = votes.length > 0 ? true : false
+      item.unvoteExpired = votes.length > 0 && votes.data[0].date + (3600 * config.hrsUntilUnvoteExpires) < moment().unix()
+      item.favoritedByUser = favs.length > 0 ? true : false
+      item.hiddenByUser = hiddens.length > 0 ? true : false
 
-      if (item.by === authUser.username) {
+      if (item.by === user.username) {
         const hasEditAndDeleteExpired =
           item.created + (3600 * config.hrsUntilEditAndDeleteExpires) < moment().unix() ||
           item.commentCount > 0
@@ -94,14 +90,14 @@ export default async function getItemById(itemId, page, authUser) {
         item.editAndDeleteExpired = hasEditAndDeleteExpired
       }
 
-      let userCommentVotes = []
+      let cvIds = []
 
       for (let i = 0; i < commentVotes.length; i++) {
-        userCommentVotes.push(commentVotes[i].id)
+        cvIds.push(commentVotes[i].id)
       }
 
       const updateComment = function(comment) {
-        if (comment.by === authUser.username) {
+        if (comment.by === user.username) {
           const hasEditAndDeleteExpired =
             comment.created + (3600 * config.hrsUntilEditAndDeleteExpires) < moment().unix() ||
             comment.children.length > 0
@@ -109,35 +105,36 @@ export default async function getItemById(itemId, page, authUser) {
           comment.editAndDeleteExpired = hasEditAndDeleteExpired
         }
 
-        if (userCommentVotes.includes(comment.id)) {
+        if (cvIds.includes(comment.id)) {
           comment.votedOnByUser = true
 
-          for (let i=0; i < commentVoteDocs.length; i++) {
-            if (comment.id === commentVoteDocs[i].id) {
-              comment.unvoteExpired = commentVoteDocs[i].date + (3600 * config.hrsUntilUnvoteExpires) < moment().unix() ? true : false
+          for (let i = 0; i < commentVotes.length; i++) {
+            if (comment.id === commentVotes[i].id) {
+              comment.unvoteExpired = commentVotes[i].date + (3600 * config.hrsUntilUnvoteExpires) < moment().unix() ? true : false
             }
           }
         }
 
         if (comment.children) {
-          for (let i=0; i < comment.children.length; i++) {
+          for (let i = 0; i < comment.children.length; i++) {
             updateComment(comment.children[i])
           }
         }
       }
 
-      for (let i=0; i < comments.length; i++) {
+      for (let i = 0; i < comments.length; i++) {
         updateComment(comments[i])
       }
 
       return {
         success: true,
         item: item,
-        comments: comments.data,
-        isMoreComments: comments.length > (((page - 1) * commentsPerPage) + commentsPerPage) ? true : false
+        comments: comments,
+        isMoreComments: totalComments > (((page - 1) * commentsPerPage) + commentsPerPage) ? true : false
       }
     }
   } catch(error) {
+    console.log(error)
     return { getDataError: true }
   }
 }

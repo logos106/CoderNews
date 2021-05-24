@@ -1,6 +1,5 @@
-import { Directus, Auth } from '@directus/sdk';
-import authUser from "../../api/users/authUser.js"
 import credential from "../../utils/apiCredential.js"
+import authUser from "../../api/users/authUser.js"
 
 export default async function handler(req, res) {
   const useremail = JSON.parse(req.body).useremail;
