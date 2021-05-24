@@ -1,8 +1,6 @@
 import { Component } from "react"
-
 import authUser from "../api/users/authUser.js"
 import getItemById from "../api/items/getItemById.js"
-
 import Header from "../components/header.js"
 import Footer from "../components/footer.js"
 import HeadMetadata from "../components/headMetadata.js"
@@ -11,10 +9,10 @@ import CommentSection from "../components/commentSection.js"
 import GoogleAnalytics from "../components/googleAnalytics.js"
 
 export async function getServerSideProps (context) {
+  const authResult = await authUser()
   const itemId = context.query.id ? context.query.id : ""
   const page = context.query.page ? parseInt(context.query.page) : 1
 
-  const authResult = await authUser()
 
   const result = await getItemById(itemId, page, authUser)
 
