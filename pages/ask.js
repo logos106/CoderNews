@@ -5,27 +5,17 @@ import Footer from "../components/footer.js"
 import HeadMetadata from "../components/headMetadata.js"
 import ItemsList from "../components/itemsList.js"
 import GoogleAnalytics from "../components/googleAnalytics.js"
+import authUser from "../api/users/authUser.js"
 
 import getRankedAskItemsByPage from "../api/items/getRankedAskItemsByPage.js"
 
 export async function getServerSideProps(context) {
   const authResult = await authUser()
+  const page = context.query.page? parseInt(context.query.page) : 1
+  console.log("Page Number: ", page)
 
-  // Fetch data from external API
-  const page = 1
-  const result = await getRankedItemsByPage(page, authResult)
-  const page = query.page ? parseInt(query.page) : 1
-  const apiResult = await getRankedAskItemsByPage(page, req)
+  const result = await getRankedAskItemsByPage(page, authResult)
 
-  return {
-    items: apiResult && apiResult.items,
-    authUserData: apiResult && apiResult.authUser ? apiResult.authUser : {},
-    page: page,
-    isMore: apiResult && apiResult.isMore,
-    getDataError: apiResult && apiResult.getDataError,
-    goToString: page > 1 ? `ask?page=${page}` : "ask"
-  }
-  /* // Pass data to the page via props
   return {
     props: {
       items: typeof result.items === 'undefined' ? null : result.items,
@@ -33,12 +23,13 @@ export async function getServerSideProps(context) {
       page: page,
       isMore: typeof result.isMore === 'undefined' ? false : result.isMore,
       getDataError: typeof result.getDataError === 'undefined' ? false : result.getDataError,
-      goToString: ""
+      goToString: ''
     }
-  } */
+  }
 }
 
 export default class extends Component {
+
   render () {
     return (
       <div className="layout-wrapper">

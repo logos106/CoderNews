@@ -11,7 +11,7 @@ export async function getServerSideProps(context) {
   const authResult = await authUser()
 
   // Fetch data from external API
-  const page = 1
+  const page = context.query.page? parseInt(context.query.page) : 1
   const result = await getRankedItemsByPage(page, authResult)
 
   // Pass data to the page via props

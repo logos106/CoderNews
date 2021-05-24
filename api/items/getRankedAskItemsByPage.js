@@ -1,18 +1,125 @@
-import axios from "axios"
+import credential from "../../utils/apiCredential.js"
+import config from "../../utils/config.js"
+import moment from "moment"
 
-import apiBaseUrl from "../../utils/apiCredential.js"
+export default async function getRankedAskItemsByPage(page, user) {
+  // Get config
+  const directus = credential.directus
 
-export default async function getRankedAskItemsByPage(page, req) {
+  const maxAgeOfRankedItemsInDays = config.maxAgeOfRankedItemsInDays
+  const itemsPerPage = config.itemsPerPage
+  const commentsPerPage = config.commentsPerPage
+  const startDate = moment().unix() - (86400 * maxAgeOfRankedItemsInDays)
+
+  // Fetch items with conditions
   try {
-    const cookie = req.headers.cookie ? req.headers.cookie : ""
+    if (!user.signedIn) {  // If he is a guest
+      let result = await directus.items('items').readMany({
+        filter: {
+          type: {
+            _eq: "ask"
+          },
+          created: {
+            _gte: startDate
+          },
+          dead: {
+            _eq: false
+          }
+        }
+      });
 
-    const response = await axios({
-      url: `${apiCredential.baseURL}/items/get-ranked-ask-items-by-page?page=${page}`,
-      headers: req ? {cookie: cookie} : "",
-      withCredentials: true
-    })
+      const start = (page - 1) * itemsPerPage
+      const end = page * itemsPerPage
+      result = result.data.slice(start, end)
 
-    return response.data
+      // Set items' rank
+      for (let [i, item] of result.entries()) {
+        item.rank = (page - 1) * itemsPerPage + i + 1
+      }
+
+      return {
+        success: true,
+        items: result,
+        isMore: result.length > (((page - 1) * itemsPerPage) + itemsPerPage) ? true : false,
+        getDataError: false
+      }
+    } else {
+      // Get hidden * for this user
+      const hiddens = await directus.items('user_hiddens').readMany({
+        filter: {
+          username: {
+            _eq: user.username
+          },
+          item_creation_date: {
+            _gte: startDate,
+          }
+        }
+      });
+
+      let itemsDbQuery = {
+        type: { _eq: "ask" },
+        created: { _gte: startDate }
+      }
+
+      let hiddenIds = []
+      for (let hidden of hiddens.data) {
+        hiddenIds.push(hidden.id)
+      }
+      if (hiddenIds.length > 0) itemsDbQuery.id = { _nin: hiddenIds }
+
+      if (!user.showDead) itemsDbQuery.dead = { _eq: false }
+
+      // Get items
+      let items = await directus.items('items').readMany({
+        filter: itemsDbQuery,
+      })
+
+      start = (page - 1) * itemsPerPage
+      end = page * itemsPerPage
+      items = items.data.slice(start, end)
+
+      let itemIds = []
+      for (let item of items) {
+        itemIds.push(item.id)
+      }
+
+      // Votes
+      const votes = await directus.items('user_votes').readMany({
+        filter: {
+          username: user.username,
+          date: { _gte: startDate },
+          id: { _in: itemIds },
+          type: "item"
+        }
+      })
+
+      for (let [i, item] of items.entries()) {
+        item.rank = ((page - 1) * itemsPerPage) + (i + 1)
+
+        if (item.by === user.username) {
+          const hasEditAndDeleteExpired =
+            item.created + (3600 * config.hrsUntilEditAndDeleteExpires) < moment().unix() ||
+            item.commentCount > 0
+
+          item.editAndDeleteExpired = hasEditAndDeleteExpired
+        }
+
+        const vote = votes.data.find(function(e) {
+          return e.id === item.id
+        })
+
+        if (vote) {
+          item.votedOnByUser = true
+          item.unvoteExpired = vote.date + (3600 * config.hrsUntilUnvoteExpires) < moment().unix() ? true : false
+        }
+      }
+
+      return {
+        success: true,
+        items: items,
+        isMore: items.length > (((page - 1) * itemsPerPage) + itemsPerPage) ? true : false
+      }
+    }
   } catch(error) {
     return {getDataError: true}
   }
