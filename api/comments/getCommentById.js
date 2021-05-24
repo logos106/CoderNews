@@ -61,6 +61,7 @@ export default async function getCommentById(page, user) {
         take: 1
       })
 
+
       const vote = await directus.items('user_favorites').readMany({
         filter: {
           username: { _eq: user.username },
