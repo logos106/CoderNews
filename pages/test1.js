@@ -15,16 +15,17 @@ export async function getServerSideProps(context) {
 		},
 	});
 
-  const ddd = await directus.users.me.read();
+  let users = await directus.items('users').readMany();
+  users = users.data.slice(1, 4)
 
-  console.log(ddd)
+  console.log(users)
 
   const data = null
   return { props: { data } }
 }
 
 export default class extends Component {
-  
+
   render () {
     return (
       <div>

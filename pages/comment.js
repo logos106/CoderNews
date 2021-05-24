@@ -34,8 +34,6 @@ export async function getServerSideProps(context) {
 }
 
 export default class extends Component {
-
-
   render () {
     return (
       <div className="layout-wrapper">
