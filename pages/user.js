@@ -9,7 +9,6 @@ import HeadMetadata from "../components/headMetadata.js"
 import GoogleAnalytics from "../components/googleAnalytics.js"
 
 import getUserData from "../api/users/getUserData.js"
-import updateUserData from "../api/users/updateUserData.js"
 import addUserShadowBan from "../api/moderation/addUserShadowBan.js"
 import removeUserShadowBan from "../api/moderation/removeUserShadowBan.js"
 import addUserBan from "../api/moderation/addUserBan.js"

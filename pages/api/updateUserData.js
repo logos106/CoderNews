@@ -18,24 +18,32 @@ export default async function handler(req, res) {
         newAboutText = newAboutText.replace(/\*([^*]+)\*/g, "<i>$1</i>")
         newAboutText = linkifyUrls(newAboutText)
         newAboutText = xss(newAboutText)
-        console.log("About updated: ", newAboutText, id)
+        
         let oldEmail = await directus.users.me.read({
             fields: ['email'],
         });
 
         let updateValues = {}
 
-        if ( email != oldEmail.email ) 
+        if ( email != oldEmail.email ) {
             updateValues = {
                 about: newAboutText,
                 email: email,
                 show_dead: showDead
             }
-        else
+        } else {
             updateValues = {
                 about: newAboutText,
                 show_dead: showDead
             }
+        }
+
+        // Email
+        /* const emailApi = require("./emails/api")
+        emailApi.sendChangeEmailNotificationEmail(username, oldEmail, emailAction, function() {
+            callback({success: true})
+        }) */
+        
         console.log("updateValues", updateValues, email, oldEmail.email, (email == oldEmail.email))
         await directus.users.me.update(updateValues);
         console.log("Success Saved!")

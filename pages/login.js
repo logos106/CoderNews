@@ -1,6 +1,7 @@
 import { Component } from "react"
 import HeadMetadata from "../components/headMetadata.js"
 import GoogleAnalytics from "../components/googleAnalytics.js"
+import Link from 'next/link'
 import createNewUser from "../api/users/createNewUser.js"
 import authUser from "../api/users/authUser.js"
 import removeUserCookieData from "../api/users/removeUserCookieData.js"
@@ -260,7 +261,9 @@ export default class extends Component {
         </div>
         <div className={styles.login_input_item_forgot_text}>
           <span>
-            <a href="/forgot">Forgot your Password?</a>
+            <Link href="/forgot">
+              <a>Forgot your Password?</a>
+            </Link>
           </span>
         </div>
         {
