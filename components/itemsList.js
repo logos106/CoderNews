@@ -189,10 +189,12 @@ export default class extends Component {
                       </td>
                       <td>
                         <span className="listed-item-title">
-                          <a href={item.url ? item.url : `/item?id=${item.id}`}>
-                            {item.dead ? "[dead] " : null}
-                            {item.title}
-                          </a>
+                          <Link href={item.url ? item.url : `/item?id=${item.id}`}>  
+                            <a>
+                              {item.dead ? "[dead] " : null}
+                              {item.title}
+                            </a>
+                          </Link>
                         </span>
                         {
                           item.url ?
