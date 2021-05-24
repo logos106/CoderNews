@@ -1,29 +1,31 @@
 import { Component } from "react"
-
+import authUser from "../api/users/authUser.js"
 import Header from "../components/header.js"
 import Footer from "../components/footer.js"
 import HeadMetadata from "../components/headMetadata.js"
 import CommentsList from "../components/commentsList.js"
 import GoogleAnalytics from "../components/googleAnalytics.js"
-
 import getNewestCommentsByPage from "../api/comments/getNewestCommentsByPage.js"
 
-export default class extends Component {
-  static async getInitialProps ({ req, query }) {
-    const page = query.page ? parseInt(query.page) : 1
+export async function getServerSideProps(context) {
+  const authResult = await authUser()
 
-    const apiResult = await getNewestCommentsByPage(page, req)
+  const page = context.query.page ? parseInt(context.query.page) : 1
+  const result = await getNewestCommentsByPage(page, authResult)
 
-    return {
-      comments: apiResult && apiResult.comments,
-      authUserData: apiResult && apiResult.authUser ? apiResult.authUser : {},
+  return {
+    props: {
+      authUserData: authResult,
+      comment: typeof result.comment === 'undefined' ? null : result.comment,
       page: page,
-      isMore: apiResult && apiResult.isMore,
-      getDataError: apiResult && apiResult.getDataError,
+      isMore: typeof result.isMore === 'undefined' ? false : result.isMore,
+      getDataError: typeof result.getDataError === 'undefined' ? false : result.getDataError,
       goToString: page > 1 ? `newcomments?page=${page}` : `newcomments`
     }
   }
+}
 
+export default class extends Component {
   render() {
     return (
       <div className="layout-wrapper">

@@ -14,7 +14,7 @@ export default async function getRankedItemsByPage(page, user) {
   // Fetch items with conditions
   try {
     if (!user.signedIn) {  // If he is a guest
-      let result = await directus.items('items').readMany({
+      let items = await directus.items('items').readMany({
         filter: {
           created: {
             _gte: startDate
@@ -27,17 +27,17 @@ export default async function getRankedItemsByPage(page, user) {
 
       const start = (page - 1) * itemsPerPage
       const end = page * itemsPerPage
-      result = result.data.slice(start, end)
+      items = items.data.slice(start, end)
 
       // Set items' rank
-      for (let [i, item] of result.entries()) {
+      for (let [i, item] of items.entries()) {
         item.rank = (page - 1) * itemsPerPage + i + 1
       }
 
       return {
         success: true,
-        items: result,
-        isMore: result.length > (((page - 1) * itemsPerPage) + itemsPerPage) ? true : false,
+        items: items,
+        isMore: items.length > (((page - 1) * itemsPerPage) + itemsPerPage) ? true : false,
         getDataError: false
       }
     }
@@ -71,8 +71,8 @@ export default async function getRankedItemsByPage(page, user) {
         filter: itemsDbQuery,
       })
 
-      start = (page - 1) * itemsPerPage
-      end = page * itemsPerPage
+      const start = (page - 1) * itemsPerPage
+      const end = page * itemsPerPage
       items = items.data.slice(start, end)
 
       let itemIds = []
