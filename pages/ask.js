@@ -8,21 +8,37 @@ import GoogleAnalytics from "../components/googleAnalytics.js"
 
 import getRankedAskItemsByPage from "../api/items/getRankedAskItemsByPage.js"
 
-export default class extends Component {
-  static async getInitialProps ({req, query}) {
-    const page = query.page ? parseInt(query.page) : 1
-    const apiResult = await getRankedAskItemsByPage(page, req)
+export async function getServerSideProps(context) {
+  const authResult = await authUser()
 
-    return {
-      items: apiResult && apiResult.items,
-      authUserData: apiResult && apiResult.authUser ? apiResult.authUser : {},
-      page: page,
-      isMore: apiResult && apiResult.isMore,
-      getDataError: apiResult && apiResult.getDataError,
-      goToString: page > 1 ? `ask?page=${page}` : "ask"
-    }
+  // Fetch data from external API
+  const page = 1
+  const result = await getRankedItemsByPage(page, authResult)
+  const page = query.page ? parseInt(query.page) : 1
+  const apiResult = await getRankedAskItemsByPage(page, req)
+
+  return {
+    items: apiResult && apiResult.items,
+    authUserData: apiResult && apiResult.authUser ? apiResult.authUser : {},
+    page: page,
+    isMore: apiResult && apiResult.isMore,
+    getDataError: apiResult && apiResult.getDataError,
+    goToString: page > 1 ? `ask?page=${page}` : "ask"
   }
+  /* // Pass data to the page via props
+  return {
+    props: {
+      items: typeof result.items === 'undefined' ? null : result.items,
+      authUserData: authResult,
+      page: page,
+      isMore: typeof result.isMore === 'undefined' ? false : result.isMore,
+      getDataError: typeof result.getDataError === 'undefined' ? false : result.getDataError,
+      goToString: ""
+    }
+  } */
+}
 
+export default class extends Component {
   render () {
     return (
       <div className="layout-wrapper">
