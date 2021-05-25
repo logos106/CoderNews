@@ -1,19 +1,112 @@
-import axios from "axios"
+import credential from "../../utils/apiCredential.js"
+import config from "../../utils/config.js"
+import moment from "moment"
 
-import apiBaseUrl from "../../utils/apiCredential.js"
+export default async function getNewestShowItemsByPage(page, user) {
+  const directus = credential.directus
 
-export default async function getNewestShowItemsByPage(page, req) {
+  const maxAgeOfRankedItemsInDays = config.maxAgeOfRankedItemsInDays
+  const itemsPerPage = config.itemsPerPage
+  const commentsPerPage = config.commentsPerPage
+  const startDate = moment().unix() - (86400 * maxAgeOfRankedItemsInDays)
+
   try {
-    const cookie = req.headers.cookie ? req.headers.cookie : ""
+    if (!user.userSignedIn) {
+      // Get the newest items
+      let items = await directus.items('items').readMany({
+        filter: {
+          type: { _eq: 'show' },
+          dead: { _eq: false }
+        },
+        offset: (page - 1) * itemsPerPage,
+        limit: itemsPerPage,
+        meta: 'total_count'
+      });
 
-    const response = await axios({
-      url: `${apiCredential.baseURL}/items/get-newest-show-items-by-page?page=${page}`,
-      headers: req ? {cookie: cookie} : "",
-      withCredentials: true
-    })
+      // Rememeber total count of the items
+      const totalItems = items.meta.total_count
 
-    return response.data
-  } catch(error) {
+      // Numbering the items in this page
+      items = items.data
+      items.forEach((item, i) => {
+        item.rank = (page - 1) * itemsPerPage + i + 1
+      })
+
+      return {
+        success: true,
+        items: items,
+        isMore: totalItems > (((page - 1) * itemsPerPage) + itemsPerPage) ? true : false
+      }
+    }
+    else {
+      // Get hidden * for this user
+      let hiddens = await directus.items('user_hiddens').readMany({
+        filter: {
+          username: { _eq: user.username }
+        }
+      });
+      hiddens = hiddens.data
+
+      // Prepare filter for items
+      let filterItems = { type: {_eq: 'show'}}
+
+      let hids = hiddens.map((hidden) => hidden.id)
+      if (hids.length > 0) filterItems.id = { _nin: hids }
+      if (!user.showDead) filterItems.dead = { _eq: false }
+
+      // Get items with this filter
+      let items = await directus.items('items').readMany({
+        filter: filterItems,
+        offset: (page - 1) * itemsPerPage,
+        limit: itemsPerPage,
+        meta: 'total_count'
+      })
+
+      // Rememeber total count of the items
+      const totalItems = items.length
+
+      items = items.data
+      let iids = items.map((item) => item.id)
+
+      // Get votes with those items' id
+      let votes = await directus.items('user_votes').readMany({
+        filter: {
+          username: { _eq: user.username },
+          id: { _in: iids },
+          type: { _eq: 'item' }
+        }
+      })
+      votes = votes.data
+
+      // Add some properties for to each item
+      items.forEach((item, i) => {
+        item.rank = ((page - 1) * itemsPerPage) + (i + 1)
+
+        if (item.by === user.username) {
+          const hasEditAndDeleteExpired =
+            item.created + (3600 * config.hrsUntilEditAndDeleteExpires) < moment().unix() ||
+            item.commentCount > 0
+
+          item.editAndDeleteExpired = hasEditAndDeleteExpired
+        }
+
+        const vote = votes.find(function(e) {
+          return e.id === item.id
+        })
+
+        if (vote) {
+          item.votedOnByUser = true
+          item.unvoteExpired = vote.date + (3600 * config.hrsUntilUnvoteExpires) < moment().unix() ? true : false
+        }
+      })
+
+      return {
+        success: true,
+        items: items,
+        isMore: totalItems > (((page - 1) * itemsPerPage) + itemsPerPage) ? true : false
+      }
+    }
+  } catch (error) {
     return {getDataError: true}
   }
 }

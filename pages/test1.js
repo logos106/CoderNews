@@ -15,10 +15,28 @@ export async function getServerSideProps(context) {
 		},
 	});
 
-  let users = await directus.items('users').readMany();
-  users = users.data.slice(1, 4)
-
+  let users = await directus.items('users').readMany({
+    filter: {
+        username: {_eq: 'kcc'},
+        id: {_eq: 8}
+    }
+  });
   console.log(users)
+
+  // let users = [
+  //   {
+  //     name: 'Joe'
+  //   },
+  //   {
+  //     name: 'Seok'
+  //   },
+  //   {
+  //     name: 'Hyon'
+  //   }
+  // ]
+  //
+  // users.forEach((user, i) => user.rank = i)
+
 
   const data = null
   return { props: { data } }
