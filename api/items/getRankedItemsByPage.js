@@ -24,7 +24,7 @@ export default async function getRankedItemsByPage(page, user) {
         meta: 'total_count'
       });
 
-      const totalItems = items.length
+      const totalItems = items.meta.total_count
 
       items = items.data
       items.forEach((item, i) => {

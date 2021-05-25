@@ -1,60 +1,55 @@
 import { Component } from "react"
-
-import styles from "../styles/pages/favorites.module.css"
-
+import authUser from "../api/users/authUser.js"
 import Header from "../components/header.js"
 import Footer from "../components/footer.js"
 import HeadMetadata from "../components/headMetadata.js"
 import ItemsList from "../components/itemsList.js"
 import CommentsList from "../components/commentsList.js"
 import GoogleAnalytics from "../components/googleAnalytics.js"
-
 import getUserFavoritedItemsByPage from "../api/items/getUserFavoritedItemsByPage.js"
 import getUserFavoritedCommentsByPage from "../api/comments/getUserFavoritedCommentsByPage.js"
 
-export default class extends Component {
-  static async getInitialProps ({ req, query }) {
-    const userId = query.id ? query.id : ""
-    const page = query.page ? parseInt(query.page) : 1
+import styles from "../styles/pages/favorites.module.css"
 
-    const showItems = query.comments === "t" ? false : true
+export async function getServerSideProps(context) {
+  const authResult = await authUser()
 
-    let itemsApiResult, commentsApiResult, authUserData
+  const uid = context.query.id ? context.query.id : ""
+  const page = context.query.page ? parseInt(context.query.page) : 1
+  const showItems = context.query.comments === "t" ? false : true
 
-    if (showItems) {
-      itemsApiResult = await getUserFavoritedItemsByPage(userId, page, req)
+  let itemsApiResult = {}
+  let commentsApiResult = {}
 
-      authUserData = itemsApiResult.authUser ? itemsApiResult.authUser : {}
+  if (showItems)
+    itemResult = await getUserFavoritedItemsByPage(uid, page, authUser)
+  else
+    commentResult = await getUserFavoritedCommentsByPage(uid, page, authUser)
 
-      commentsApiResult = {}
-    } else {
-      commentsApiResult = await getUserFavoritedCommentsByPage(userId, page, req)
+  const goToString = page > 1 ?
+    `favorites?id=${userId}${showItems ? "" : "&comments=t"}&page=${page}` :
+    `favorites?id=${userId}${showItems ? "" : "&comments=t"}`
 
-      authUserData = commentsApiResult.authUser ? commentsApiResult.authUser : {}
-
-      itemsApiResult = {}
-    }
-
-    const goToString = page > 1 ?
-      `favorites?id=${userId}${showItems ? "" : "&comments=t"}&page=${page}` :
-      `favorites?id=${userId}${showItems ? "" : "&comments=t"}`
-
-    return {
-      items: itemsApiResult && itemsApiResult.items,
+  return {
+    props: {
+      authUserData: authResult,
+      items: typeof itemResult.items === 'undefined' ? null : itemResult.items,
       showItems: showItems,
-      isMoreItems: itemsApiResult && itemsApiResult.isMore,
-      comments: commentsApiResult && commentsApiResult.comments,
+      isMoreItems: typeof itemResult.isMore === 'undefined' ? false : itemResult.isMore,
+      comments: typeof commentResult.items === 'undefined' ? null : commentResult.items,
       showComments: !showItems,
-      isMoreComments: commentsApiResult && commentsApiResult.isMore,
-      userId: userId,
+      isMoreComments: typeof commentResult.isMore === 'undefined' ? false : commentResult.isMore,
       page: page,
-      authUserData: authUserData,
-      notFoundError: itemsApiResult.notFoundError || commentsApiResult.notFoundError,
-      getDataError: itemsApiResult.getDataError || commentsApiResult.getDataError,
+      notFoundError: typeof itemResult.notFoundError !== 'undefined' && itemResult.notFoundError ||
+                      typeof commentResult.notFoundError !== 'undefined' && commentResult.notFoundError,
+      getDataError: typeof itemResult.getDataError !== 'undefined' && itemResult.getDataError ||
+                      typeof commentResult.notFoundError !== 'undefined' && commentResult.notFoundError
       goToString: goToString
     }
   }
+}
 
+export default class extends Component {
   render () {
     return (
       <div className="layout-wrapper">
