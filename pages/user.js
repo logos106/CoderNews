@@ -320,7 +320,7 @@ export default class extends Component {
                     </div>
                   </div>
                   <div className={styles.user_item}>
-                    <div className={styles.user_item, style, styles.user_item_label, styles.about, styles.public}>
+                    <div className={styles.user_item, styles.user_item_label, styles.about, styles.public}>
                       <span>about:</span>
                     </div>
                     <div className={styles.user_item, styles.user_item_content, styles.about, styles.public}>

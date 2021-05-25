@@ -8,7 +8,7 @@ import GoogleAnalytics from "../components/googleAnalytics.js"
 
 import getUserCommentsByPage from "../api/comments/getUserCommentsByPage.js"
 
-export async function getInitialProps (context) {
+export async function getServerSideProps (context) {
   const authResult = await authUser()
 
   const username = context.query.id ? context.query.id : ""
@@ -18,14 +18,14 @@ export async function getInitialProps (context) {
 
   return {
     props: {
-      comments: result && result.comments,
-      authUserData: result && result.authUser ? result.authUser : {},
+      comments: result.comments,
+      authUserData: authResult,
       page: page,
-      userId: userId,
-      isMore: result && result.isMore,
-      getDataError: result && result.getDataError,
-      notFoundError: result && result.notFoundError,
-      goToString: page > 1 ? `threads?id=${userId}&page=${page}` : `threads?id=${userId}`
+      userId: username,
+      isMore: result.isMore,
+      getDataError: typeof result.getDataError === 'undefined' ? false : result.getDataError,
+      notFoundError: typeof result.notFoundError === 'undefined' ? false : result.notFoundError,
+      goToString: page > 1 ? `threads?id=${userId}&page=${page}` : `threads?id=${username}`
     }
   }
 }

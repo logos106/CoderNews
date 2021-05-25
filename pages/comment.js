@@ -61,7 +61,7 @@ export default class extends Component {
               />
               <CommentSection
                 comments={this.props.comment.children}
-                parentItemId={this.props.comment.parentItemId}
+                parentItemId={this.props.comment.parent_id}
                 isMore={this.props.isMoreChildrenComments}
                 isMoreLink={`/comment?id=${this.props.comment.id}&page=${this.props.page + 1}`}
                 userSignedIn={this.props.authUserData.userSignedIn}

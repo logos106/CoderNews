@@ -52,7 +52,7 @@ export default class extends Component {
       this.setState({loading: true})
 
       const commentData = {
-        parentItemId: this.props.comment.parentItemId,
+        parentItemId: this.props.comment.parent_id,
         isParent: false,
         parentCommentId: this.props.comment.id,
         text: this.state.replyInputValue
@@ -108,7 +108,7 @@ export default class extends Component {
 
       const self = this
 
-      upvoteComment(this.state.comment.id, this.state.comment.parentItemId, function(response) {
+      upvoteComment(this.state.comment.id, this.state.comment.parent_id, function(response) {
         if (response.authError) {
           window.location.href = `/login?goto=${encodeURIComponent(self.props.goToString)}`
         } else {
@@ -131,7 +131,7 @@ export default class extends Component {
 
       const self = this
 
-      downvoteComment(this.state.comment.id, this.state.comment.parentItemId, function(response) {
+      downvoteComment(this.state.comment.id, this.state.comment.parent_id, function(response) {
         if (response.authError) {
           window.location.href = `/login?goto=${encodeURIComponent(self.props.goToString)}`
         } else {
@@ -305,7 +305,7 @@ export default class extends Component {
                   }
                   <span> | </span>
                   <span className="comment-content-parent">
-                    <a href={comment.isParent ? `/item?id=${comment.parentItemId}` : `/comment?id=${comment.parentCommentId}`}>parent</a>
+                    <a href={comment.isParent ? `/item?id=${comment.parent_id}` : `/comment?id=${comment.parentCommentId}`}>parent</a>
                   </span>
                   {
                     this.props.showFavoriteOption ?
@@ -357,7 +357,7 @@ export default class extends Component {
                   }
                   <span> | </span>
                   <span>
-                    on: <a href={`/item?id=${comment.parentItemId}`}>{truncateItemTitle(comment.parentItemTitle)}</a>
+                    on: <a href={`/item?id=${comment.parent_id}`}>{truncateItemTitle(comment.parent_title)}</a>
                   </span>
                 </div>
                 <div className="comment-content-text">
