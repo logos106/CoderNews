@@ -6,7 +6,6 @@ import renderPointsString from "../utils/renderPointsString.js"
 import renderCreatedTime from "../utils/renderCreatedTime.js"
 import truncateItemTitle from "../utils/truncateItemTitle.js"
 
-import addNewComment from "../api/comments/addNewComment.js"
 import upvoteComment from "../api/comments/upvoteComment.js"
 import downvoteComment from "../api/comments/downvoteComment.js"
 import unvoteComment from "../api/comments/unvoteComment.js"
@@ -32,7 +31,7 @@ export default class extends Component {
     this.setState({replyInputValue: event.target.value})
   }
 
-  requestSubmitReply = () => {
+  requestSubmitReply = async () => {
     if (this.state.loading) return
 
     if (!this.props.userSignedIn) {
@@ -61,34 +60,38 @@ export default class extends Component {
 
       const self = this
 
-      addNewComment(commentData, function(response) {
-        if (response.authError) {
-          window.location.href = `/login?goto=${encodeURIComponent(self.props.goToString)}`
-        } else if (response.textRequiredError) {
-          self.setState({
-            loading: false,
-            replyTextRequiredError: true,
-            replyTextTooLongError: false,
-            replySubmitError: false
-          })
-        } else if (response.textTooLongError) {
-          self.setState({
-            loading: false,
-            replyTextRequiredError: false,
-            replyTextTooLongError: true,
-            replySubmitError: false
-          })
-        } else if (response.submitError || !response.success) {
-          self.setState({
-            loading: false,
-            replyTextRequiredError: false,
-            replyTextTooLongError: false,
-            replySubmitError: true
-          })
-        } else {
-          window.location.href = `/comment?id=${self.props.comment.id}`
-        }
+      let res = await fetch("/api/comment/add", {
+        method: "POST",
+        body: JSON.stringify(commentData)
       })
+
+    
+      if (response.authError) {
+        window.location.href = `/login?goto=${encodeURIComponent(self.props.goToString)}`
+      } else if (response.textRequiredError) {
+        self.setState({
+          loading: false,
+          replyTextRequiredError: true,
+          replyTextTooLongError: false,
+          replySubmitError: false
+        })
+      } else if (response.textTooLongError) {
+        self.setState({
+          loading: false,
+          replyTextRequiredError: false,
+          replyTextTooLongError: true,
+          replySubmitError: false
+        })
+      } else if (response.submitError || !response.success) {
+        self.setState({
+          loading: false,
+          replyTextRequiredError: false,
+          replyTextTooLongError: false,
+          replySubmitError: true
+        })
+      } else {
+        window.location.href = `/comment?id=${self.props.comment.id}`
+      }
     }
   }
 

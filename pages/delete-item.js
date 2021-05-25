@@ -40,7 +40,7 @@ export default class extends Component {
     }
   }
 
-  submitDeleteItem = () => {
+  submitDeleteItem = async () => {
     if (this.state.loading) return
 
     this.setState({loading: true})
