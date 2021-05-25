@@ -11,10 +11,11 @@ export async function getServerSideProps(context) {
   const authResult = await authUser()
 
   if (!authResult.userSignedIn) {
-    context.res.writeHead(302, { Location: '/' });
-    context.res.end();
+    // context.res.writeHead(200, { Location: '/' });
+    // context.res.end();
   }
 
+  console.log(authResult);
   return {
     props: {
       authUser: authResult
