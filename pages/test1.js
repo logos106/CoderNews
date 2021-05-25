@@ -15,10 +15,24 @@ export async function getServerSideProps(context) {
 		},
 	});
 
-  let users = await directus.items('users').readMany();
-  users = users.data.slice(1, 4)
+  let users = await directus.items('users').readMany(
+    {
+      offset: 1,
+      limit: 3,
+      filter: {
+        
+        password: {
+          _eq: 'darkhorse'
+        },
+        username: {
+          _eq: "kkk"
+        }
+      },
+      meta: "total_count"
+    }
+  );
 
-  console.log(users)
+  console.log("limited: ", users)
 
   const data = null
   return { props: { data } }

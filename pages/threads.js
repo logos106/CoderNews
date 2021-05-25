@@ -1,5 +1,5 @@
 import { Component } from "react"
-
+import authUser from "../api/users/authUser.js"
 import Header from "../components/header.js"
 import Footer from "../components/footer.js"
 import HeadMetadata from "../components/headMetadata.js"
@@ -8,24 +8,29 @@ import GoogleAnalytics from "../components/googleAnalytics.js"
 
 import getUserCommentsByPage from "../api/comments/getUserCommentsByPage.js"
 
-export default class extends Component {
-  static async getInitialProps ({ req, query }) {
-    const userId = query.id ? query.id : ""
-    const page = query.page ? parseInt(query.page) : 1
+export async function getInitialProps (context) {
+  const authResult = await authUser()
 
-    const apiResult = await getUserCommentsByPage(userId, page, req)
+  const username = context.query.id ? context.query.id : ""
+  const page = context.query.page ? parseInt(context.query.page) : 1
 
-    return {
-      comments: apiResult && apiResult.comments,
-      authUserData: apiResult && apiResult.authUser ? apiResult.authUser : {},
+  const result = await getUserCommentsByPage(username, page, authResult)
+
+  return {
+    props: {
+      comments: result && result.comments,
+      authUserData: result && result.authUser ? result.authUser : {},
       page: page,
       userId: userId,
-      isMore: apiResult && apiResult.isMore,
-      getDataError: apiResult && apiResult.getDataError,
-      notFoundError: apiResult && apiResult.notFoundError,
+      isMore: result && result.isMore,
+      getDataError: result && result.getDataError,
+      notFoundError: result && result.notFoundError,
       goToString: page > 1 ? `threads?id=${userId}&page=${page}` : `threads?id=${userId}`
     }
   }
+}
+
+export default class extends Component {
 
   render() {
     return (

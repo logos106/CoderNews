@@ -6,7 +6,6 @@ import AlternateHeader from "../components/alternateHeader.js"
 import GoogleAnalytics from "../components/googleAnalytics.js"
 
 import authUser from "../api/users/authUser.js"
-import submitNewItem from "../api/items/submitNewItem.js"
 
 export async function getServerSideProps(context) {
   const authResult = await authUser()
@@ -52,7 +51,7 @@ export default class extends Component {
     this.setState({textInputValue: event.target.value})
   }
 
-  submitRequest = () => {
+  submitRequest = async () => {
     if (this.state.loading) return
 
     if (!this.state.titleInputValue.trim()) {
@@ -96,73 +95,81 @@ export default class extends Component {
 
       const self = this
 
-      submitNewItem(this.props.authUser, this.state.titleInputValue, this.state.urlInputValue, this.state.textInputValue, function(response) {
-        if (response.authError) {
-          window.location.href = "/login?goto=submit"
-        } else if (response.titleRequiredError) {
-          self.setState({
-            loading: false,
-            titleRequiredError: true,
-            titleTooLongError: false,
-            invalidUrlError: false,
-            urlAndTextError: false,
-            textTooLongError: false,
-            submitError: false
-          })
-        } else if (response.urlAndTextError) {
-          self.setState({
-            loading: false,
-            titleRequiredError: false,
-            titleTooLongError: false,
-            invalidUrlError: false,
-            urlAndTextError: true,
-            textTooLongError: false,
-            submitError: false
-          })
-        } else if (response.invalidUrlError) {
-          self.setState({
-            loading: false,
-            titleRequiredError: false,
-            titleTooLongError: false,
-            invalidUrlError: true,
-            urlAndTextError: false,
-            textTooLongError: false,
-            submitError: false
-          })
-        } else if (response.titleTooLongError) {
-          self.setState({
-            loading: false,
-            titleRequiredError: false,
-            titleTooLongError: true,
-            invalidUrlError: false,
-            urlAndTextError: false,
-            textTooLongError: false,
-            submitError: false
-          })
-        } else if (response.textTooLongError) {
-          self.setState({
-            loading: false,
-            titleRequiredError: false,
-            titleTooLongError: false,
-            invalidUrlError: false,
-            urlAndTextError: false,
-            textTooLongError: true,
-            submitError: false
-          })
-        } else if (response.submitError || !response.success) {
-          self.setState({
-            loading: false,
-            titleRequiredError: false,
-            titleTooLongError: false,
-            invalidUrlError: false,
-            urlAndTextError: false,
-            textTooLongError: false,
-            submitError: true
-          })
-        } else {
-          Router.push('/newest')
-        }
+      let res = await fetch("/api/submitNewItem", {
+        method: "POST",
+        body: JSON.stringify({
+          title: this.state.titleInputValue,
+          url: this.state.urlInputValue,
+          text: this.state.textInputValue,
+        })
       })
+      let response = await res.json()
+      
+      if (response.authError) {
+        window.location.href = "/login?goto=submit"
+      } else if (response.titleRequiredError) {
+        self.setState({
+          loading: false,
+          titleRequiredError: true,
+          titleTooLongError: false,
+          invalidUrlError: false,
+          urlAndTextError: false,
+          textTooLongError: false,
+          submitError: false
+        })
+      } else if (response.urlAndTextError) {
+        self.setState({
+          loading: false,
+          titleRequiredError: false,
+          titleTooLongError: false,
+          invalidUrlError: false,
+          urlAndTextError: true,
+          textTooLongError: false,
+          submitError: false
+        })
+      } else if (response.invalidUrlError) {
+        self.setState({
+          loading: false,
+          titleRequiredError: false,
+          titleTooLongError: false,
+          invalidUrlError: true,
+          urlAndTextError: false,
+          textTooLongError: false,
+          submitError: false
+        })
+      } else if (response.titleTooLongError) {
+        self.setState({
+          loading: false,
+          titleRequiredError: false,
+          titleTooLongError: true,
+          invalidUrlError: false,
+          urlAndTextError: false,
+          textTooLongError: false,
+          submitError: false
+        })
+      } else if (response.textTooLongError) {
+        self.setState({
+          loading: false,
+          titleRequiredError: false,
+          titleTooLongError: false,
+          invalidUrlError: false,
+          urlAndTextError: false,
+          textTooLongError: true,
+          submitError: false
+        })
+      } else if (response.submitError || !response.success) {
+        self.setState({
+          loading: false,
+          titleRequiredError: false,
+          titleTooLongError: false,
+          invalidUrlError: false,
+          urlAndTextError: false,
+          textTooLongError: false,
+          submitError: true
+        })
+      } else {
+        Router.push('/newest')
+      }
     }
   }
 
