@@ -56,7 +56,7 @@ export default async function getUserCommentsByPage(username, page, user) {
     let filtered_comments = await directus.items('comments').readMany(commentsDbQuery)
     let totalCommentsCount = filtered_comments.meta.total_count
     let comments = filtered_comments.data
-
+    console.log("Comments: ", comments)
     if (!user.signedIn) {
       return {
         success: true,
@@ -76,6 +76,38 @@ export default async function getUserCommentsByPage(username, page, user) {
 
           comments[i].editAndDeleteExpired = hasEditAndDeleteExpired
         }
+      }
+
+      let filtered_voteDocs = await directus.items('user_votes').readMany({
+        filter: {
+          type: {
+            _eq: "comment"
+          },
+          id: {
+            _in: arrayOfCommentIds
+          },
+          username: {
+            _eq: user.username
+          }
+        }
+      })
+
+      let voteDocs = filtered_voteDocs.data
+      for (let i=0; i < voteDocs.length; i++) {
+        const commentObj = comments.find(function(comment) {
+          return comment.id === voteDocs[i].id
+        })
+
+        if (commentObj) {
+          commentObj.votedOnByUser = true
+          commentObj.unvoteExpired = voteDocs[i].date + (3600 * config.hrsUntilUnvoteExpires) < moment().unix() ? true : false
+        }
+      }
+
+      return {
+        success: true,
+        comments: comments,
+        isMore: totalCommentsCount > (((page -1) * commentsPerPage) + commentsPerPage) ? true : false
       }
     }
 

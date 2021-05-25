@@ -250,7 +250,7 @@ export default class extends Component {
                           }
                           <span> | </span>
                           <span>
-                            on: <a href={`/item?id=${comment.parentItemId}`}>{truncateItemTitle(comment.parentItemTitle)}</a>
+                            on: <a href={`/item?id=${comment.parent_id}`}>{truncateItemTitle(comment.parent_title)}</a>
                           </span>
                         </div>
                         <div className="listed-comment-text">
