@@ -10,20 +10,25 @@ import GoogleAnalytics from "../components/googleAnalytics.js"
 
 import getDeleteItemPageData from "../api/items/getDeleteItemPageData.js"
 import deleteItem from "../api/items/deleteItem.js"
+import authUser from "../api/users/authUser.js"
 
-export default class extends Component {
-  static async getInitialProps({ query, req }) {
-    const apiResult = await getDeleteItemPageData(query.id, req)
+export async function getServerSideProps(context) {
+  const authResult = await authUser()
+  const result = await getDeleteItemPageData(context.query.id, authResult)
 
-    return {
-      item: apiResult && apiResult.item,
-      authUserData: apiResult && apiResult.authUser ? apiResult.authUser : {},
-      getDataError: apiResult && apiResult.getDataError,
-      notAllowedError: apiResult && apiResult.notAllowedError,
-      notFoundError: apiResult && apiResult.notFoundError,
-      goToString: query.goto ? decodeURIComponent(query.goto) : ""
+  return {
+    props: {
+      item: typeof result.item === 'undefined' ? null : result.item,
+      authUserData: authResult,
+      getDataError: typeof result.getDataError === 'undefined' ? false: true,
+      notAllowedError: typeof result.notAllowedError === 'undefined' ? false: true,
+      notFoundError: typeof result.notFoundError === 'undefined' ? false: true,
+      goToString: context.query.goto ? decodeURIComponent(context.query.goto) : ""
     }
   }
+}
+
+export default class extends Component {
 
   constructor(props) {
     super(props)
@@ -41,33 +46,37 @@ export default class extends Component {
     this.setState({loading: true})
 
     const self = this
-
-    deleteItem(this.props.item.id, function(response) {
-      if (response.notAllowedError) {
-        self.setState({
-          loading: false,
-          notAllowedError: true,
-          notFoundError: false,
-          submitError: false
-        })
-      } else if (response.notFoundError) {
-        self.setState({
-          loading: false,
-          notAllowedError: false,
-          notFoundError: true,
-          submitError: false
-        })
-      } else if (response.submitError || !response.success) {
-        self.setState({
-          loading: false,
-          notAllowedError: false,
-          notFoundError: false,
-          submitError: true
-        })
-      } else {
-        window.location.href = `/${self.props.goToString}`
-      }
+    let res = await fetch("/api/deleteItem", {
+      method: "POST",
+      body: JSON.stringify({
+        itemId: this.props.item.id
+      })
     })
+    let response = await res.json()
+    if (response.notAllowedError) {
+      self.setState({
+        loading: false,
+        notAllowedError: true,
+        notFoundError: false,
+        submitError: false
+      })
+    } else if (response.notFoundError) {
+      self.setState({
+        loading: false,
+        notAllowedError: false,
+        notFoundError: true,
+        submitError: false
+      })
+    } else if (response.submitError || !response.success) {
+      self.setState({
+        loading: false,
+        notAllowedError: false,
+        notFoundError: false,
+        submitError: true
+      })
+    } else {
+      window.location.href = `/${self.props.goToString}`
+    }
   }
 
   goBackToOriginPage = () => {

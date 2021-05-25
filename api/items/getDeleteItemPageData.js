@@ -1,18 +1,27 @@
-import axios from "axios"
+import credential from "../../utils/apiCredential.js"
+import config from "../../utils/config.js"
+import moment from "moment"
 
-import apiBaseUrl from "../../utils/apiCredential.js"
+export default async function getDeleteItemPageData(itemId, user) {
+  // Get config
+  const directus = credential.directus
 
-export default async function getDeleteItemPageData(itemId, req) {
   try {
-    const cookie = req.headers.cookie ? req.headers.cookie : ""
-
-    const response = await axios({
-      url: `${apiCredential.baseURL}/items/get-delete-item-page-data?id=${itemId}`,
-      headers: req ? {cookie: cookie} : "",
-      withCredentials: true
-    })
-
-    return response.data
+    let item = await directus.items('items').readOne(itemId)
+    console.log("item: ", item)
+    if (!item) return {notFoundError: true}
+    else if (
+      item.dead 
+      || item.by != user.username
+      || item.created + (3600 * config.hrsUntilEditAndDeleteExpires) < moment().unix()
+      || item.comment_count > 0 ) {
+        console.log(item.dead)
+        console.log(item.by, user.username)
+        console.log(item.created + (3600 * config.hrsUntilEditAndDeleteExpires), moment().unix())
+        console.log(item.comment_count, 0)
+        return {notAllowedError: true}
+      }
+    else return {success: true, item: item}
   } catch(error) {
     return {getDataError: true}
   }

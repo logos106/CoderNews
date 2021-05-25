@@ -12,7 +12,7 @@ export default async function submitNewItem(authUser, title, url, text, callback
     email: credential.email,
     password: credential.password,
   });
-
+  console.log("authUser: ", authUser)
   // Fetch items with conditions
   try {
     const items = directus.items('items')
