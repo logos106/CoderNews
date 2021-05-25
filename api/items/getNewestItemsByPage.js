@@ -12,61 +12,75 @@ export default async function getNewestItemsByPage(page, user) {
 
   try {
     if (!user.userSignedIn) {
-      const items = await directus.items('items').readMany({
+      // Get the newest items
+      let items = await directus.items('items').readMany({
         filter: {
-          created: {
-            _gte: startDate,
-          },
-          dead: {
-            _eq: false
-          }
+          created: { _gte: startDate },
+          dead: { _eq: false }
         },
-        skip: (page - 1) * itemsPerPage,
-        take: itemsPerPage
+        offset: (page - 1) * itemsPerPage,
+        limit: itemsPerPage,
+        meta: 'total_count'
       });
 
-      for (let [i, item] of items.data.entries()) {
+      // Rememeber total count of the items
+      const totalItems = items.meta.total_count
+
+      // Numbering the items in this page
+      items = items.data
+      items.forEach((item, i) => {
         item.rank = (page - 1) * itemsPerPage + i + 1
-      }
+      })
 
       return {
         success: true,
-        items: items.data,
-        isMore: items.data.length > (((page - 1) * itemsPerPage) + itemsPerPage) ? true : false
+        items: items,
+        isMore: totalItems > (((page - 1) * itemsPerPage) + itemsPerPage) ? true : false
       }
     }
     else {
       // Get hidden * for this user
-      const hiddens = await directus.items('user_hiddens').readMany({
+      let hiddens = await directus.items('user_hiddens').readMany({
         filter: {
-          username: {
-            _eq: user.username
-          }
+          username: { _eq: user.username }
         }
       });
+      hiddens = hiddens.data
 
-      let itemsDbQuery = {}
-      let hiddenIds = []
-      for (let hidden of hiddens.data) {
-        hiddenIds.push(hidden.id)
-      }
-      if (hiddenIds.length > 0) itemsDbQuery.id = { _nin: hiddenIds }
+      // Prepare filter for items
+      let filterItems = {}
 
-      if (!user.showDead) itemsDbQuery.dead = { _eq: false }
+      let hids = hiddens.map((hidden) => hidden.id)
+      if (hids.length > 0) filterItems.id = { _nin: hids }
+      if (!user.showDead) filterItems.dead = { _eq: false }
 
-      // Get items
-      const items = await directus.items('items').readMany({
-        filter: itemsDbQuery,
-        skip: (page - 1) * itemsPerPage,
-        take: itemsPerPage
+      // Get items with this filter
+      let items = await directus.items('items').readMany({
+        filter: filterItems,
+        offset: (page - 1) * itemsPerPage,
+        limit: itemsPerPage,
+        meta: 'total_count'
       })
 
-      let itemIds = []
-      for (let item of items.data) {
-        itemIds.push(item.id)
-      }
+      // Rememeber total count of the items
+      const totalItems = items.length
 
-      for (let [i, item] of items.data.entries()) {
+      items = items.data
+      let iids = items.map((item) => item.id)
+
+      // Get votes with those items' id
+      let votes = await directus.items('user_votes').readMany({
+        filter: {
+          username: { _eq: user.username },
+          date: { _gte: startDate },
+          id: { _in: iids },
+          type: { _eq: 'item' }
+        }
+      })
+      votes = votes.data
+
+      // Add some properties for to each item
+      items.forEach((item, i) => {
         item.rank = ((page - 1) * itemsPerPage) + (i + 1)
 
         if (item.by === user.username) {
@@ -77,7 +91,7 @@ export default async function getNewestItemsByPage(page, user) {
           item.editAndDeleteExpired = hasEditAndDeleteExpired
         }
 
-        const vote = votes.data.find(function(e) {
+        const vote = votes.find(function(e) {
           return e.id === item.id
         })
 
@@ -85,12 +99,12 @@ export default async function getNewestItemsByPage(page, user) {
           item.votedOnByUser = true
           item.unvoteExpired = vote.date + (3600 * config.hrsUntilUnvoteExpires) < moment().unix() ? true : false
         }
-      }
+      })
 
       return {
         success: true,
-        items: items.data,
-        isMore: items.data.length > (((page - 1) * itemsPerPage) + itemsPerPage) ? true : false
+        items: items,
+        isMore: totalItems > (((page - 1) * itemsPerPage) + itemsPerPage) ? true : false
       }
     }
   } catch (error) {

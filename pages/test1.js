@@ -15,24 +15,28 @@ export async function getServerSideProps(context) {
 		},
 	});
 
-  let users = await directus.items('users').readMany(
-    {
-      offset: 1,
-      limit: 3,
-      filter: {
-        
-        password: {
-          _eq: 'darkhorse'
-        },
-        username: {
-          _eq: "kkk"
-        }
-      },
-      meta: "total_count"
+  let users = await directus.items('users').readMany({
+    filter: {
+        username: {_eq: 'kcc'},
+        id: {_eq: 8}
     }
-  );
+  });
+  console.log(users)
 
-  console.log("limited: ", users)
+  // let users = [
+  //   {
+  //     name: 'Joe'
+  //   },
+  //   {
+  //     name: 'Seok'
+  //   },
+  //   {
+  //     name: 'Hyon'
+  //   }
+  // ]
+  //
+  // users.forEach((user, i) => user.rank = i)
+
 
   const data = null
   return { props: { data } }

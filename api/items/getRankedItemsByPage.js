@@ -16,25 +16,20 @@ export default async function getRankedItemsByPage(page, user) {
     if (!user.signedIn) {  // If he is a guest
       let items = await directus.items('items').readMany({
         filter: {
-          created: {
-            _gte: startDate
-          },
-          dead: {
-            _eq: false
-          }
-        }
+          created: { _gte: startDate },
+          dead: { _eq: false }
+        },
+        offset: (page - 1) * itemsPerPage,
+        limit: itemsPerPage,
+        meta: 'total_count'
       });
 
       const totalItems = items.length
 
-      const start = (page - 1) * itemsPerPage
-      const end = page * itemsPerPage
-      items = items.data.slice(start, end)
-
-      // Set items' rank
-      for (let [i, item] of items.entries()) {
+      items = items.data
+      items.forEach((item, i) => {
         item.rank = (page - 1) * itemsPerPage + i + 1
-      }
+      })
 
       return {
         success: true,
@@ -47,52 +42,46 @@ export default async function getRankedItemsByPage(page, user) {
       // Get hidden * for this user
       const hiddens = await directus.items('user_hiddens').readMany({
         filter: {
-          username: {
-            _eq: user.username
-          },
-          item_creation_date: {
-            _gte: startDate,
-          }
+          username: { _eq: user.username },
+          item_creation_date: { _gte: startDate }
         }
       });
+      hiddens = hiddens.data
 
-      let itemsDbQuery = {
+      let filterItems = {
         created: { _gte: startDate }
       }
 
-      let hiddenIds = []
-      for (let hidden of hiddens.data) {
-        hiddenIds.push(hidden.id)
-      }
-      if (hiddenIds.length > 0) itemsDbQuery.id = { _nin: hiddenIds }
+      let hids = hiddens.map((hidden) => hidden.id)
+      if (hids.length > 0) filterItems.id = { _nin: hids }
 
-      if (!user.showDead) itemsDbQuery.dead = { _eq: false }
+      if (!user.showDead) filterItems.dead = { _eq: false }
 
       // Get items
       let items = await directus.items('items').readMany({
-        filter: itemsDbQuery,
+        filter: filterItems,
+        offset: (page - 1) * itemsPerPage,
+        limit: itemsPerPage,
+        meta: 'total_count'
       })
 
-      const start = (page - 1) * itemsPerPage
-      const end = page * itemsPerPage
-      items = items.data.slice(start, end)
+      const totalItems = items.meta.total_count
 
-      let itemIds = []
-      for (let item of items) {
-        itemIds.push(item.id)
-      }
+      items = items.data
+
+      let iids = items.map((item) => item.id)
 
       // Votes
       const votes = await directus.items('user_votes').readMany({
         filter: {
-          username: user.username,
+          username: { _eq: user.username },
           date: { _gte: startDate },
-          id: { _in: itemIds },
-          type: "item"
+          id: { _in: iids },
+          type: { _in: 'item' }
         }
       })
 
-      for (let [i, item] of items.entries()) {
+      items.forEach((item, i) => {
         item.rank = ((page - 1) * itemsPerPage) + (i + 1)
 
         if (item.by === user.username) {
@@ -111,12 +100,12 @@ export default async function getRankedItemsByPage(page, user) {
           item.votedOnByUser = true
           item.unvoteExpired = vote.date + (3600 * config.hrsUntilUnvoteExpires) < moment().unix() ? true : false
         }
-      }
+      })
 
       return {
         success: true,
         items: items,
-        isMore: items.length > (((page - 1) * itemsPerPage) + itemsPerPage) ? true : false
+        isMore: totalItems > (((page - 1) * itemsPerPage) + itemsPerPage) ? true : false
       }
     }
 
