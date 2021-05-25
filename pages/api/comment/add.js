@@ -6,7 +6,7 @@ export default async function handler(req, res) {
   const parentItemId = JSON.parse(req.body).parentItemId;
   const isParent = JSON.parse(req.body).isParent;
   const parentCommentId = JSON.parse(req.body).parentCommentId;
-  const text = JSON.parse(req.body).text;
+  let text = JSON.parse(req.body).text;
 
   const authResult = await authUser()
 
@@ -21,8 +21,7 @@ export default async function handler(req, res) {
 
     // Save the comment into the table
     await directus.items('comments').createOne({
-      id: utils.generateUniqueId(12),
-      by: user.username,
+      by: authResult.username,
       parent_id: parentItemId,
       parent_title: '',
       is_parent: isParent,
@@ -30,7 +29,7 @@ export default async function handler(req, res) {
       text: text,
       points: 1,
       created: moment().unix(),
-      dead: user.shadowBanned ? true : false
+      dead: authResult.shadowBanned ? true : false
     });
 
     // Updaate my user data . increase karms
