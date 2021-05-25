@@ -316,7 +316,7 @@ export default class extends Component {
                       <span>karma:</span>
                     </div>
                     <div className={styles.user_item, styles.user_item_content, styles.karma}>
-          }          <span>{this.props.userData.karma.toLocaleString()}</span>
+                      <span>{this.props.userData.karma.toLocaleString()}</span>
                     </div>
                   </div>
                   <div className={styles.user_item}>
@@ -324,7 +324,7 @@ export default class extends Component {
                       <span>about:</span>
                     </div>
                     <div className={styles.user_item, styles.user_item_content, styles.about, styles.public}>
-        }            <span dangerouslySetInnerHTML={{ __html: this.props.userData.about }}></span>
+                      <span dangerouslySetInnerHTML={{ __html: this.props.userData.about }}></span>
                     </div>
                   </div>
                   <div className={styles.user_item}>
