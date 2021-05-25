@@ -60,13 +60,17 @@ export default async function getUserFavoritedItemsByPage(author, page, user) {
     }
     else {
       // Votes
-      const votes = await directus.items('user_votes').readMany({
-        filter: {
-          username: { _eq: user.username },
-          id: { _in: iids },
-          type: { _in: 'item' }
-        }
-      })
+      let votes = []
+      if (iids.length > 0) {
+        votes = await directus.items('user_votes').readMany({
+          filter: {
+            username: { _eq: user.username },
+            id: { _in: iids },
+            type: { _in: 'item' }
+          }
+        })
+        votes = votes.data
+      }
 
       items.forEach((item, i) => {
         if (item.by === user.username) {
@@ -77,7 +81,7 @@ export default async function getUserFavoritedItemsByPage(author, page, user) {
           item.editAndDeleteExpired = hasEditAndDeleteExpired
         }
 
-        const vote = votes.data.find(function(e) {
+        const vote = votes.find(function(e) {
           return e.id === item.id
         })
 
