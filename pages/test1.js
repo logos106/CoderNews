@@ -38,7 +38,9 @@ export async function getServerSideProps(context) {
   //
   // users.forEach((user, i) => user.rank = i)
 
+  const rres = await directus.items('users').updateOne(8, {username : "PPPPPPPP"})
 
+  console.log ("RRES: ", rres)
   const data = null
   return { props: { data } }
 }
