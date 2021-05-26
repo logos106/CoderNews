@@ -12,7 +12,7 @@ import renderCreatedTime from "../utils/renderCreatedTime.js"
 import truncateItemTitle from "../utils/truncateItemTitle.js"
 
 import getEditCommentPageData from "../api/comments/getEditCommentPageData.js"
-import editComment from "../api/comments/editComment.js"
+// import editComment from "../api/comments/editComment.js"
 
 export async function getServerSideProps(context) {
   const authResult = await authUser()
@@ -58,7 +58,7 @@ export default class extends Component {
     this.setState({commentInputValue: event.target.value})
   }
 
-  submitEditComment = () => {
+  submitEditComment = async () => {
     if (this.state.loading) return
 
     if (!this.state.commentInputValue.trim()) {
@@ -77,39 +77,45 @@ export default class extends Component {
       this.setState({loading: true})
 
       const self = this
-
-      editComment(this.props.comment.id, this.state.commentInputValue, function(response) {
-        if (response.authError) {
-          window.location.href = `/login?goto=${self.props.goToString}`
-        } else if (response.notAllowedError) {
-          self.setState({notAllowedError: true})
-        } else if (response.notFoundError) {
-          self.setState({notFoundError: true})
-        } else if (response.textRequiredError) {
-          self.setState({
-            loading: false,
-            textRequiredError: true,
-            textTooLongError: false,
-            submitError: false
-          })
-        } else if (response.textTooLongError) {
-          self.setState({
-            loading: false,
-            textRequiredError: false,
-            textTooLongError: true,
-            submitError: false
-          })
-        } else if (response.submitError || !response.success) {
-          self.setState({
-            loading: false,
-            textRequiredError: false,
-            textTooLongError: false,
-            submitError: true
-          })
-        } else {
-          window.location.href = `/comment?id=${self.props.comment.id}`
-        }
+      let res = await fetch("/api/comment/edit", {
+        method: "POST",
+        body: JSON.stringify({
+          id: this.props.comment.id,
+          newCommentText: this.state.commentInputValue,
+        })
       })
+
+      let response = await res.json()
+      if (response.authError) {
+        window.location.href = `/login?goto=${self.props.goToString}`
+      } else if (response.notAllowedError) {
+        self.setState({notAllowedError: true})
+      } else if (response.notFoundError) {
+        self.setState({notFoundError: true})
+      } else if (response.textRequiredError) {
+        self.setState({
+          loading: false,
+          textRequiredError: true,
+          textTooLongError: false,
+          submitError: false
+        })
+      } else if (response.textTooLongError) {
+        self.setState({
+          loading: false,
+          textRequiredError: false,
+          textTooLongError: true,
+          submitError: false
+        })
+      } else if (response.submitError || !response.success) {
+        self.setState({
+          loading: false,
+          textRequiredError: false,
+          textTooLongError: false,
+          submitError: true
+        })
+      } else {
+        window.location.href = `/comment?id=${self.props.comment.id}`
+      }
     }
   }
 

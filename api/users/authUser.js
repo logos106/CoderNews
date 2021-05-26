@@ -14,6 +14,7 @@ export default async function authUser() {
     if (role.name != 'Administrator') {
       // It means user signed in
       return {
+        id: me.id,
         userSignedIn: true,
         username: !me.username ? '' : me.username,
         karma: !me.karma ? 0 : me.karma,

@@ -3,7 +3,7 @@ import { Component } from "react"
 import "../styles/components/commentsList.module.css"
 
 import upvoteComment from "../api/comments/upvoteComment.js"
-import downvoteComment from "../api/comments/downvoteComment.js"
+// import downvoteComment from "../api/comments/downvoteComment.js"
 import unvoteComment from "../api/comments/unvoteComment.js"
 import unfavoriteComment from "../api/comments/unfavoriteComment.js"
 import killComment from "../api/moderation/killComment.js"
@@ -45,7 +45,7 @@ export default class extends Component {
     }
   }
 
-  requestDownvoteComment = (commentId, parentItemId, index) => {
+  requestDownvoteComment = async (commentId, parentItemId, index) => {
     if (this.state.loading) return
 
     if (!this.props.userSignedIn) {
@@ -57,14 +57,21 @@ export default class extends Component {
       this.forceUpdate()
 
       const self = this
-
-      downvoteComment(commentId, parentItemId, function(response) {
-        if (response.authError) {
-          window.location.href = `/login?goto=${encodeURIComponent(self.props.goToString)}`
-        } else {
-          self.setState({loading: false})
-        }
+      let res = await fetch("/api/comment/downvote", {
+        method: "POST",
+        body: JSON.stringify({
+          commentId: commentId,
+          parentItemId: parentItemId,
+        })
       })
+
+      let response = await res.json()
+      
+      if (response.authError) {
+        window.location.href = `/login?goto=${encodeURIComponent(self.props.goToString)}`
+      } else {
+        self.setState({loading: false})
+      }
     }
   }
 

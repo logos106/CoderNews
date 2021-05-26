@@ -5,28 +5,31 @@ import "../styles/pages/delete-comment.module.css"
 import AlternateHeader from "../components/alternateHeader.js"
 import HeadMetadata from "../components/headMetadata.js"
 import GoogleAnalytics from "../components/googleAnalytics.js"
-
+import authUser from "../api/users/authUser.js"
 import renderPointsString from "../utils/renderPointsString.js"
 import renderCreatedTime from "../utils/renderCreatedTime.js"
 import truncateItemTitle from "../utils/truncateItemTitle.js"
-
 import getDeleteCommentPageData from "../api/comments/getDeleteCommentPageData.js"
-import deleteComment from "../api/comments/deleteComment.js"
 
-export default class extends Component {
-  static async getInitialProps({ query, req }) {
-    const apiResult = await getDeleteCommentPageData(query.id, req)
+// import deleteComment from "../api/comments/deleteComment.js"
 
-    return {
-      comment: apiResult && apiResult.comment,
-      authUserData: apiResult && apiResult.authUser ? apiResult.authUser : {},
-      getDataError: apiResult && apiResult.getDataError,
-      notAllowedError: apiResult && apiResult.notAllowedError,
-      notFoundError: apiResult && apiResult.notFoundError,
-      goToString: query.goto ? decodeURIComponent(query.goto) : ""
+export async function getServerSideProps(context) {
+  const authResult = authUser()
+  const result = await getDeleteCommentPageData(context.query.id, authResult)
+
+  return {
+    props: {
+      comment: result.comment,
+      authUserData: authResult,
+      getDataError: typeof result.getDataError === 'undefined' ? false : result.getDataError,
+      notAllowedError: typeof result.notAllowedError === 'undefined' ? false : result.notAllowedError,
+      notFoundError: typeof result.notFoundError === 'undefined' ? false : result.notFoundError,
+      goToString: query.goto ? decodeURIComponent(context.query.goto) : ""
     }
   }
+}
 
+export default class extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -37,28 +40,34 @@ export default class extends Component {
     }
   }
 
-  submitDeleteComment = () => {
+  submitDeleteComment = async () => {
     if (this.state.loading) return
 
     const self = this
-
-    deleteComment(this.props.comment.id, function(response) {
-      if (response.notAllowedError) {
-        self.setState({
-          loading: false,
-          notAllowedError: true,
-          submitError: false
-        })
-      } else if (response.submitError || !response.success) {
-        self.setState({
-          loading: false,
-          notAllowedError: false,
-          submitError: true
-        })
-      } else {
-        window.location.href = `/${self.props.goToString}`
-      }
+    let res = await fetch("/api/comment/delete", {
+      method: "POST",
+      body: JSON.stringify({
+        commentId: this.props.comment.id
+      })
     })
+
+    let response = await res.json()
+  
+    if (response.notAllowedError) {
+      self.setState({
+        loading: false,
+        notAllowedError: true,
+        submitError: false
+      })
+    } else if (response.submitError || !response.success) {
+      self.setState({
+        loading: false,
+        notAllowedError: false,
+        submitError: true
+      })
+    } else {
+      window.location.href = `/${self.props.goToString}`
+    }
   }
 
   goBackToOriginPage = () => {
