@@ -3,25 +3,26 @@ import credential from "../utils/apiCredential.js"
 import { Directus, Auth } from '@directus/sdk';
 
 export async function getServerSideProps(context) {
-  const directus = credential.directus
-
-  const token = await directus.auth.login({
-    email: credential.email,
-    password: credential.password,
-  },
-  {
-		refresh: {
-			auto: true,
-		},
-	});
-
-  let users = await directus.items('users').readMany({
-    filter: {
-        username: {_eq: 'kcc'},
-        id: {_eq: 8}
-    }
-  });
-  console.log(users)
+  // const directus = credential.directus
+  //
+  // const token = await directus.auth.login({
+  //   email: credential.email,
+  //   password: credential.password,
+  // },
+  // {
+	// 	refresh: {
+	// 		auto: true,
+	// 	},
+	// });
+  //
+  // let users = await directus.items('users').readMany({
+  //   filter: {
+  //       username: {_eq: 'kcc'},
+  //       id: {_eq: 8}
+  //   }
+  // });
+  //
+  // console.log(users)
 
   // let users = [
   //   {
@@ -43,12 +44,22 @@ export async function getServerSideProps(context) {
 }
 
 export default class extends Component {
+  async favorite () {
+    const itemId = 123
+    let res = await fetch("/api/items/favorite?id=" + itemId, {
+      method: "GET"
+    })
+
+    let response = await res.json()
+
+    console.log(response)
+  }
 
   render () {
     return (
       <div>
         <h1> Test1 </h1>
-        <button onClick={() => this.login()}>Test</button>
+        <button onClick={() => this.favorite()}>Test</button>
 
       </div>
 

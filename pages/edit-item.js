@@ -96,42 +96,52 @@ export default class extends Component {
 
       const self = this
 
-      editItem(this.props.item.id, this.state.titleInputValue, this.state.textInputValue, function(response) {
-        if (response.authError) {
-          window.location.href = `/login?goto=${self.props.goToString}`
-        } else if (response.notAllowedError) {
-          self.setState({
-            loading: false,
-            notAllowedError: true
-          })
-        } else if (response.titleTooLongError) {
-          self.setState({
-            loading: false,
-            titleRequiredError: false,
-            titleTooLongError: true,
-            textTooLongError: false,
-            submitError: false
-          })
-        } else if (response.textTooLongError) {
-          self.setState({
-            loading: false,
-            titleRequiredError: false,
-            titleTooLongError: false,
-            textTooLongError: true,
-            submitError: false
-          })
-        } else if (response.submitError || !response.success) {
-          self.setState({
-            loading: false,
-            titleRequiredError: false,
-            titleTooLongError: false,
-            textTooLongError: false,
-            submitError: true
-          })
-        } else {
-          Router.push(`/item?id=${self.props.item.id}`)
-        }
+      let res = await fetch("/api/items/edit", {
+        method: "POST",
+        body: JSON.stringify({
+          useremail: this.props.item.id,
+          title: this.state.titleInputValue,
+          text: this.state.textInputValue,
+        })
       })
+
+      let response = await res.json()
+
+      if (response.authError) {
+        window.location.href = `/login?goto=${self.props.goToString}`
+      } else if (response.notAllowedError) {
+        self.setState({
+          loading: false,
+          notAllowedError: true
+        })
+      } else if (response.titleTooLongError) {
+        self.setState({
+          loading: false,
+          titleRequiredError: false,
+          titleTooLongError: true,
+          textTooLongError: false,
+          submitError: false
+        })
+      } else if (response.textTooLongError) {
+        self.setState({
+          loading: false,
+          titleRequiredError: false,
+          titleTooLongError: false,
+          textTooLongError: true,
+          submitError: false
+        })
+      } else if (response.submitError || !response.success) {
+        self.setState({
+          loading: false,
+          titleRequiredError: false,
+          titleTooLongError: false,
+          textTooLongError: false,
+          submitError: true
+        })
+      } else {
+        Router.push(`/item?id=${self.props.item.id}`)
+      }
+
     }
   }
 

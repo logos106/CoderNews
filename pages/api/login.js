@@ -4,11 +4,12 @@ import authUser from "../../api/users/authUser.js"
 export default async function handler(req, res) {
   const useremail = JSON.parse(req.body).useremail;
   const password = JSON.parse(req.body).password;
-  const directus = credential.directus
 
   const authResult = await authUser()
 
   try {
+    const directus = credential.directus
+
     // Check if any user with the eamil address
     const the_user = await directus.items('directus_users').readMany(
       {
