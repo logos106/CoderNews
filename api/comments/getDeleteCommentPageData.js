@@ -23,6 +23,7 @@ export default async function getDeleteCommentPageData(commentId, user) {
       || comment.created + (3600 * config.hrsUntilEditAndDeleteExpires) < moment().unix()
       || comment.children.length > 0)
       return {notAllowedError: true}
+    
       
     return {success: true, comment: comment}
   } catch(error) {
