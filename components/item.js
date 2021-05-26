@@ -2,7 +2,6 @@ import { Component } from "react"
 import renderCreatedTime from "../utils/renderCreatedTime.js"
 import upvoteItem from "../api/items/upvoteItem.js"
 import unvoteItem from "../api/items/unvoteItem.js"
-import favoriteItem from "../api/items/favoriteItem.js"
 import unfavoriteItem from "../api/items/unfavoriteItem.js"
 import hideItem from "../api/items/hideItem.js"
 import unhideItem from "../api/items/unhideItem.js"
@@ -57,7 +56,7 @@ export default class extends Component {
 
       const self = this
 
-      let res = await fetch("/api/comment/add", {
+      let res = await fetch("/api/comments/add", {
         method: "POST",
         body: JSON.stringify(commentData)
       })
@@ -150,15 +149,20 @@ export default class extends Component {
 
       const self = this
 
-      favoriteItem(this.state.item.id, function(response) {
-        if (response.authError) {
-          window.location.href = `/login?goto=${encodeURIComponent(self.props.goToString)}`
-        } else if (!response.success) {
-          window.location.href = ""
-        } else {
-          window.location.href = `/favorites?id=${self.props.currUsername}`
-        }
+      const itemId = this.state.item.id
+      let res = await fetch("/api/items/favorite/" + itemId, {
+        method: "GET"
       })
+
+      let response = await res.json()
+
+      if (response.authError) {
+        window.location.href = `/login?goto=${encodeURIComponent(self.props.goToString)}`
+      } else if (!response.success) {
+        window.location.href = ""
+      } else {
+        window.location.href = `/favorites?id=${self.props.currUsername}`
+      }
     }
   }
 
