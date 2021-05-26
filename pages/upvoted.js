@@ -1,5 +1,5 @@
 import { Component } from "react"
-
+import authUser from "../api/users/authUser.js"
 import Header from "../components/header.js"
 import Footer from "../components/footer.js"
 import HeadMetadata from "../components/headMetadata.js"
@@ -10,49 +10,45 @@ import GoogleAnalytics from "../components/googleAnalytics.js"
 import getUserUpvotedItemsByPage from "../api/items/getUserUpvotedItemsByPage.js"
 import getUserUpvotedCommentsByPage from "../api/comments/getUserUpvotedCommentsByPage.js"
 
-export default class extends Component {
-  static async getInitialProps ({req, query}) {
-    const userId = query.id ? query.id : ""
-    const page = query.page ? parseInt(query.page) : 1
+export async function getServerSideProps(context) {
+  const authResult = await authUser()
 
-    const showItems = query.comments === "t" ? false : true
+  const uid = context.query.id ? context.query.id : ""
+  const page = context.query.page ? parseInt(context.query.page) : 1
+  const showItems = context.query.comments === "t" ? false : true
 
-    let itemsApiResult, commentsApiResult, authUserData
+  let itemsApiResult = {}
+  let commentsApiResult = {}
 
-    if (showItems) {
-      itemsApiResult = await getUserUpvotedItemsByPage(userId, page, req)
+  if (showItems)
+    itemResult = await getUserUpvotedItemsByPage(uid, page, authUser)
+  else
+    commentResult = await getUserUpvotedCommentsByPage(uid, page, authUser)
 
-      authUserData = itemsApiResult.authUser ? itemsApiResult.authUser : {}
+  const goToString = page > 1 ?
+    `upvoted?id=${userId}${showItems ? "" : "&comments=t"}&page=${page}` :
+    `upvoted?id=${userId}${showItems ? "" : "&comments=t"}`
 
-      commentsApiResult = {}
-    } else {
-      commentsApiResult = await getUserUpvotedCommentsByPage(userId, page, req)
-
-      authUserData = commentsApiResult.authUser ? commentsApiResult.authUser : {}
-
-      itemsApiResult = {}
-    }
-
-    const goToString = page > 1 ?
-      `upvoted?id=${userId}${showItems ? "" : "&comments=t"}&page=${page}` :
-      `upvoted?id=${userId}${showItems ? "" : "&comments=t"}`
-
-    return {
-      items: itemsApiResult && itemsApiResult.items,
+  return {
+    props: {
+      authUserData: authResult,
+      items: typeof itemResult.items === 'undefined' ? null : itemResult.items,
       showItems: showItems,
-      isMoreItems: itemsApiResult && itemsApiResult.isMore,
-      comments: commentsApiResult && commentsApiResult.comments,
+      isMoreItems: typeof itemResult.isMore === 'undefined' ? false : itemResult.isMore,
+      comments: typeof commentResult.items === 'undefined' ? null : commentResult.items,
       showComments: !showItems,
-      isMoreComments: commentsApiResult && commentsApiResult.isMore,
-      authUserData: authUserData,
-      userId: userId,
+      isMoreComments: typeof commentResult.isMore === 'undefined' ? false : commentResult.isMore,
       page: page,
-      getDataError: itemsApiResult.getDataError || commentsApiResult.getDataError,
-      notAllowedError: itemsApiResult.notAllowedError || commentsApiResult.notAllowedError,
+      notFoundError: typeof itemResult.notFoundError !== 'undefined' && itemResult.notFoundError ||
+                      typeof commentResult.notFoundError !== 'undefined' && commentResult.notFoundError,
+      getDataError: typeof itemResult.getDataError !== 'undefined' && itemResult.getDataError ||
+                      typeof commentResult.notFoundError !== 'undefined' && commentResult.notFoundError
       goToString: goToString
     }
   }
+}
 
+export default class extends Component {
   render () {
     return (
       <div className="layout-wrapper">

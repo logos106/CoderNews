@@ -69,15 +69,18 @@ export default async function getNewestItemsByPage(page, user) {
       let iids = items.map((item) => item.id)
 
       // Get votes with those items' id
-      let votes = await directus.items('user_votes').readMany({
-        filter: {
-          username: { _eq: user.username },
-          date: { _gte: startDate },
-          id: { _in: iids },
-          type: { _eq: 'item' }
-        }
-      })
-      votes = votes.data
+      let votes = []
+      if (iids.length > 0) {
+        votes = await directus.items('user_votes').readMany({
+          filter: {
+            username: { _eq: user.username },
+            date: { _gte: startDate },
+            id: { _in: iids },
+            type: { _eq: 'item' }
+          }
+        })
+        votes = votes.data
+      }
 
       // Add some properties for to each item
       items.forEach((item, i) => {

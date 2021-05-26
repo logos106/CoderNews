@@ -1,19 +1,63 @@
-import axios from "axios"
+import credential from "../../utils/apiCredential.js"
+import config from "../../utils/config.js"
+import moment from "moment"
 
-import apiBaseUrl from "../../utils/apiCredential.js"
+export default async function getUserHiddenItemsByPage(page, user) {
+  const directus = credential.directus
+  const itemsPerPage = config.itemsPerPage
 
-export default async function getUserUpvotedItemsByPage(userId, page, req) {
   try {
-    const cookie = req.headers.cookie ? req.headers.cookie : ""
+    // Get hidden
+    let upvotes = await directus.items('user_votes').readMany({
+      filter: {
+        username: { _eq: user.username },
+        upvote: { _eq: true },
+        type: { _eq: 'item' }
+      },
+      offset: (page - 1) * itemsPerPage,
+      limit: itemsPerPage,
+      meta: 'total_count'
+    });
 
-    const response = await axios({
-      url: `${apiCredential.baseURL}/items/get-user-upvoted-items-by-page?userId=${userId}&page=${page}`,
-      headers: req ? {cookie: cookie} : "",
-      withCredentials: true
+    // Remember the total number of favorites selected
+    const totalVotes = upvotes.meta.total_count
+
+    // Filter for items
+    let filterItems = {}
+
+    upvotes = upvotes.data
+    let vids = upvotes.map((upvote) => upvote.id)
+    if (vids.length > 0) filterItems.id = { _in: vids }
+    if (!user.showDead) filterItems.dead = { _eq: false }
+
+    // Aggregate items
+    let items = await directus.items('items').readMany({
+      filter: filterItems
+    });
+
+    items = items.data
+    items.forEach((item, i) => {
+      item.rank = (page - 1) * itemsPerPage + i + 1
     })
 
-    return response.data
+    items.forEach((item, i) => {
+      item.rank = ((page - 1) * itemsPerPage) + (i + 1)
+
+      item.votedOnByUser = true
+      item.unvoteExpired = upvotes[i].date + (3600 * config.hrsUntilUnvoteExpires) < moment().unix() ? true : false
+
+    })
+
+    return {
+      success: true,
+      items: items,
+      isMore: totalVotes > (((page - 1) * itemsPerPage) + itemsPerPage) ? true : false
+    }
+
   } catch(error) {
-    return {getDataError: true}
+    console.log(error)
+    return { getDataError: true }
   }
+
+
 }

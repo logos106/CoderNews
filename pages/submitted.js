@@ -1,31 +1,33 @@
 import { Component } from "react"
-
+import authUser from "../api/users/authUser.js"
 import Header from "../components/header.js"
 import Footer from "../components/footer.js"
 import HeadMetadata from "../components/headMetadata.js"
 import ItemsList from "../components/itemsList.js"
 import GoogleAnalytics from "../components/googleAnalytics.js"
-
 import getItemsSubmittedByUser from "../api/items/getItemsSubmittedByUser.js"
 
-export default class extends Component {
-  static async getInitialProps ({req, query}) {
-    const userId = query.id ? query.id : ""
-    const page = query.page ? parseInt(query.page) : 1
+export async function getServerSideProps(context) {
+  const authResult = await authUser()
 
-    const apiResult = await getItemsSubmittedByUser(userId, page, req)
+  const userId = context.query.id ? context.query.id : ""
+  const page = context.query.page ? parseInt(context.query.page) : 1
+  const apiResult = await getItemsSubmittedByUser(userId, page, authResult)
 
-    return {
-      items: apiResult && apiResult.items,
-      authUserData: apiResult && apiResult.authUser ? apiResult.authUser : {},
+  return {
+    props: {
+      items: typeof result.items === 'undefined' ? null : result.items,
+      authUserData: authResult,
       page: page,
       userId: userId,
-      isMore: apiResult && apiResult.isMore,
-      getDataError: apiResult && apiResult.getDataError,
+      isMore: typeof result.isMore === 'undefined' ? false : result.isMore,
+      getDataError: typeof result.getDataError === 'undefined' ? false : result.getDataError,
       goToString: page > 1 ? `submitted?id=${userId}&page=${page}` : `submitted?id=${userId}`
     }
   }
+}
 
+export default class extends Component {
   render () {
     return (
       <div className="layout-wrapper">

@@ -75,14 +75,18 @@ export default async function getRankedAskItemsByPage(page, user) {
       const iids = items.map((item) => item.id)
 
       // Votes
-      const votes = await directus.items('user_votes').readMany({
-        filter: {
-          username: user.username,
-          date: { _gte: startDate },
-          id: { _in: iids },
-          type: "item"
-        }
-      })
+      let votes = []
+      if (iids.length > 0) {
+        votes = await directus.items('user_votes').readMany({
+          filter: {
+            username: user.username,
+            date: { _gte: startDate },
+            id: { _in: iids },
+            type: "item"
+          }
+        })
+        votes = votes.data
+      }
 
       items.forEach((item, i) => {
         item.rank = ((page - 1) * itemsPerPage) + (i + 1)
@@ -95,7 +99,7 @@ export default async function getRankedAskItemsByPage(page, user) {
           item.editAndDeleteExpired = hasEditAndDeleteExpired
         }
 
-        const vote = votes.data.find(function(e) {
+        const vote = votes.find(function(e) {
           return e.id === item.id
         })
 

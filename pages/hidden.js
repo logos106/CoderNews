@@ -1,37 +1,40 @@
 import { Component } from "react"
-
+import authUser from "../api/users/authUser.js"
 import Header from "../components/header.js"
 import Footer from "../components/footer.js"
 import HeadMetadata from "../components/headMetadata.js"
 import ItemsList from "../components/itemsList.js"
 import GoogleAnalytics from "../components/googleAnalytics.js"
-
 import getUserHiddenItemsByPage from "../api/items/getUserHiddenItemsByPage.js"
 
-export default class extends Component {
-  static async getInitialProps ({req, query, res}) {
-    const page = query.page ? parseInt(query.page) : 1
+export async function getServerSideProps(context) {
+  const authResult = await authUser()
 
-    const apiResult = await getUserHiddenItemsByPage(page, req)
+  const page = context.query.page ? parseInt(context.query.page) : 1
+  const result = await getUserHiddenItemsByPage(page, authUser)
 
-    if (apiResult.authError) {
-      res.writeHead(302, {
-        Location: "/login?goto=hidden"
-      })
+  // if (apiResult.authError) {
+  //   res.writeHead(302, {
+  //     Location: "/login?goto=hidden"
+  //   })
+  //
+  //   res.end()
+  // }
 
-      res.end()
-    }
-
-    return {
-      items: apiResult && apiResult.items,
-      authUserData: apiResult && apiResult.authUser ? apiResult.authUser : {},
+  // Pass data to the page via props
+  return {
+    props: {
+      authUserData: authResult,
+      items: typeof result.items === 'undefined' ? null : result.items,
       page: page,
-      isMore: apiResult && apiResult.isMore,
-      getDataError: apiResult && apiResult.getDataError,
+      isMore: typeof result.isMore === 'undefined' ? false : result.isMore,
+      getDataError: typeof result.getDataError === 'undefined' ? false : result.getDataError,
       goToString: page > 1 ? `hidden?page=${page}` : "hidden"
     }
   }
+}
 
+export default class extends Component {
   render () {
     return (
       <div className="layout-wrapper">

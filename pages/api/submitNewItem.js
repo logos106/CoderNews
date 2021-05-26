@@ -11,9 +11,9 @@ export default async function handler(req, res) {
     let text = JSON.parse(req.body).text;
 
     const directus = credential.directus
-  
+
     const authResult = await authUser()
-    
+
     if (text) {
       text = text.trim()
       text = text.replace(/<[^>]+>/g, "")
@@ -37,7 +37,7 @@ export default async function handler(req, res) {
       const items = directus.items('items')
 
       await items.createOne({
-    	by: authResult.username,
+        by: authResult.username,
         title: title,
         type: helper.getItemType(title, url, text),
         url: url,
@@ -50,10 +50,9 @@ export default async function handler(req, res) {
         comment_count: 0
       });
       return res.status(200).json({ success: true })
+
     } catch (error) {
-  
       res.status(200).json({ submitError: true })
     }
-  
+
   }
-  
