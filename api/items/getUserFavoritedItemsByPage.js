@@ -30,7 +30,7 @@ export default async function getUserFavoritedItemsByPage(author, page, user) {
     });
 
     // Remember the total number of favorites selected
-    const totalFavs = items.meta.total_count
+    const totalFavs = favs.meta.total_count
 
     // Filter for items
     let filterItems = {}

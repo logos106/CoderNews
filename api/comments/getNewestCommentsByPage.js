@@ -1,6 +1,5 @@
 import credential from "../../utils/apiCredential.js"
 import config from "../../utils/config.js"
-import helper from "../../utils/helper.js"
 import moment from "moment"
 
 export default async function getNewestCommentsByPage(page, user) {

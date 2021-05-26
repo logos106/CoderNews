@@ -9,7 +9,7 @@ import truncateItemTitle from "../utils/truncateItemTitle.js"
 import upvoteComment from "../api/comments/upvoteComment.js"
 // import downvoteComment from "../api/comments/downvoteComment.js"
 import unvoteComment from "../api/comments/unvoteComment.js"
-import favoriteComment from "../api/comments/favoriteComment.js"
+// import favoriteComment from "../api/comments/favoriteComment.js"
 import unfavoriteComment from "../api/comments/unfavoriteComment.js"
 import killComment from "../api/moderation/killComment.js"
 import unkillComment from "../api/moderation/unkillComment.js"
@@ -170,7 +170,7 @@ export default class extends Component {
     }
   }
 
-  requestFavoriteComment = () => {
+  requestFavoriteComment = async () => {
     if (this.state.loading) return
 
     if (!this.props.userSignedIn) {
@@ -180,13 +180,19 @@ export default class extends Component {
 
       const self = this
 
-      favoriteComment(this.state.comment.id, function(response) {
-        if (response.authError) {
-          window.location.href = `/login?goto=${encodeURIComponent(self.props.goToString)}`
-        } else {
-          window.location.href = `/favorites?id=${self.props.currUsername}&comments=t`
-        }
+      let res = await fetch("/api/login", {
+        method: "POST",
+        body: JSON.stringify({
+          id: this.state.comment.id
+        })
       })
+      let response = await res.json()
+      
+      if (response.authError) {
+        window.location.href = `/login?goto=${encodeURIComponent(self.props.goToString)}`
+      } else {
+        window.location.href = `/favorites?id=${self.props.currUsername}&comments=t`
+      }
     }
   }
 

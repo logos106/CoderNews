@@ -9,7 +9,7 @@ import HeadMetadata from "../components/headMetadata.js"
 import GoogleAnalytics from "../components/googleAnalytics.js"
 
 import getDeleteItemPageData from "../api/items/getDeleteItemPageData.js"
-import deleteItem from "../api/items/deleteItem.js"
+// import deleteItem from "../api/items/deleteItem.js"
 import authUser from "../api/users/authUser.js"
 
 export async function getServerSideProps(context) {
