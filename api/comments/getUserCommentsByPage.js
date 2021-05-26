@@ -54,6 +54,7 @@ export default async function getUserCommentsByPage(username, page, user) {
     let comments = filtered_comments.data
     console.log("Comments: ", comments)
     if (!user.userSignedIn) {
+      console.log("--------------------")
       return {
         success: true,
         comments: comments,

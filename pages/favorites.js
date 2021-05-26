@@ -43,7 +43,7 @@ export async function getServerSideProps(context) {
       notFoundError: typeof itemResult.notFoundError !== 'undefined' && itemResult.notFoundError ||
                       typeof commentResult.notFoundError !== 'undefined' && commentResult.notFoundError,
       getDataError: typeof itemResult.getDataError !== 'undefined' && itemResult.getDataError ||
-                      typeof commentResult.notFoundError !== 'undefined' && commentResult.notFoundError
+                      typeof commentResult.notFoundError !== 'undefined' && commentResult.notFoundError,
       goToString: goToString
     }
   }

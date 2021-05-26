@@ -133,6 +133,7 @@ export default class extends Component {
         {
           this.state.comments ?
           this.state.comments.map((comment, index) => {
+            console.log("Comment: ", comment)
             return (
               <div key={comment.id} className="listed-comment">
                 <table>
@@ -156,7 +157,7 @@ export default class extends Component {
                                 </div>
                               </> :
                               <>
-                                <div className="listed-comment-upvote" onClick={() => this.requestUpvoteComment(comment.id, comment.parentItemId, index)}>
+                                <div className="listed-comment-upvote" onClick={() => this.requestUpvoteComment(comment.id, comment.parent_id, index)}>
                                   <span></span>
                                 </div>
                               </>
@@ -174,7 +175,7 @@ export default class extends Component {
                                 </div>
                               </> :
                               <>
-                                <div className="listed-comment-downvote" onClick={() => this.requestDownvoteComment(comment.id, comment.parentItemId, index)}>
+                                <div className="listed-comment-downvote" onClick={() => this.requestDownvoteComment(comment.id, comment.parent_id, index)}>
                                   <span></span>
                                 </div>
                               </>
@@ -207,7 +208,7 @@ export default class extends Component {
                           }
                           <span> | </span>
                           <span className="listed-comment-parent">
-                            <a href={comment.isParent ? `/item?id=${comment.parentItemId}` : `/comment?id=${comment.parentCommentId}`}>parent</a>
+                            <a href={comment.isParent ? `/item?id=${comment.parent_id}` : `/comment?id=${comment.parent_comment_id}`}>parent</a>
                           </span>
                           {
                             this.props.showUnfavoriteOption ?

@@ -11,7 +11,7 @@ export default async function getCommentById(commentId, page, user) {
   try {
     let comment = await directus.items('comments').readOne(commentId)
 
-    if (!commnet) return {notFoundError: true}
+    if (!comment) return {notFoundError: true}
 
     comment.pageMetadataTitle = comment.text.replace(/<[^>]+>/g, "")
     if (!comment.children) comment.children = "";
