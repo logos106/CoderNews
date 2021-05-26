@@ -2,11 +2,11 @@ import credential from "../../../utils/apiCredential.js"
 import authUser from "../../../api/users/authUser.js"
 
 export default async function handler(req, res) {
-  if (!req.query.id)
+  const commentId = JSON.parse(req.body).commentId
+
+  if (!commentId)
     return res.json({ submitError: true })
 
-  const commentId = req.query.id
-  
   const user = await authUser()
     
   if (!user.userSignedIn)

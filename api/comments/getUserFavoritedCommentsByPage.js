@@ -5,7 +5,7 @@ import moment from "moment"
 
 export default async function getUserFavoritedCommentsByPage(author, page, user) {
   const directus = credential.directus
-  const itemsPerPage = config.itemsPerPage
+  const commentsPerPage = config.commentsPerPage
 
   if (!author || !page) return { getDataError: true }
 
@@ -27,8 +27,8 @@ export default async function getUserFavoritedCommentsByPage(author, page, user)
         username: { _eq: author },
         type: { _eq: 'comment' }
       },
-      offset: (page - 1) * itemsPerPage,
-      limit: itemsPerPage,
+      offset: (page - 1) * commentsPerPage,
+      limit: commentsPerPage,
       meta: 'total_count'
     });
 
@@ -51,14 +51,14 @@ export default async function getUserFavoritedCommentsByPage(author, page, user)
 
     comments = comments.data
     comments.forEach((comment, i) => {
-      comment.rank = (page - 1) * itemsPerPage + i + 1
+      comment.rank = (page - 1) * commentsPerPage + i + 1
     })
 
     if (!user.signedIn) {
       return {
         success: true,
         items: comments,
-        isMore: totalFavoriteItemsCount > (((page -1) * itemsPerPage) + itemsPerPage) ? true : false
+        isMore: totalFavoriteItemsCount > (((page -1) * commentsPerPage) + commentsPerPage) ? true : false
       }
     }
     else {
@@ -96,7 +96,7 @@ export default async function getUserFavoritedCommentsByPage(author, page, user)
       return {
         success: true,
         items: comments,
-        isMore: totalFavs > (((page - 1) * itemsPerPage) + itemsPerPage) ? true : false
+        isMore: totalFavs > (((page - 1) * commentsPerPage) + commentsPerPage) ? true : false
       }
     }
 

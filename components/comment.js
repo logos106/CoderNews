@@ -6,11 +6,11 @@ import renderPointsString from "../utils/renderPointsString.js"
 import renderCreatedTime from "../utils/renderCreatedTime.js"
 import truncateItemTitle from "../utils/truncateItemTitle.js"
 
-import upvoteComment from "../api/comments/upvoteComment.js"
+// import upvoteComment from "../api/comments/upvoteComment.js"
 // import downvoteComment from "../api/comments/downvoteComment.js"
-import unvoteComment from "../api/comments/unvoteComment.js"
+// import unvoteComment from "../api/comments/unvoteComment.js"
 // import favoriteComment from "../api/comments/favoriteComment.js"
-import unfavoriteComment from "../api/comments/unfavoriteComment.js"
+// import unfavoriteComment from "../api/comments/unfavoriteComment.js"
 import killComment from "../api/moderation/killComment.js"
 import unkillComment from "../api/moderation/unkillComment.js"
 
@@ -60,7 +60,7 @@ export default class extends Component {
 
       const self = this
 
-      let res = await fetch("/api/comment/add", {
+      let res = await fetch("/api/comments/add", {
         method: "POST",
         body: JSON.stringify(commentData)
       })
@@ -95,7 +95,7 @@ export default class extends Component {
     }
   }
 
-  requestUpvoteComment = () => {
+  requestUpvoteComment = async () => {
     if (this.state.loading) return
 
     if (!this.props.userSignedIn) {
@@ -107,14 +107,21 @@ export default class extends Component {
       this.forceUpdate()
 
       const self = this
-
-      upvoteComment(this.state.comment.id, this.state.comment.parent_id, function(response) {
-        if (response.authError) {
-          window.location.href = `/login?goto=${encodeURIComponent(self.props.goToString)}`
-        } else {
-          self.setState({loading: false})
-        }
+      let res = await fetch("/api/comments/upvote", {
+        method: "POST",
+        body: JSON.stringify({
+          commentId: this.state.comment.id,
+          parentItemId: this.state.comment.parent_id
+        })
       })
+
+      let response = await res.json()
+
+      if (response.authError) {
+        window.location.href = `/login?goto=${encodeURIComponent(self.props.goToString)}`
+      } else {
+        self.setState({loading: false})
+      }
     }
   }
 
@@ -130,7 +137,7 @@ export default class extends Component {
       this.forceUpdate()
 
       const self = this
-      let res = await fetch("/api/comment/downvote", {
+      let res = await fetch("/api/comments/downvote", {
         method: "POST",
         body: JSON.stringify({
           commentId: commentId,
@@ -147,7 +154,7 @@ export default class extends Component {
     }
   }
 
-  requestUnvoteComment = () => {
+  requestUnvoteComment = async () => {
     if (this.state.loading) return
 
     if (!this.props.userSignedIn) {
@@ -159,14 +166,19 @@ export default class extends Component {
       this.forceUpdate()
 
       const self = this
-
-      unvoteComment(this.state.comment.id, function(response) {
-        if (response.authError) {
-          window.location.href = `/login?goto=${encodeURIComponent(self.props.goToString)}`
-        } else {
-          self.setState({loading: false})
-        }
+      let res = await fetch("/api/comments/unvote", {
+        method: "POST",
+        body: JSON.stringify({
+          commentId: this.state.comment.id
+        })
       })
+
+      let response = await res.json()
+      if (response.authError) {
+        window.location.href = `/login?goto=${encodeURIComponent(self.props.goToString)}`
+      } else {
+        self.setState({loading: false})
+      }
     }
   }
 
@@ -196,7 +208,7 @@ export default class extends Component {
     }
   }
 
-  requestUnfavoriteComment = () => {
+  requestUnfavoriteComment = async () => {
     if (this.state.loading) return
 
     if (!this.props.userSignedIn) {
@@ -208,14 +220,19 @@ export default class extends Component {
       this.forceUpdate()
 
       const self = this
-
-      unfavoriteComment(this.state.comment.id, function(response) {
-        if (response.authError) {
-          window.location.href = `/login?goto=${encodeURIComponent(self.props.goToString)}`
-        } else {
-          self.setState({loading: false})
-        }
+      let res = await fetch("/api/comments/unfavorite", {
+        method: "POST",
+        body: JSON.stringify({
+          commentId: this.state.comment.id
+        })
       })
+
+      let response = await res.json()
+      if (response.authError) {
+        window.location.href = `/login?goto=${encodeURIComponent(self.props.goToString)}`
+      } else {
+        self.setState({loading: false})
+      }
     }
   }
 
