@@ -75,6 +75,7 @@ export default class extends Component {
       this.setState({loading: true})
 
       const self = this
+      
       let res = await fetch("/api/login", {
         method: "POST",
         body: JSON.stringify({
@@ -116,7 +117,7 @@ export default class extends Component {
     const username = this.state.createAccountUsernameInputValue
     const useremail = this.state.createAccountUseremailInputValue
     const password = this.state.createAcountPasswordInputValue
-    
+
     if (username.length < 2 || username.length > 15) {
       this.setState({
         createAccountUsernameExistsError: false,
@@ -152,7 +153,7 @@ export default class extends Component {
         })
       })
       let response = await res.json()
-    
+
       if (response.usernameLengthError) {
         self.setState({
           loading: false,
