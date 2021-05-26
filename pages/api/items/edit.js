@@ -1,17 +1,16 @@
-import { Directus, Auth } from '@directus/sdk';
-import credential from "../../utils/apiCredential.js"
-import helper from "../../utils/helper.js"
+import authUser from "../../../api/users/authUser.js"
+import credential from "../../../utils/apiCredential.js"
+import helper from "../../../utils/helper.js"
 
-export default async function editItem(id, newTitle, newText, callback) {
+export default async function handler(req, res) {
+  const useremail = JSON.parse(req.body).id;
+  const password = JSON.parse(req.body).title;
+  const password = JSON.parse(req.body).text;
+
+  const user = await authUser()
+
   try {
-    // Instantiate a new Directus object
-    const directus = new Directus(credential.baseURL)
-
-    // Login to Directus
-    await directus.auth.login({
-      email: credential.email,
-      password: credential.password,
-    });
+    const directus = credential.directus
 
     // Find the item by ID
     const items = directus.items('items')
@@ -43,14 +42,14 @@ export default async function editItem(id, newTitle, newText, callback) {
       type: newType
     });
 
-    callback({ success: true })
+    return res.status(200).json({ success: true })
 
     // searchApi.editItem(itemId, newItemTitle, newItemText, function() {
     //   callback({success: true})
     // })
 
   } catch(error) {
-            console.log(error)
-    callback({ submitError: true })
+    console.log(error)
+    return res.status(200).json({ submitError: true })
   }
 }

@@ -1,0 +1,42 @@
+import authUser from "../../../api/users/authUser.js"
+import credential from "../../../utils/apiCredential.js"
+
+export default async function handler(req, res) {
+  const itemId = req.query.id
+
+  const user = await authUser()
+
+  try {
+    const directus = credential.directus
+
+    // Find the item and delete
+    const item = await directus.items('items').readOne(id)
+
+    // Get the hidden
+    const hiddens = await directus.items('user_hiddens').readMany({
+      filter: {
+        username: { _eq: user.username },
+        id: { _eq: itemId }
+      }
+    });
+    hiddens = hiddens.data
+
+    // If exist already, error  ???
+    if (hiddens.length > 0)
+      return res.json({ submitError: true })
+
+    // Create a favorite
+    await directus.items('user_hiddens').createOne({
+      username: user.username,
+      id: itemId,
+      date: moment().unix(),
+      itemCreationDate: item.created
+    })
+
+    return res.status(200).json({ success: true })
+
+  } catch(error) {
+    console.log(error)
+    return res.status(200).json({ submitError: true })
+  }
+}
