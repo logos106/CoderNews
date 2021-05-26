@@ -1,7 +1,7 @@
 import { Component } from "react"
 
 import "../styles/pages/edit-comment.module.css"
-
+import authUser from "../api/users/authUser.js"
 import Header from "../components/header.js"
 import Footer from "../components/footer.js"
 import HeadMetadata from "../components/headMetadata.js"
@@ -14,19 +14,22 @@ import truncateItemTitle from "../utils/truncateItemTitle.js"
 import getEditCommentPageData from "../api/comments/getEditCommentPageData.js"
 import editComment from "../api/comments/editComment.js"
 
-export default class extends Component {
-  static async getInitialProps({ query, req }) {
-    const apiResult = await getEditCommentPageData(query.id, req)
-
-    return {
-      comment: apiResult && apiResult.comment,
-      authUserData: apiResult && apiResult.authUser ? apiResult.authUser : {},
-      getDataError: apiResult && apiResult.getDataError,
-      notAllowedError: apiResult && apiResult.notAllowedError,
-      notFoundError: apiResult && apiResult.notFoundError,
-      goToString: `edit-comment?id=${query.id}`
+export async function getServerSideProps(context) {
+  const authResult = await authUser()
+  const result = await getEditCommentPageData(context.query.id, context.req)
+  return {
+    props: {
+      comment: result.comment,
+      authUserData: authResult,
+      getDataError: typeof result.getDataError === 'undefined' ? false : result.getDataError,
+      notAllowedError: typeof result.notAllowedError === 'undefined' ? false : result.notAllowedError,
+      notFoundError: typeof result.notFoundError === 'undefined' ? false : result.notFoundError,
+      goToString: `edit-comment?id=${context.query.id}`
     }
   }
+}
+
+export default class extends Component {
 
   constructor(props) {
     super(props)
@@ -149,7 +152,7 @@ export default class extends Component {
                         </span>
                         <span> | </span>
                         <span className="edit-comment-top-section-parent">
-                          <a href={comment.isParent ? `/item?id=${comment.parentItemId}` : `/comment?id=${comment.parentCommentId}`}>parent</a>
+                          <a href={comment.isParent ? `/item?id=${comment.parent_id}` : `/comment?id=${comment.parentCommentId}`}>parent</a>
                         </span>
                         <span> | </span>
                         <span>
@@ -157,7 +160,7 @@ export default class extends Component {
                         </span>
                         <span> | </span>
                         <span className="edit-comment-top-section-article-title">
-                          on: <a href={`/item?id=${comment.parentItemId}`}>{truncateItemTitle(comment.parentItemTitle)}</a>
+                          on: <a href={`/item?id=${comment.parent_id}`}>{truncateItemTitle(comment.parent_title)}</a>
                         </span>
                         <div className="edit-comment-content">
                           <span dangerouslySetInnerHTML={{ __html: comment.text }}></span>

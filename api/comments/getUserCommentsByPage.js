@@ -1,7 +1,3 @@
-import axios from "axios"
-
-import apiBaseUrl from "../../utils/apiCredential.js"
-
 import credential from "../../utils/apiCredential.js"
 import config from "../../utils/config.js"
 import moment from "moment"
@@ -57,7 +53,7 @@ export default async function getUserCommentsByPage(username, page, user) {
     let totalCommentsCount = filtered_comments.meta.total_count
     let comments = filtered_comments.data
     console.log("Comments: ", comments)
-    if (!user.signedIn) {
+    if (!user.userSignedIn) {
       return {
         success: true,
         comments: comments,
@@ -72,37 +68,40 @@ export default async function getUserCommentsByPage(username, page, user) {
         if (comments[i].by === user.username) {
           const hasEditAndDeleteExpired =
             comments[i].created + (3600 * config.hrsUntilEditAndDeleteExpires) < moment().unix() ||
-            comments[i].children.length > 0
+            (!!comments[i].children && comments[i].children > 0)
 
           comments[i].editAndDeleteExpired = hasEditAndDeleteExpired
         }
       }
-
-      let filtered_voteDocs = await directus.items('user_votes').readMany({
-        filter: {
-          type: {
-            _eq: "comment"
-          },
-          id: {
-            _in: arrayOfCommentIds
-          },
-          username: {
-            _eq: user.username
+      console.log("arrayOfCommentIds for _in: ", arrayOfCommentIds)
+      let filtered_voteDocs;
+      if (arrayOfCommentIds.length > 0) {
+        filtered_voteDocs = await directus.items('user_votes').readMany({
+          filter: {
+            type: {
+              _eq: "comment"
+            },
+            id: {
+              _in: arrayOfCommentIds
+            },
+            username: {
+              _eq: user.username
+            }
+          }
+        })
+        let voteDocs = filtered_voteDocs.data
+        for (let i=0; i < voteDocs.length; i++) {
+          const commentObj = comments.find(function(comment) {
+            return comment.id === voteDocs[i].id
+          })
+  
+          if (commentObj) {
+            commentObj.votedOnByUser = true
+            commentObj.unvoteExpired = voteDocs[i].date + (3600 * config.hrsUntilUnvoteExpires) < moment().unix() ? true : false
           }
         }
-      })
-
-      let voteDocs = filtered_voteDocs.data
-      for (let i=0; i < voteDocs.length; i++) {
-        const commentObj = comments.find(function(comment) {
-          return comment.id === voteDocs[i].id
-        })
-
-        if (commentObj) {
-          commentObj.votedOnByUser = true
-          commentObj.unvoteExpired = voteDocs[i].date + (3600 * config.hrsUntilUnvoteExpires) < moment().unix() ? true : false
-        }
       }
+
 
       return {
         success: true,
@@ -112,6 +111,7 @@ export default async function getUserCommentsByPage(username, page, user) {
     }
 
   } catch(error) {
+    console.log("Error: ", error)
     return {getDataError: true}
   }
 }

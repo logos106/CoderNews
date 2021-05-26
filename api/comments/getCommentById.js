@@ -2,7 +2,7 @@ import credential from "../../utils/apiCredential.js"
 import config from "../../utils/config.js"
 import moment from "moment"
 
-export default async function getCommentById(page, user) {
+export default async function getCommentById(commentId, page, user) {
   // Get config
   const directus = credential.directus
   const commentsPerPage = config.commentsPerPage
@@ -10,14 +10,15 @@ export default async function getCommentById(page, user) {
   // Fetch items with conditions
   try {
     let comment = await directus.items('comments').readOne(commentId)
-    comment = comment.data
+
+    if (!commnet) return {notFoundError: true}
 
     comment.pageMetadataTitle = comment.text.replace(/<[^>]+>/g, "")
-
+    if (!comment.children) comment.children = "";
     // Get list of child comments from string
     const cids = comment.children.split(';')
     let comments = await directus.items('comments').readMany()
-    comments = comment.data
+    comments = comments.data
 
     let children = []
     for (let child of comments) {

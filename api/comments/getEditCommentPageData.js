@@ -1,19 +1,34 @@
-import axios from "axios"
+import credential from "../../utils/apiCredential.js"
+import config from "../../utils/config.js"
+import moment from "moment"
 
-import apiBaseUrl from "../../utils/apiCredential.js"
-
-export default async function getEditCommentPageData(commentId, req) {
+export default async function getEditCommentPageData(commentId, user) {
   try {
-    const cookie = req.headers.cookie ? req.headers.cookie : ""
+    const directus = credential.directus
+    if (!user.userSignedIn) 
+      return {notAllowedError: true}
+    else if (!commentId)
+      return {notFoundError: true}
 
-    const response = await axios({
-      url: `${apiCredential.baseURL}/comments/get-edit-comment-page-data?id=${commentId}`,
-      headers: req ? {cookie: cookie} : "",
-      withCredentials: true
-    })
+    let comment = await directus.items('comments').readOne(commentId)
 
-    return response.data
+    if (!comment) 
+      return {notFoundError: true}
+    else if (
+      comment.dead 
+      || comment.by != user.username
+      || comment.created + (3600 * config.hrsUntilEditAndDeleteExpires) < moment().unix()
+      || (comment.children && comment.children.length > 0)
+    )
+      return {notAllowedError: true}
+
+    comment.textForEditing = comment.text
+    .replace(/<a\b[^>]*>/g, "").replace(/<\/a>/g, "")
+    .replace(/<i\b[^>]*>/g,"*").replace(/<\/i>/g, "*")
+    
+    return {success: true, comment: comment}
   } catch(error) {
+    console.log("Error: ", error)
     return {getDataError: true}
   }
 }
