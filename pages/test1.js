@@ -1,46 +1,30 @@
 import { Component } from "react"
 import credential from "../utils/apiCredential.js"
-import { Directus, Auth } from '@directus/sdk';
 
 export async function getServerSideProps(context) {
-  // const directus = credential.directus
-  //
-  // const token = await directus.auth.login({
-  //   email: credential.email,
-  //   password: credential.password,
-  // },
-  // {
-	// 	refresh: {
-	// 		auto: true,
-	// 	},
-	// });
-  //
-  // let users = await directus.items('users').readMany({
-  //   filter: {
-  //       username: {_eq: 'kcc'},
-  //       id: {_eq: 8}
-  //   }
-  // });
-  //
-  // console.log(users)
+  const directus = credential.directus
 
-  // let users = [
-  //   {
-  //     name: 'Joe'
-  //   },
-  //   {
-  //     name: 'Seok'
-  //   },
-  //   {
-  //     name: 'Hyon'
-  //   }
-  // ]
-  //
-  // users.forEach((user, i) => user.rank = i)
+  const token = await directus.auth.login({
+    email: credential.email,
+    password: credential.password,
+  },
+  {
+		refresh: {
+			auto: true,
+		},
+	});
 
-  const rres = await directus.items('users').updateOne(8, {username : "PPPPPPPP"})
+  let users = await directus.items('users').readMany({
+    filter: {
+      _or: [
+        {username: { _eq: 'kkk' }},
+        {id: { _eq: 11 }}
+      ]
+    }
+  });
 
-  console.log ("RRES: ", rres)
+  console.log(users)
+
   const data = null
   return { props: { data } }
 }

@@ -20,7 +20,7 @@ export default async function handler(req, res) {
     const favs = await directus.items('user_favorites').readMany({
       filter: {
         username: { _eq: user.username },
-        id: { _eq: itemId },
+        item_id: { _eq: itemId },
         type: { _eq: 'item' }
       }
     });

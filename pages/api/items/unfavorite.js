@@ -1,46 +1,30 @@
-import credential from "../../../utils/apiCredential.js"
 import authUser from "../../../api/users/authUser.js"
+import credential from "../../../utils/apiCredential.js"
 
 export default async function handler(req, res) {
-  if (!req.query.id)
-    return res.json({ submitError: true })
+  const itemId = req.query.id
 
   const user = await authUser()
-  if (!user.userSignedIn)
-    return res.json({ authError: true })
 
   try {
     const directus = credential.directus
 
-    // Get the item
-    const itemId = req.query.id
-    let item = await directus.items('items').readOne(req.query.id);
-
-    // Get the favorite
-    const favs = await directus.items('user_favorites').readMany({
+    // Find the item and delete
+    const hiddens = await directus.items('user_favorites').readMany({
       filter: {
         username: { _eq: user.username },
-        id: { _eq: itemId },
-        type: { _eq: 'item' }
+        item_id: { _eq: itemId }
       }
-    });
-    favs = favs.data
-
-    // If exist already, error  ???
-    if (favs.length > 0)
-      return res.json({ submitError: true })
-
-    // Create a favorite
-    await directus.items('user_favorites').createOne({
-      username: user.username,
-      type: "item",
-      id: itemId,
-      date: moment().unix()
     })
+    hiddens = hiddens.data
+
+    if (hiddens.length > 0)
+      await directus.items('user_favorites').deleteOne(hiddens[0].id)
 
     return res.status(200).json({ success: true })
-  } catch (error) {
+
+  } catch(error) {
+    console.log(error)
     return res.status(200).json({ submitError: true })
   }
-
 }

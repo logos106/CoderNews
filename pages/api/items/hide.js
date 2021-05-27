@@ -16,7 +16,7 @@ export default async function handler(req, res) {
     const hiddens = await directus.items('user_hiddens').readMany({
       filter: {
         username: { _eq: user.username },
-        id: { _eq: itemId }
+        item_id: { _eq: itemId }
       }
     });
     hiddens = hiddens.data

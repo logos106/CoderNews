@@ -10,28 +10,16 @@ export default async function handler(req, res) {
     const directus = credential.directus
 
     // Find the item and delete
-    const item = await directus.items('items').readOne(id)
-
-    // Get the hidden
     const hiddens = await directus.items('user_hiddens').readMany({
       filter: {
         username: { _eq: user.username },
-        id: { _eq: itemId }
+        item_id: { _eq: itemId }
       }
-    });
+    })
     hiddens = hiddens.data
 
-    // If exist already, error  ???
     if (hiddens.length > 0)
-      return res.json({ submitError: true })
-
-    // Create a favorite
-    await directus.items('user_hiddens').createOne({
-      username: user.username,
-      id: itemId,
-      date: moment().unix(),
-      itemCreationDate: item.created
-    })
+      await directus.items('user_hiddens').deleteOne(hiddens[0].id)
 
     return res.status(200).json({ success: true })
 

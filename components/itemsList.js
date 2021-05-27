@@ -1,11 +1,5 @@
 import { Component } from "react"
 import Link from 'next/link'
-import upvoteItem from "../api/items/upvoteItem.js"
-import unvoteItem from "../api/items/unvoteItem.js"
-import unfavoriteItem from "../api/items/unfavoriteItem.js"
-import killItem from "../api/moderation/killItem.js"
-import unkillItem from "../api/moderation/unkillItem.js"
-
 import renderCreatedTime from "../utils/renderCreatedTime.js"
 
 export default class extends Component {
@@ -17,7 +11,7 @@ export default class extends Component {
     }
   }
 
-  requestUpvoteItem = (itemId, itemIndexPosition) => {
+  requestUpvoteItem = async (itemId, itemIndexPosition) => {
     if (this.state.loading) return
 
     if (!this.props.userSignedIn) {
@@ -30,17 +24,18 @@ export default class extends Component {
 
       const self = this
 
-      upvoteItem(itemId, function(response) {
-        if (response.authError) {
-          window.location.href = `/login?goto=${encodeURIComponent(self.props.goToString)}`
-        } else {
-          self.setState({loading: false})
-        }
-      })
+      let res = await fetch("/api/items/upvote?id=" + itemId, {method: "GET"})
+      let response = await res.json()
+
+      if (response.authError) {
+        window.location.href = `/login?goto=${encodeURIComponent(self.props.goToString)}`
+      } else {
+        self.setState({loading: false})
+      }
     }
   }
 
-  requestUnvoteItem = (itemId, itemIndexPosition) => {
+  requestUnvoteItem = async (itemId, itemIndexPosition) => {
     if (this.state.loading) return
 
     if (!this.props.userSignedIn) {
@@ -53,17 +48,18 @@ export default class extends Component {
 
       const self = this
 
-      unvoteItem(itemId, function(response) {
-        if (response.authError) {
-          window.location.href = `/login?goto=${encodeURIComponent(self.props.goToString)}`
-        } else {
-          self.setState({loading: false})
-        }
-      })
+      let res = await fetch("/api/items/unvote?id=" + itemId, {method: "GET"})
+      let response = await res.json()
+
+      if (response.authError) {
+        window.location.href = `/login?goto=${encodeURIComponent(self.props.goToString)}`
+      } else {
+        self.setState({loading: false})
+      }
     }
   }
 
-  requestUnfavoriteItem = (itemId) => {
+  requestUnfavoriteItem = async (itemId) => {
     if (this.state.loading) return
 
     const self = this
@@ -71,13 +67,15 @@ export default class extends Component {
     if (!this.props.userSignedIn) {
       window.location.href = `/login?goto=${encodeURIComponent(this.props.goToString)}`
     } else {
-      unfavoriteItem(itemId, function(response) {
-        if (response.authError) {
-          window.location.href = `/login?goto=${encodeURIComponent(self.props.goToString)}`
-        } else {
-          window.location.href = ""
-        }
-      })
+
+      let res = await fetch("/api/items/unhide?id=" + itemId, {method: "GET"})
+      let response = await res.json()
+
+      if (response.authError) {
+        window.location.href = `/login?goto=${encodeURIComponent(self.props.goToString)}`
+      } else {
+        window.location.href = ""
+      }
     }
   }
 
@@ -133,24 +131,30 @@ export default class extends Component {
     }
   }
 
-  requestKillItem = (itemId) => {
+  requestKillItem = async (itemId) => {
     if (this.state.loading) return
 
     this.setState({loading: true})
 
-    killItem(itemId, function(response) {
-      window.location.href = ""
+    const self = this
+    let res = await fetch("/api/moderation/killItem?id=" + itemId, {
+      method: "GET"
     })
+
+    window.location.href = ""
   }
 
-  requestUnkillItem = (itemId) => {
+  requestUnkillItem = async (itemId) => {
     if (this.state.loading) return
 
     this.setState({loading: true})
 
-    unkillItem(itemId, function(response) {
-      window.location.href = ""
+    const self = this
+    let res = await fetch("/api/moderation/unkillItem?id=" + itemId, {
+      method: "GET"
     })
+
+    window.location.href = ""
   }
 
   render() {

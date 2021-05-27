@@ -1,28 +1,31 @@
 import { Component } from "react"
-
-import styles from "../../styles/pages/moderation/shadow-banned-users.module.css"
-
+import authUser from "../api/users/authUser.js"
 import AlternateHeader from "../../components/alternateHeader.js"
 import HeadMetadata from "../../components/headMetadata.js"
 import GoogleAnalytics from "../../components/googleAnalytics.js"
-
 import getShadowBannedUsersByPage from "../../api/moderation/getShadowBannedUsersByPage.js"
 
-export default class extends Component {
-  static async getInitialProps ({ req, query }) {
-    const page = query.page ? parseInt(query.page) : 1
+import styles from "../../styles/pages/moderation/shadow-banned-users.module.css"
 
-    const apiResult = await getShadowBannedUsersByPage(page, req)
+export async function getServerSideProps(context) {
+  const authResult = await authUser()
 
-    return {
-      users: apiResult && apiResult.users,
+  const page = context.query.page ? parseInt(context.query.page) : 1
+  const result = await getShadowBannedUsersByPage(page, authResult)
+
+  return {
+    props: {
+      authUserData: authResult,
+      users: typeof result.users === 'undefined' ? null : result.users,
       page: page,
-      isMore: apiResult && apiResult.isMore,
-      getDataError: apiResult && apiResult.getDataError,
-      notAllowedError: apiResult && apiResult.notAllowedError
+      isMore: typeof result.isMore === 'undefined' ? false : result.isMore,
+      getDataError: typeof result.getDataError === 'undefined' ? false : result.getDataError,
+      notAllowedError: typeof result.notAllowedError === 'undefined' ? false : result.notAllowedError,
     }
   }
+}
 
+export default class extends Component {
   render () {
     return (
       <div className="layout-wrapper">

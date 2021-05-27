@@ -1,31 +1,37 @@
 import { Component } from "react"
-
-import styles from "../../styles/pages/moderation/logs.module.css"
-
+import authUser from "../api/users/authUser.js"
 import AlternateHeader from "../../components/alternateHeader.js"
 import HeadMetadata from "../../components/headMetadata.js"
 import GoogleAnalytics from "../../components/googleAnalytics.js"
-
 import renderCreatedTime from "../../utils/renderCreatedTime.js"
 import truncateItemTitle from "../../utils/truncateItemTitle.js"
-
 import getModerationLogsByPage from "../../api/moderation/getModerationLogsByPage.js"
+
+import styles from "../../styles/pages/moderation/logs.module.css"
+
+export async function getServerSideProps(context) {
+  const authResult = await authUser()
+
+  const category = context.query.category ? context.query.category : "all"
+  const page = context.query.page ? parseInt(context.query.page) : 1
+  const result = await getModerationLogsByPage(category, page, authResult)
+
+  return {
+    props: {
+      authUserData: authResult,
+      logs: typeof result.logs === 'undefined' ? null : result.logs,
+      category: typeof result.category === 'undefined' ? null : result.category,
+      page: page,
+      isMore: typeof result.isMore === 'undefined' ? false : result.isMore,
+      getDataError: typeof result.getDataError === 'undefined' ? false : result.getDataError,
+      notAllowedError: typeof result.notAllowedError === 'undefined' ? false : result.notAllowedError,
+    }
+  }
+}
 
 export default class extends Component {
   static async getInitialProps ({ req, query }) {
-    const category = query.category ? query.category : "all"
-    const page = query.page ? parseInt(query.page) : 1
 
-    const apiResult = await getModerationLogsByPage(category, page, req)
-
-    return {
-      logs: apiResult && apiResult.logs,
-      category: apiResult && apiResult.categoryString,
-      page: page,
-      isMore: apiResult && apiResult.isMore,
-      getDataError: apiResult && apiResult.getDataError,
-      notAllowedError: apiResult && apiResult.notAllowedError
-    }
   }
 
   updateFilterOptionValue = (event) => {

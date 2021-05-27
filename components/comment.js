@@ -6,13 +6,13 @@ import renderPointsString from "../utils/renderPointsString.js"
 import renderCreatedTime from "../utils/renderCreatedTime.js"
 import truncateItemTitle from "../utils/truncateItemTitle.js"
 
-import upvoteComment from "../api/comments/upvoteComment.js"
-// import downvoteComment from "../api/comments/downvoteComment.js"
-import unvoteComment from "../api/comments/unvoteComment.js"
-import favoriteComment from "../api/comments/favoriteComment.js"
-import unfavoriteComment from "../api/comments/unfavoriteComment.js"
-import killComment from "../api/moderation/killComment.js"
-import unkillComment from "../api/moderation/unkillComment.js"
+// import upvoteComment from "../api/comments/upvoteComment.js"
+// // import downvoteComment from "../api/comments/downvoteComment.js"
+// import unvoteComment from "../api/comments/unvoteComment.js"
+// import favoriteComment from "../api/comments/favoriteComment.js"
+// import unfavoriteComment from "../api/comments/unfavoriteComment.js"
+// import killComment from "../api/moderation/killComment.js"
+// import unkillComment from "../api/moderation/unkillComment.js"
 
 export default class extends Component {
   constructor(props) {
@@ -65,7 +65,8 @@ export default class extends Component {
         body: JSON.stringify(commentData)
       })
 
-    
+      let response = await res.json()
+      
       if (response.authError) {
         window.location.href = `/login?goto=${encodeURIComponent(self.props.goToString)}`
       } else if (response.textRequiredError) {
@@ -95,7 +96,7 @@ export default class extends Component {
     }
   }
 
-  requestUpvoteComment = () => {
+  requestUpvoteComment = async () => {
     if (this.state.loading) return
 
     if (!this.props.userSignedIn) {
@@ -147,7 +148,7 @@ export default class extends Component {
     }
   }
 
-  requestUnvoteComment = () => {
+  requestUnvoteComment = async () => {
     if (this.state.loading) return
 
     if (!this.props.userSignedIn) {
@@ -170,7 +171,7 @@ export default class extends Component {
     }
   }
 
-  requestFavoriteComment = () => {
+  requestFavoriteComment = async () => {
     if (this.state.loading) return
 
     if (!this.props.userSignedIn) {
@@ -190,7 +191,7 @@ export default class extends Component {
     }
   }
 
-  requestUnfavoriteComment = () => {
+  requestUnfavoriteComment = async () => {
     if (this.state.loading) return
 
     if (!this.props.userSignedIn) {
@@ -213,24 +214,28 @@ export default class extends Component {
     }
   }
 
-  requestKillComment = () => {
+  requestKillComment = async () => {
     if (this.state.loading) return
 
     this.setState({loading: true})
 
-    killComment(this.state.comment.id, function(response) {
-      window.location.href = ""
-    })
+    let res = await fetch("/api/moderation/killComment?id=" + this.state.comment.id, {
+      method: "GET"})
+    let response = await res.json()
+
+    window.location.href = ""
   }
 
-  requestUnkillComment = () => {
+  requestUnkillComment = async () => {
     if (this.state.loading) return
 
     this.setState({loading: true})
 
-    unkillComment(this.state.comment.id, function(response) {
-      window.location.href = ""
-    })
+    let res = await fetch("/api/moderation/unkillComment?id=" + this.state.comment.id, {
+      method: "GET"})
+    let response = await res.json()
+
+    window.location.href = ""
   }
 
   render () {

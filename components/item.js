@@ -1,12 +1,5 @@
 import { Component } from "react"
 import renderCreatedTime from "../utils/renderCreatedTime.js"
-import upvoteItem from "../api/items/upvoteItem.js"
-import unvoteItem from "../api/items/unvoteItem.js"
-import unfavoriteItem from "../api/items/unfavoriteItem.js"
-import hideItem from "../api/items/hideItem.js"
-import unhideItem from "../api/items/unhideItem.js"
-import killItem from "../api/moderation/killItem.js"
-import unkillItem from "../api/moderation/unkillItem.js"
 
 import "../styles/components/item.module.css"
 
@@ -93,7 +86,7 @@ export default class extends Component {
     }
   }
 
-  requestUpvoteItem = () => {
+  requestUpvoteItem = async () => {
     if (this.state.loading) return
 
     if (!this.props.userSignedIn) {
@@ -106,17 +99,19 @@ export default class extends Component {
 
       const self = this
 
-      upvoteItem(this.state.item.id, function(response) {
-        if (response.authError) {
-          window.location.href = `/login?goto=${encodeURIComponent(self.props.goToString)}`
-        } else {
-          self.setState({loading: false})
-        }
-      })
+      let res = await fetch("/api/items/upvote?id=" + this.state.item.id, {method: "GET"})
+      let response = await res.json()
+
+      if (response.authError) {
+        window.location.href = `/login?goto=${encodeURIComponent(self.props.goToString)}`
+      } else {
+        self.setState({loading: false})
+      }
+
     }
   }
 
-  requestUnvoteItem = () => {
+  requestUnvoteItem = async () => {
     if (this.state.loading) return
 
     if (!this.props.userSignedIn) {
@@ -129,17 +124,19 @@ export default class extends Component {
 
       const self = this
 
-      unvoteItem(this.state.item.id, function(response) {
-        if (response.authError) {
-          window.location.href = `/login?goto=${encodeURIComponent(self.props.goToString)}`
-        } else {
-          self.setState({loading: false})
-        }
-      })
+      let res = await fetch("/api/items/unvote?id=" + this.state.item.id, {method: "GET"})
+      let response = await res.json()
+
+      if (response.authError) {
+        window.location.href = `/login?goto=${encodeURIComponent(self.props.goToString)}`
+      } else {
+        self.setState({loading: false})
+      }
+
     }
   }
 
-  requestFavoriteItem = () => {
+  requestFavoriteItem = async () => {
     if (this.state.loading) return
 
     if (!this.props.userSignedIn) {
@@ -150,7 +147,7 @@ export default class extends Component {
       const self = this
 
       const itemId = this.state.item.id
-      let res = await fetch("/api/items/favorite/" + itemId, {
+      let res = await fetch("/api/items/favorite/" + this.state.item.id, {
         method: "GET"
       })
 
@@ -166,7 +163,7 @@ export default class extends Component {
     }
   }
 
-  requestUnfavoriteItem = () => {
+  requestUnfavoriteItem = async () => {
     if (this.state.loading) return
 
     if (!this.props.userSignedIn) {
@@ -176,19 +173,20 @@ export default class extends Component {
 
       const self = this
 
-      unfavoriteItem(this.state.item.id, function(response) {
-        if (response.authError) {
-          window.location.href = `/login?goto=${encodeURIComponent(self.props.goToString)}`
-        } else if (!response.success) {
-          window.location.href = ""
-        } else {
-          window.location.href = `/favorites?id=${self.props.currUsername}`
-        }
-      })
+      let res = await fetch("/api/items/unfavorite?id=" + this.state.item.id, {method: "GET"})
+      let response = await res.json()
+
+      if (response.authError) {
+        window.location.href = `/login?goto=${encodeURIComponent(self.props.goToString)}`
+      } else if (!response.success) {
+        window.location.href = ""
+      } else {
+        window.location.href = `/favorites?id=${self.props.currUsername}`
+      }
     }
   }
 
-  requestHideItem = () => {
+  requestHideItem = async () => {
     if (this.state.loading) return
 
     if (!this.props.userSignedIn) {
@@ -201,19 +199,20 @@ export default class extends Component {
 
       const self = this
 
-      hideItem(this.state.item.id, function(response) {
-        if (response.authError) {
-          window.location.href = `/login?goto=${encodeURIComponent(self.props.goToString)}`
-        } else if (!response.success) {
-          window.location.href = ""
-        } else {
-          self.setState({loading: false})
-        }
-      })
+      let res = await fetch("/api/items/hide?id=" + this.state.item.id, {method: "GET"})
+      let response = await res.json()
+
+      if (response.authError) {
+        window.location.href = `/login?goto=${encodeURIComponent(self.props.goToString)}`
+      } else if (!response.success) {
+        window.location.href = ""
+      } else {
+        self.setState({loading: false})
+      }
     }
   }
 
-  requestUnhideItem = () => {
+  requestUnhideItem = async () => {
     if (this.state.loading) return
 
     this.setState({loading: true})
@@ -223,35 +222,42 @@ export default class extends Component {
 
     const self = this
 
-    unhideItem(this.state.item.id, function(response) {
-      if (response.authError) {
-        window.location.href = `/login?goto=${encodeURIComponent(self.props.goToString)}`
-      } else if (!response.success) {
-        window.location.href = ""
-      } else {
-        self.setState({loading: false})
-      }
-    })
+    let res = await fetch("/api/items/hide?id=" + this.state.item.id, {method: "GET"})
+    let response = await res.json()
+
+    if (response.authError) {
+      window.location.href = `/login?goto=${encodeURIComponent(self.props.goToString)}`
+    } else if (!response.success) {
+      window.location.href = ""
+    } else {
+      self.setState({loading: false})
+    }
   }
 
-  requestKillItem = () => {
+  requestKillItem = async () => {
     if (this.state.loading) return
 
     this.setState({loading: true})
 
-    killItem(this.state.item.id, function(response) {
-      window.location.href = ""
+    const self = this
+    let res = await fetch("/api/moderation/killItem?id=" + this.state.item.id, {
+      method: "GET")
     })
+
+    window.location.href = ""
   }
 
-  requestUnkillItem = () => {
+  requestUnkillItem = async () => {
     if (this.state.loading) return
 
     this.setState({loading: true})
 
-    unkillItem(this.state.item.id, function(response) {
-      window.location.href = ""
+    const self = this
+    let res = await fetch("/api/moderation/unkillItem?id=" + this.state.item.id, {
+      method: "GET")
     })
+
+    window.location.href = ""
   }
 
   render() {

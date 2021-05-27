@@ -96,44 +96,61 @@ export default class extends Component {
     }
   }
 
-  requestAddShadowBan = () => {
+  requestAddShadowBan = async () => {
     if (this.state.loading) return
 
     this.setState({loading: true})
 
-    addUserShadowBan(this.props.username, function(response) {
-      window.location.href = ""
+    let res = await fetch("/api/moderation/addShadowBan?user=" + this.props.username, {
+      method: "GET")
     })
+
+    let response = await res.json()
+
+    window.location.href = ""
+
   }
 
-  requestRemoveShadowBan = () => {
+  requestRemoveShadowBan = async () => {
     if (this.state.loading) return
 
     this.setState({loading: true})
 
-    removeUserShadowBan(this.props.username, function(response) {
-      window.location.href = ""
+    let res = await fetch("/api/moderation/removeShadowBan?user=" + this.props.username, {
+      method: "GET")
     })
+
+    let response = await res.json()
+
+    window.location.href = ""
   }
 
-  requestAddUserBan = () => {
+  requestAddUserBan = async () => {
     if (this.state.loading) return
 
     this.setState({loading: true})
 
-    addUserBan(this.props.username, function(response) {
-      window.location.href = ""
+    let res = await fetch("/api/moderation/addBan?user=" + this.props.username, {
+      method: "GET")
     })
+
+    let response = await res.json()
+
+    window.location.href = ""
   }
 
-  requestRemoveUserBan = () => {
+  requestRemoveUserBan = async () => {
     if (this.state.loading) return
 
     this.setState({loading: true})
 
-    removeUserBan(this.props.username, function(response) {
-      window.location.href = ""
+    let res = await fetch("/api/moderation/removeBan?user=" + this.props.username, {
+      method: "GET")
     })
+
+    let response = await res.json()
+
+    window.location.href = ""
   }
 
   render () {
