@@ -241,7 +241,7 @@ export default class extends Component {
 
     const self = this
     let res = await fetch("/api/moderation/killItem?id=" + this.state.item.id, {
-      method: "GET")
+      method: "GET"
     })
 
     window.location.href = ""
@@ -254,7 +254,7 @@ export default class extends Component {
 
     const self = this
     let res = await fetch("/api/moderation/unkillItem?id=" + this.state.item.id, {
-      method: "GET")
+      method: "GET"
     })
 
     window.location.href = ""

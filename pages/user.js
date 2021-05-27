@@ -1,17 +1,11 @@
 import { Component } from "react"
 import moment from "moment"
-
 import authUser from "../api/users/authUser.js"
 import Header from "../components/header.js"
 import Footer from "../components/footer.js"
 import HeadMetadata from "../components/headMetadata.js"
 import GoogleAnalytics from "../components/googleAnalytics.js"
-
 import getUserData from "../api/users/getUserData.js"
-import addUserShadowBan from "../api/moderation/addUserShadowBan.js"
-import removeUserShadowBan from "../api/moderation/removeUserShadowBan.js"
-import addUserBan from "../api/moderation/addUserBan.js"
-import removeUserBan from "../api/moderation/removeUserBan.js"
 
 import styles from "../styles/pages/user.module.css"
 
@@ -102,7 +96,7 @@ export default class extends Component {
     this.setState({loading: true})
 
     let res = await fetch("/api/moderation/addShadowBan?user=" + this.props.username, {
-      method: "GET")
+      method: "GET"
     })
 
     let response = await res.json()
@@ -117,7 +111,7 @@ export default class extends Component {
     this.setState({loading: true})
 
     let res = await fetch("/api/moderation/removeShadowBan?user=" + this.props.username, {
-      method: "GET")
+      method: "GET"
     })
 
     let response = await res.json()
@@ -131,7 +125,7 @@ export default class extends Component {
     this.setState({loading: true})
 
     let res = await fetch("/api/moderation/addBan?user=" + this.props.username, {
-      method: "GET")
+      method: "GET"
     })
 
     let response = await res.json()
@@ -145,7 +139,7 @@ export default class extends Component {
     this.setState({loading: true})
 
     let res = await fetch("/api/moderation/removeBan?user=" + this.props.username, {
-      method: "GET")
+      method: "GET"
     })
 
     let response = await res.json()

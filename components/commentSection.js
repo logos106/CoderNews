@@ -1,17 +1,10 @@
 import { Component } from "react"
-
-import "../styles/components/commentSection.module.css"
-
-// import upvoteComment from "../api/comments/upvoteComment.js"
-// import downvoteComment from "../api/comments/downvoteComment.js"
-// import unvoteComment from "../api/comments/unvoteComment.js"
-import killComment from "../api/moderation/killComment.js"
-import unkillComment from "../api/moderation/unkillComment.js"
-
 import renderCreatedTime from "../utils/renderCreatedTime.js"
 import sortCommentChildren from "../utils/sortCommentChildren.js"
 import getNumberOfChildrenComments from "../utils/getNumberOfChildrenComments.js"
 import generateCommentTextClassName from "../utils/generateCommentTextClassName.js"
+
+import "../styles/components/commentSection.module.css"
 
 function Comment({
   parentCommentIndex,
@@ -231,7 +224,7 @@ export default class extends Component {
       })
 
       let response = await res.json()
-      
+
       if (response.authError) {
         window.location.href = `/login?goto=${encodeURIComponent(self.props.goToString)}`
       } else {

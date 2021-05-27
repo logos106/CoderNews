@@ -1,7 +1,5 @@
 import { Component } from "react"
-
-import styles from "../../styles/pages/search/index.module.css"
-
+import authUser from "../../api/users/authUser.js"
 import HeadMetadata from "../../components/headMetadata.js"
 import SearchPageHeader from "../../components/search/header.js"
 import SearchPageFooter from "../../components/search/footer.js"
@@ -11,29 +9,34 @@ import Filters from "../../components/search/filters.js"
 import NoResults from "../../components/search/noResults.js"
 import PageNumbers from "../../components/search/pageNumbers.js"
 import GoogleAnalytics from "../../components/googleAnalytics.js"
-
 import getAlgoliaData from "../../api/search/getAlgoliaData.js"
 
-export default class extends Component {
-  static async getInitialProps ({ req, query }) {
-    const apiResult = await getAlgoliaData(query, req.headers.cookie)
+import styles from "../../styles/pages/search/index.module.css"
 
-    return {
-      searchQuery: query.q ? query.q : "",
-      hits: apiResult.hits ? apiResult.hits : [],
-      getDataError: apiResult.error,
-      totalNumOfHits: apiResult.nbHits,
-      processingTimeMS: apiResult.processingTimeMS,
-      itemType: apiResult.itemType ? apiResult.itemType : "",
-      sortBy: apiResult.sortBy ? apiResult.sortBy : "",
-      dateRange: apiResult.dateRange ? apiResult.dateRange : "",
-      startDate: query.startDate ? query.startDate : "",
-      endDate: query.endDate ? query.endDate : "",
-      currPageNumber: apiResult.page,
-      totalNumOfPages: apiResult.nbPages
+export async function getServerSideProps(context) {
+  const authResult = await authUser()
+  const result = await getAlgoliaData(query, req.headers.cookie)
+
+  return {
+    props: {
+      searchQuery: context.query.q ? context.query.q : "",
+      processingTimeMS: result.processingTimeMS,
+      hits: typeof result.hits === 'undefined' ? [] : result.hits,
+      itemType: typeof result.itemType === 'undefined' ? "" : result.itemType,
+      sortBy: typeof result.sortBy === 'undefined' ? "" : result.sortBy,
+      dateRange: typeof result.dateRange === 'undefined' ? "" : result.dateRange,
+      startDate: typeof result.startDate === 'undefined' ? "" : result.startDate,
+      endDate: typeof result.endDate === 'undefined' ? "" : result.endDate,
+      currPageNumber: result.page,
+      totalNumOfHits: result.nbHits,
+      totalNumOfPages: result.nbPages,
+      getDataError: typeof result.getDataError === 'undefined' ? false : result.getDataError,
+      goToString: ""
     }
   }
+}
 
+export default class extends Component {
   render () {
     return (
       <div className="search-wrapper">

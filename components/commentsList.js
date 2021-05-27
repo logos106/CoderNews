@@ -1,17 +1,9 @@
 import { Component } from "react"
-
-import "../styles/components/commentsList.module.css"
-
-// import upvoteComment from "../api/comments/upvoteComment.js"
-// import downvoteComment from "../api/comments/downvoteComment.js"
-// import unvoteComment from "../api/comments/unvoteComment.js"
-// import unfavoriteComment from "../api/comments/unfavoriteComment.js"
-import killComment from "../api/moderation/killComment.js"
-import unkillComment from "../api/moderation/unkillComment.js"
-
 import renderPointsString from "../utils/renderPointsString.js"
 import renderCreatedTime from "../utils/renderCreatedTime.js"
 import truncateItemTitle from "../utils/truncateItemTitle.js"
+
+import "../styles/components/commentsList.module.css"
 
 export default class extends Component {
   constructor(props) {
@@ -43,7 +35,7 @@ export default class extends Component {
       })
 
       let response = await res.json()
-    
+
       if (response.authError) {
         window.location.href = `/login?goto=${encodeURIComponent(self.props.goToString)}`
       } else {
@@ -73,7 +65,7 @@ export default class extends Component {
       })
 
       let response = await res.json()
-      
+
       if (response.authError) {
         window.location.href = `/login?goto=${encodeURIComponent(self.props.goToString)}`
       } else {
@@ -122,13 +114,13 @@ export default class extends Component {
     })
 
     let response = await res.json()
-  
+
     if (response.authError) {
       window.location.href = `/login?goto=${encodeURIComponent(self.props.goToString)}`
     } else {
       window.location.href = ""
     }
-    
+
   }
 
   requestKillComment = (commentId) => {
