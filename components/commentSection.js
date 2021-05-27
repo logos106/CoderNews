@@ -2,9 +2,9 @@ import { Component } from "react"
 
 import "../styles/components/commentSection.module.css"
 
-import upvoteComment from "../api/comments/upvoteComment.js"
+// import upvoteComment from "../api/comments/upvoteComment.js"
 // import downvoteComment from "../api/comments/downvoteComment.js"
-import unvoteComment from "../api/comments/unvoteComment.js"
+// import unvoteComment from "../api/comments/unvoteComment.js"
 import killComment from "../api/moderation/killComment.js"
 import unkillComment from "../api/moderation/unkillComment.js"
 
@@ -195,7 +195,7 @@ export default class extends Component {
     }
   }
 
-  requestUpvoteComment = (commentId) => {
+  requestUpvoteComment = async (commentId) => {
     if (this.state.loading) return
 
     if (!this.props.userSignedIn) {
@@ -222,14 +222,21 @@ export default class extends Component {
       for (let i=0; i < this.state.comments.length; i++) {
         findAndUpdateComment(this.state.comments[i])
       }
-
-      upvoteComment(commentId, this.props.parentItemId, function(response) {
-        if (response.authError) {
-          window.location.href = `/login?goto=${encodeURIComponent(self.props.goToString)}`
-        } else {
-          self.setState({loading: false})
-        }
+      let res = await fetch("/api/comments/upvote", {
+        method: "POST",
+        body: JSON.stringify({
+          commentId: commentId,
+          parentItemId: this.props.parentItemId
+        })
       })
+
+      let response = await res.json()
+      
+      if (response.authError) {
+        window.location.href = `/login?goto=${encodeURIComponent(self.props.goToString)}`
+      } else {
+        self.setState({loading: false})
+      }
     }
   }
 
@@ -261,7 +268,7 @@ export default class extends Component {
         findAndUpdateComment(this.state.comments[i])
       }
 
-      let res = await fetch("/api/comment/downvote", {
+      let res = await fetch("/api/comments/downvote", {
         method: "POST",
         body: JSON.stringify({
           commentId: commentId,
@@ -278,7 +285,7 @@ export default class extends Component {
     }
   }
 
-  requestUnvoteComment = (commentId) => {
+  requestUnvoteComment = async (commentId) => {
     if (this.state.loading) return
 
     if (!this.props.userSignedIn) {
@@ -305,14 +312,19 @@ export default class extends Component {
       for (let i=0; i < this.state.comments.length; i++) {
         findAndUpdateComment(this.state.comments[i])
       }
-
-      unvoteComment(commentId, function(response) {
-        if (response.authError) {
-          window.location.href = `/login?goto=${encodeURIComponent(self.props.goToString)}`
-        } else {
-          self.setState({loading: false})
-        }
+      let res = await fetch("/api/comments/unvote", {
+        method: "POST",
+        body: JSON.stringify({
+          commentId: commentId
+        })
       })
+
+      let response = await res.json()
+      if (response.authError) {
+        window.location.href = `/login?goto=${encodeURIComponent(self.props.goToString)}`
+      } else {
+        self.setState({loading: false})
+      }
     }
   }
 

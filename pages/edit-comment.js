@@ -77,7 +77,7 @@ export default class extends Component {
       this.setState({loading: true})
 
       const self = this
-      let res = await fetch("/api/comment/edit", {
+      let res = await fetch("/api/comments/edit", {
         method: "POST",
         body: JSON.stringify({
           id: this.props.comment.id,

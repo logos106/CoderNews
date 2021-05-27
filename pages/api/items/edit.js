@@ -3,9 +3,9 @@ import credential from "../../../utils/apiCredential.js"
 import helper from "../../../utils/helper.js"
 
 export default async function handler(req, res) {
-  const useremail = JSON.parse(req.body).id;
-  const password = JSON.parse(req.body).title;
-  const password = JSON.parse(req.body).text;
+  const id = JSON.parse(req.body).id;
+  const newTitle = JSON.parse(req.body).title;
+  const newText = JSON.parse(req.body).text;
 
   const user = await authUser()
 

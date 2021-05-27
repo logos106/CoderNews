@@ -4,7 +4,7 @@ import Router from "next/router"
 import authUser from "../api/users/authUser.js"
 import renderCreatedTime from "../utils/renderCreatedTime.js"
 import getEditItemPageData from "../api/items/getEditItemPageData.js"
-import editItem from "../api/items/editItem.js"
+// import editItem from "../api/items/editItem.js"
 
 import Header from "../components/header.js"
 import Footer from "../components/footer.js"
@@ -67,7 +67,7 @@ export default class extends Component {
     this.setState({textInputValue: event.target.value})
   }
 
-  submitEditItem = () => {
+  submitEditItem = async () => {
     if (this.state.loading) return
 
     if (!this.state.titleInputValue.trim()) {

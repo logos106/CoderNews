@@ -4,31 +4,33 @@ import AlternateHeader from "../components/alternateHeader.js"
 import HeadMetadata from "../components/headMetadata.js"
 import Comment from "../components/comment.js"
 import GoogleAnalytics from "../components/googleAnalytics.js"
-
+import authUser from "../api/users/authUser.js"
 import getReplyPageData from "../api/comments/getReplyPageData.js"
 
-export default class extends Component {
-  static async getInitialProps ({ req, query, res }) {
-    const commentId = query.id ? query.id : ""
+export async function getServerSideProps (context/* { req, query, res } */) {
+  const commentId = context.query.id ? context.query.id : ""
+  const authResult = await authUser()
+  const result = await getReplyPageData(commentId, authResult)
 
-    const apiResult = await getReplyPageData(commentId, req)
+  if (!authResult.userSignedIn) {
+    context.res.writeHead(302, {
+      Location: `/login?goto=reply?id=${commentId}`
+    })
+    context.res.end()
+  }
 
-    if (!apiResult.authUser.userSignedIn) {
-      res.writeHead(302, {
-        Location: `/login?goto=reply?id=${commentId}`
-      })
-
-      res.end()
-    }
-
-    return {
-      comment: apiResult && apiResult.comment,
-      authUserData: apiResult && apiResult.authUser ? apiResult.authUser : {},
-      getDataError: apiResult && apiResult.getDataError,
-      notFoundError: apiResult && apiResult.notFoundError,
+  return {
+    props: {
+      comment: result.comment,
+      authUserData: authResult,
+      getDataError: typeof result.getDataError === 'undefined' ? false : result.getDataError,
+      notFoundError: typeof result.notFoundError === 'undefined' ? false : result.notFoundError,
       goToString: `reply?id=${commentId}`
     }
   }
+}
+
+export default class extends Component {
 
   render () {
     return (

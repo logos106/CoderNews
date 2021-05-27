@@ -2,8 +2,6 @@ import credential from "../../../utils/apiCredential.js"
 import authUser from "../../../api/users/authUser.js"
 import config from "../../../utils/config"
 import moment from "moment"
-const xss = require("xss")
-const linkifyUrls = require("linkify-urls")
 
 export default async function handler(req, res) {
   const commentId = JSON.parse(req.body).id;

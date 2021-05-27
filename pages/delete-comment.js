@@ -44,7 +44,7 @@ export default class extends Component {
     if (this.state.loading) return
 
     const self = this
-    let res = await fetch("/api/comment/delete", {
+    let res = await fetch("/api/comments/delete", {
       method: "POST",
       body: JSON.stringify({
         commentId: this.props.comment.id
