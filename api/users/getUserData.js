@@ -2,85 +2,47 @@ import { Directus, Auth } from '@directus/sdk';
 import authUser from "./authUser.js"
 import credential from "../../utils/apiCredential.js"
 
-export default async function getUserData(context) {
+export default async function getUserData(username, authUser) {
   try {
-    // Instantiate a new Directus object
     const directus = credential.directus
-    const authResult = await authUser()
-    
-    if (!context.query.id) {
-      return {
-        getDataError: true,
-      }
-    }
-    
+
     // Search the user table
     const users = await directus.items('directus_users').readMany({
       filter: {
         username: {
-          _eq: context.query.id,
+          _eq: username,
         }
       }
     });
-    
-    if (users.data.length == 0) {
-      return {
-        notFoundError: true,
-      }
-    }
-    
-    let user;
-    if (users.data.length > 0) {
-      user = users.data[0]
+
+    if (users.data.length < 1) {
+      return { notFoundError: true }
     }
 
-    // console.log("Show dead: ", user.show_dead, user);
-    if (!authResult.userSignedIn || authResult.username != context.query.id) {
-      if (authResult.isModerator) {
-        return {
-          user: {
-            id: user.id,
-            username: user.username,
-            created: user.created,
-            karma: user.karma,
-            about: user.about,
-            shadowBanned: user.shadow_banned ? true : false,
-            banned: user.banned ? true : false,
-          },
-          showPrivateUserData: false
-        }
-      } else {
-        return {
-          user: {
-            id: user.id,
-            username: user.username,
-            created: user.created,
-            karma: user.karma,
-            about: user.about
-          },
-          showPrivateUserData: false
-        }
+    const user = users.data[0]
+
+    if (!authUser.userSignedIn || authUser.username != username) {
+      if (authUser.isModerator)
+        user.shadowBanned = user.shadow_banned
+
+      return {
+        user: user,
+        showPrivateUserData: false
       }
     } else {
       const aboutText = user.about ? user.about
           .replace(/<a\b[^>]*>/i,"").replace(/<\/a>/i, "")
           .replace(/<i\b[^>]*>/i,"*").replace(/<\/i>/i, "*")
           : ""
+      user.about = aboutText
+
       return {
-        user: {
-          id: user.id,
-          username: user.username,
-          created: user.created,
-          karma: user.karma,
-          about: aboutText,
-          email: user.email,
-          showDead: user.show_dead,
-        },
+        user: user,
         showPrivateUserData: true
       }
-    }  
+    }
   } catch(error) {
-    console.log("Error: ", error)
+    console.log(error)
     return {getDataError: true}
   }
 }

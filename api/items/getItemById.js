@@ -88,7 +88,13 @@ export default async function getItemById(itemId, page, user) {
 
       let cvids = commentVotes.map((cv) => cv.id)
 
-      const updateComment = function(comment) {
+      const updateComment = async function(comment) {
+        // Split children
+        if (!comment.children)
+          comment.children = []
+        else
+          comment.children = comment.children.split(';')
+
         if (comment.by === user.username) {
           const hasEditAndDeleteExpired =
             comment.created + (3600 * config.hrsUntilEditAndDeleteExpires) < moment().unix() ||
@@ -107,15 +113,14 @@ export default async function getItemById(itemId, page, user) {
           }
         }
 
-        if (comment.children) {
-          for (let i = 0; i < comment.children.length; i++) {
-            updateComment(comment.children[i])
-          }
-        }
+        comment.children.forEach(async (child_id) => {
+          const child = await directus.items('comments').readOne(child_id)
+          await updateComment(child)
+        })
       }
 
       for (let i = 0; i < comments.length; i++) {
-        updateComment(comments[i])
+        await updateComment(comments[i])
       }
 
       return {

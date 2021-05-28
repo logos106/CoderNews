@@ -21,8 +21,8 @@ export async function getServerSideProps (context/* { req, query, res } */) {
 
   return {
     props: {
-      comment: result.comment,
       authUserData: authResult,
+      comment: typeof result.comment === 'undefined' ? null : result.comment,
       getDataError: typeof result.getDataError === 'undefined' ? false : result.getDataError,
       notFoundError: typeof result.notFoundError === 'undefined' ? false : result.notFoundError,
       goToString: `reply?id=${commentId}`

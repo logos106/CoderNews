@@ -9,17 +9,20 @@ import getUserData from "../api/users/getUserData.js"
 
 import styles from "../styles/pages/user.module.css"
 
-export async function getServerSideProps (context) {
-  const apiResult = await getUserData(context)
+export async function getServerSideProps(context) {
   const authResult = await authUser()
+
+  const username = context.query.id
+  const result = await getUserData(username, authResult)
+
   return {
     props: {
-      username: context.query.id,
-      userData: apiResult.user,
-      showPrivateUserData: apiResult && apiResult.showPrivateUserData,
       authUserData: authResult ,
-      getDataError: typeof apiResult.getDataError === 'undefined' ? false : apiResult.getDataError,
-      notFoundError: typeof apiResult.notFoundError === 'undefined' ? false : apiResult.notFoundError,
+      username: context.query.id,
+      userData: typeof result.user === 'undefined' ? null : result.user,
+      showPrivateUserData: typeof result.showPrivateUserData === 'undefined' ? false : result.showPrivateUserData,
+      getDataError: typeof result.getDataError === 'undefined' ? false : result.getDataError,
+      notFoundError: typeof result.notFoundError === 'undefined' ? false : result.notFoundError,
       goToString: `user?id=${context.query.id}`
     }
   }
