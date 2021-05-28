@@ -26,8 +26,6 @@ export default async function getBannedUsersByPage(page, user) {
         items: items,
         isMore: totalUsers > (((page - 1) * bannedUsersPerPage) + bannedUsersPerPage) ? true : false
       }
-    }
-
   } catch(error) {
     console.log(error)
     return {getDataError: true}

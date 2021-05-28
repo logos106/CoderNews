@@ -1,5 +1,5 @@
 import { Component } from "react"
-import authUser from "../api/users/authUser.js"
+import authUser from "../../api/users/authUser.js"
 import AlternateHeader from "../../components/alternateHeader.js"
 import HeadMetadata from "../../components/headMetadata.js"
 import GoogleAnalytics from "../../components/googleAnalytics.js"
@@ -30,10 +30,6 @@ export async function getServerSideProps(context) {
 }
 
 export default class extends Component {
-  static async getInitialProps ({ req, query }) {
-
-  }
-
   updateFilterOptionValue = (event) => {
     window.location.href = `/moderation/logs?category=${event.target.value}`
   }

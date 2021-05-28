@@ -56,7 +56,6 @@ export default async function getModerationLogsByPage(category, page, user) {
         categoryString: categoryString,
         isMore: totalLogs > (((page - 1) * moderationLogsPerPage) + moderationLogsPerPage) ? true : false
       }
-    }
 
   } catch(error) {
     console.log(error)

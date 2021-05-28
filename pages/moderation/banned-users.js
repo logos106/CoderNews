@@ -1,5 +1,5 @@
 import { Component } from "react"
-import authUser from "../api/users/authUser.js"
+import authUser from "../../api/users/authUser.js"
 import AlternateHeader from "../../components/alternateHeader.js"
 import HeadMetadata from "../../components/headMetadata.js"
 import GoogleAnalytics from "../../components/googleAnalytics.js"
