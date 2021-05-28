@@ -27,7 +27,7 @@ export async function getServerSideProps(context) {
       isMore: typeof result.isMore === 'undefined' ? false : result.isMore,
       getDataError: typeof result.getDataError === 'undefined' ? false : result.getDataError,
       invalidDateError: typeof result.invalidDateError === 'undefined' ? false : result.invalidDateError,
-      goToString: page > 1 ? `newest?page=${page}` : "newest"
+      goToString: page > 1 ? `past?day=${day}&page=${page}` : `past?day=${day}`
     }
   }
 }

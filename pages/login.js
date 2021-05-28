@@ -9,6 +9,14 @@ import Router from "next/router"
 
 import styles from '../styles/pages/login.module.css';
 
+export async function getServerSideProps(context) {
+  return {
+    props: {
+      goto: context.query.goto ? decodeURIComponent(context.query.goto) : ""
+    }
+  }
+}
+
 export default class extends Component {
   constructor(props) {
     super(props)
@@ -75,7 +83,7 @@ export default class extends Component {
       this.setState({loading: true})
 
       const self = this
-      
+
       let res = await fetch("/api/login", {
         method: "POST",
         body: JSON.stringify({
@@ -107,7 +115,8 @@ export default class extends Component {
           bannedError: false
         })
       } else {
-        Router.push('/')
+        Router.push(`/${self.props.goto}`)
+        // window.location.href = `/${self.props.goto}`
       }
     }
   }

@@ -9,7 +9,7 @@ export default class extends Component {
   requestLogout = () => {
     logoutUser(function() {
       fetch("/api/logout")
-        .then(() => Router.push('/'))      
+        .then(() => Router.push('/'))
     })
   }
 
@@ -86,7 +86,7 @@ export default class extends Component {
                     <span className={styles.header_logout} onClick={this.requestLogout}>logout</span>
                   </> :
                   <>
-                    <Link href={`/login${this.props.goto ? "?goto=" + encodeURIComponent(this.props.goto) : ""}`}>
+                    <Link href={"/login?goto=" + encodeURIComponent(this.props.goto)}>
                       <a>login</a>
                     </Link>
                   </>

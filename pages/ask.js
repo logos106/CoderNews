@@ -23,7 +23,7 @@ export async function getServerSideProps(context) {
       page: page,
       isMore: typeof result.isMore === 'undefined' ? false : result.isMore,
       getDataError: typeof result.getDataError === 'undefined' ? false : result.getDataError,
-      goToString: ''
+      goToString: page > 1 ? `ask?page=${page}` : "ask"
     }
   }
 }
