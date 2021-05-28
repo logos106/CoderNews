@@ -1,16 +1,12 @@
 import { Component } from "react"
-
-import "../styles/pages/delete-item.module.css"
-
+import authUser from "../api/users/authUser.js"
 import renderCreatedTime from "../utils/renderCreatedTime.js"
-
 import AlternateHeader from "../components/alternateHeader.js"
 import HeadMetadata from "../components/headMetadata.js"
 import GoogleAnalytics from "../components/googleAnalytics.js"
-
 import getDeleteItemPageData from "../api/items/getDeleteItemPageData.js"
-// import deleteItem from "../api/items/deleteItem.js"
-import authUser from "../api/users/authUser.js"
+
+import "../styles/pages/delete-item.module.css"
 
 export async function getServerSideProps(context) {
   const authResult = await authUser()
@@ -152,12 +148,12 @@ export default class extends Component {
                   type="submit"
                   value="Yes"
                   className="delete-item-yes-btn"
-                  onClick={this.submitDeleteItem}
+                  onClick={ this.submitDeleteItem }
                 />
                 <input
                   type="submit"
                   value="No"
-                  onClick={this.goBackToOriginPage}
+                  onClick={ this.goBackToOriginPage }
                 />
               </div>
               {

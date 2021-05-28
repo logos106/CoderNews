@@ -21,9 +21,9 @@ export async function getServerSideProps (context) {
       page: page,
       authUserData: authResult,
       getDataError: typeof result.getDataError === 'undefined' ? false : result.getDataError,
-      goToString: typeof result.goToString === 'undefined' ? false : result.goToString,
       comments: typeof result.comments === 'undefined' ? false : result.comments,
       isMoreComments: typeof result.isMoreComments === 'undefined' ? false : result.isMoreComments,
+      goToString: page > 1 ? `item?id=${itemId}&page=${page}` : `item?id=${itemId}`,
     }
   }
 }

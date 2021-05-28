@@ -11,16 +11,15 @@ export default async function getNewestCommentsByPage(page, user) {
 
   try {
     let comments = await directus.items('comments').readMany({
-      filter: filterComments
+      filter: filterComments,
+      offset: (page - 1) * commentsPerPage,
+      limit: commentsPerPage
     });
 
     // Remember the total number of selected comments
     const totalComments = comments.data.length
 
-    // Get the pags as many as number for one page
-    const start = (page - 1) * commentsPerPage
-    const end = page * commentsPerPage
-    comments = comments.data.slice(start, end)
+    comments = comments.data
 
     if (!user.signedIn) {  // If he is a guest
       return {

@@ -1,5 +1,6 @@
 import credential from "../../utils/apiCredential.js"
 import config from "../../utils/config.js"
+import moment from "moment"
 
 export default async function getItemById(itemId, page, user) {
   const directus = credential.directus
@@ -44,12 +45,7 @@ export default async function getItemById(itemId, page, user) {
         }
       });
       votes = votes.data
-      return {
-        success: true,
-        item: item,
-        comments: comments,
-        isMoreComments: totalComments > (((page - 1) * commentsPerPage) + commentsPerPage) ? true : false
-      }
+
       let favs = await directus.items('user_favorites').readMany({
         filter: {
           username: { _eq : user.username },
@@ -70,7 +66,7 @@ export default async function getItemById(itemId, page, user) {
       let commentVotes = await directus.items('user_votes').readMany({
         filter: {
           username: { _eq : user.username },
-          parentItemId: { _eq: itemId },
+          parent_item_id: { _eq: itemId },
           type: { _eq: 'comment' }
         }
       });
@@ -90,11 +86,7 @@ export default async function getItemById(itemId, page, user) {
         item.editAndDeleteExpired = hasEditAndDeleteExpired
       }
 
-      let cvIds = []
-
-      for (let i = 0; i < commentVotes.length; i++) {
-        cvIds.push(commentVotes[i].id)
-      }
+      let cvids = commentVotes.map((cv) => cv.id)
 
       const updateComment = function(comment) {
         if (comment.by === user.username) {
@@ -105,7 +97,7 @@ export default async function getItemById(itemId, page, user) {
           comment.editAndDeleteExpired = hasEditAndDeleteExpired
         }
 
-        if (cvIds.includes(comment.id)) {
+        if (cvids.includes(comment.id)) {
           comment.votedOnByUser = true
 
           for (let i = 0; i < commentVotes.length; i++) {
