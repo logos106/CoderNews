@@ -1,15 +1,20 @@
 import { Component } from "react"
-import credential from "../utils/apiCredential.js"
 import { Directus, Auth } from '@directus/sdk';
 
 export async function getServerSideProps(context) {
-  // const items = await directus.items('items').readMany()
-  // items.data.map((item) => console.log(item.title))
-  const directus = credential.directus
-  await directus.auth.refresh();
-  
-  const res = await directus.roles.readMany()
-  console.log(res)
+  const directus = new Directus('http://192.168.8.141:8055');
+
+  const token = await directus.auth.login({
+    email: 'logos106@outlook.com',
+    password: 'glowglow',
+  },
+  {
+		refresh: {
+			auto: true,
+		},
+	});
+
+  console.log('2', token)
 
   const data = null
   return { props: { data } }

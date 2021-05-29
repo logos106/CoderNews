@@ -1,12 +1,12 @@
 import { Component } from "react"
-import credential from "../utils/apiCredential.js"
+import { Directus, Auth } from '@directus/sdk';
 
 export async function getServerSideProps(context) {
-  const directus = credential.directus
+  const directus = new Directus('http://192.168.8.141:8055');
 
   const token = await directus.auth.login({
-    email: credential.email,
-    password: credential.password,
+    email: 'logos106@outlook.com',
+    password: 'glowglow',
   },
   {
 		refresh: {
@@ -14,16 +14,7 @@ export async function getServerSideProps(context) {
 		},
 	});
 
-  let users = await directus.items('users').readMany({
-    filter: {
-      _or: [
-        {username: { _eq: 'kkk' }},
-        {id: { _eq: 11 }}
-      ]
-    }
-  });
-
-  console.log(users)
+  console.log('1', token)
 
   const data = null
   return { props: { data } }
