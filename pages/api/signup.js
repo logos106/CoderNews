@@ -14,7 +14,7 @@ export default async function handler(req, res) {
   } else if (password.length < 8) {
     return res.status(200).json({passwordLengthError: true})
   }
-  await authUser()
+  await authUser(req, res)
 
   try {
     // Check if any user with the eamil address
@@ -44,7 +44,7 @@ export default async function handler(req, res) {
     })
 
     console.log("new user: ", newuser)
-    
+
     return res.status(200).json({
       success: true,
       username: username,

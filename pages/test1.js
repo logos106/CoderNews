@@ -1,10 +1,11 @@
 import { Component } from "react"
 import { Directus, Auth } from '@directus/sdk';
+import Cookies from 'cookies'
 
 export async function getServerSideProps(context) {
   const directus = new Directus('http://192.168.8.141:8055');
 
-  const token = await directus.auth.login({
+  await directus.auth.login({
     email: 'logos106@outlook.com',
     password: 'glowglow',
   },
@@ -14,7 +15,13 @@ export async function getServerSideProps(context) {
 		},
 	});
 
-  console.log('1', token)
+  const token = directus.auth.token
+  console.log(token)
+
+  const cookies = new Cookies(context.req, context.res)
+  cookies.set('joe_token', token, {
+      httpOnly: true // true by default
+  })
 
   const data = null
   return { props: { data } }

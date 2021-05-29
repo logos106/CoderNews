@@ -1,11 +1,12 @@
 import credential from "../../utils/apiCredential.js"
 import authUser from "../../api/users/authUser.js"
+import Cookies from 'cookies'
 
 export default async function handler(req, res) {
   const useremail = JSON.parse(req.body).useremail;
   const password = JSON.parse(req.body).password;
 
-  const authResult = await authUser()
+  const authResult = await authUser(req, res)
 
   try {
     const directus = credential.directus
@@ -35,6 +36,15 @@ export default async function handler(req, res) {
         auto: true,
         time: 30000
       }
+    })
+
+    // Get the token
+    const token = directus.auth.token
+
+    // Set cookie
+    const cookies = new Cookies(req, res)
+    cookies.set('wang_token', token, {
+        httpOnly: true // true by default
     })
 
     return res.status(200).json({ success: true })

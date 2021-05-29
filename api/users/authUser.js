@@ -1,46 +1,42 @@
-
+import Cookies from 'cookies'
 import credential from '../../utils/apiCredential.js';
 
-export default async function authUser() {
+export default async function authUser(req, res) {
   const directus = credential.directus
-
-  // Check auth token to see if anyone is signed in
-  // await directus.auth.refresh(true)
-  const token = directus.auth.token
+  // Check cookie
+  const cookies = new Cookies(req, res)
+  let token = cookies.get('wang_token')
   if (token) {
-    // Check the role to see if admin
-    const me = await directus.users.me.read();
-    const role = await directus.roles.readOne(me.role)
-    if (role.name != 'Administrator') {
-      // It means user signed in
-      return {
-        id: me.id,
-        userSignedIn: true,
-        username: !me.username ? '' : me.username,
-        karma: !me.karma ? 0 : me.karma,
-        shadowBanned: me.shadow_banned,
-        showDead: me.show_dead,
-        isModerator: me.is_moderator
+    try {
+
+      const res = await directus.auth.static(token);
+      if (res) {
+        const me = await directus.users.me.read();
+        return {
+          id: me.id,
+          userSignedIn: true,
+          username: !me.username ? '' : me.username,
+          karma: !me.karma ? 0 : me.karma,
+          shadowBanned: me.shadow_banned,
+          showDead: me.show_dead,
+          isModerator: me.is_moderator
+        }
       }
+    } catch (e) {
+      console.log("Static Login Error: ", e)
     }
-    else
-      return { userSignedIn: false, username: 'guest', karma: 0, isModerator: false }
   }
 
-  // Log in to Directus as admin
-  directus.auth.logout
-
+  // Login as Administrator
   await directus.auth.login({
     email: credential.email,
     password: credential.password,
     mode: 'cookie'
-  },
-  {
+  }, {
     refresh: {
       auto: true,   // Refresh token automatically
     },
   });
 
   return { userSignedIn: false, username: 'guest', karma: 0, isModerator: false }
-
 }
