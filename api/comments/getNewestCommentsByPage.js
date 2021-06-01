@@ -15,7 +15,6 @@ export default async function getNewestCommentsByPage(page, user) {
       offset: (page - 1) * commentsPerPage,
       limit: commentsPerPage
     });
-
     // Remember the total number of selected comments
     const totalComments = comments.data.length
 
