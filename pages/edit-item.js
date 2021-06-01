@@ -96,7 +96,7 @@ export default class extends Component {
       let res = await fetch("/api/items/edit", {
         method: "POST",
         body: JSON.stringify({
-          useremail: this.props.item.id,
+          id: this.props.item.id,
           title: this.state.titleInputValue,
           text: this.state.textInputValue,
         })

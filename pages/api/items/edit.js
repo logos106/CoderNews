@@ -4,8 +4,8 @@ import helper from "../../../utils/helper.js"
 
 export default async function handler(req, res) {
   const id = JSON.parse(req.body).id;
-  const newTitle = JSON.parse(req.body).title;
-  const newText = JSON.parse(req.body).text;
+  let newTitle = JSON.parse(req.body).title;
+  let newText = JSON.parse(req.body).text;
 
   const user = await authUser(req, res)
 
@@ -13,8 +13,7 @@ export default async function handler(req, res) {
     const directus = credential.directus
 
     // Find the item by ID
-    const items = directus.items('items')
-    const item = await items.readOne(id)
+    const item = await directus.items('items').readOne(id)
 
     const oldTitle = item.title
 
@@ -36,7 +35,7 @@ export default async function handler(req, res) {
     if (oldTitle !== newTitle)
       newType = helper.getItemType(newTitle, item.url, newText)
 
-    await items.updateMany([id], {
+    await directus.items('items').updateMany([id], {
     	title: newTitle,
       text: newText,
       type: newType
