@@ -295,12 +295,12 @@ export default class extends Component {
                           !item.dead ?
                           <>
                             {
-                              item.commentCount > 0 ?
+                              item.comment_count > 0 ?
                               <>
                                 <span> | </span>
                                 <span className={styles.listed_item_comments}>
                                   <a href={`/item?id=${item.id}`}>
-                                    {item.commentCount.toLocaleString("en")} comment{item.commentCount > 1 ? "s" : null}
+                                    {item.comment_count.toLocaleString("en")} comment{item.comment_count > 1 ? "s" : null}
                                   </a>
                                 </span>
                               </> :

@@ -17,7 +17,7 @@ module.exports = {
       text: item.text,
       created: item.created,
       points: item.points,
-      commentCount: item.commentCount
+      commentCount: item.comment_count
     }).then(function() {
       callback({success: true})
     }).catch(function() {
