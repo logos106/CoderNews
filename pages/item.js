@@ -9,7 +9,7 @@ import CommentSection from "../components/commentSection.js"
 import GoogleAnalytics from "../components/googleAnalytics.js"
 
 export async function getServerSideProps (context) {
-  const authResult = await authUser()
+  const authResult = await authUser(context.req, context.res)
 
   const itemId = context.query.id ? context.query.id : ""
   const page = context.query.page ? parseInt(context.query.page) : 1

@@ -6,7 +6,7 @@ import moment from "moment"
 export default async function handler(req, res) {
   const itemId = req.query.id
 
-  const user = await authUser()
+  const user = await authUser(req, res)
 
   try {
     const directus = credential.directus

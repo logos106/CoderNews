@@ -10,7 +10,7 @@ import getModerationLogsByPage from "../../api/moderation/getModerationLogsByPag
 import styles from "../../styles/pages/moderation/logs.module.css"
 
 export async function getServerSideProps(context) {
-  const authResult = await authUser()
+  const authResult = await authUser(context.req, context.res)
 
   const category = context.query.category ? context.query.category : "all"
   const page = context.query.page ? parseInt(context.query.page) : 1

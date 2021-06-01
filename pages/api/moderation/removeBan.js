@@ -4,7 +4,7 @@ import credential from "../../../utils/apiCredential.js"
 export default async function handler(req, res) {
   const username = req.query.user
 
-  const moderator = await authUser()
+  const moderator = await authUser(req, res)
 
   try {
     const directus = credential.directus

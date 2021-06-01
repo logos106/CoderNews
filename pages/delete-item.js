@@ -9,7 +9,7 @@ import getDeleteItemPageData from "../api/items/getDeleteItemPageData.js"
 import "../styles/pages/delete-item.module.css"
 
 export async function getServerSideProps(context) {
-  const authResult = await authUser()
+  const authResult = await authUser(context.req, context.res)
   const result = await getDeleteItemPageData(context.query.id, authResult)
 
   return {

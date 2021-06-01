@@ -10,7 +10,7 @@ import getUserData from "../api/users/getUserData.js"
 import styles from "../styles/pages/user.module.css"
 
 export async function getServerSideProps(context) {
-  const authResult = await authUser()
+  const authResult = await authUser(context.req, context.res)
 
   const username = context.query.id
   const result = await getUserData(username, authResult)

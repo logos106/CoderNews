@@ -12,7 +12,7 @@ export default async function handler(req, res) {
 
     const directus = credential.directus
 
-    const authResult = await authUser()
+    const authResult = await authUser(req, res)
 
     if (text) {
       text = text.trim()

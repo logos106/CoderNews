@@ -5,7 +5,7 @@ export default async function handler(req, res) {
   if (!req.query.id)
     return res.json({ submitError: true })
 
-  const user = await authUser()
+  const user = await authUser(req, res)
   if (!user.userSignedIn)
     return res.json({ authError: true })
 

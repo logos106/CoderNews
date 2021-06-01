@@ -12,7 +12,7 @@ import getUserFavoritedCommentsByPage from "../api/comments/getUserFavoritedComm
 import styles from "../styles/pages/favorites.module.css"
 
 export async function getServerSideProps(context) {
-  const authResult = await authUser()
+  const authResult = await authUser(context.req, context.res)
 
   const uid = context.query.id ? context.query.id : ""
   const page = context.query.page ? parseInt(context.query.page) : 1

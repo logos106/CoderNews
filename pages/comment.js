@@ -11,7 +11,7 @@ import getCommentById from "../api/comments/getCommentById.js"
 import styles from "../styles/pages/comment.module.css"
 
 export async function getServerSideProps(context) {
-  const authResult = await authUser()
+  const authResult = await authUser(context.req, context.res)
 
   const commentId = context.query.id ? context.query.id : ""
   const page = context.query.page ? parseInt(context.query.page) : 1

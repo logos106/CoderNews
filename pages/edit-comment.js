@@ -15,7 +15,7 @@ import getEditCommentPageData from "../api/comments/getEditCommentPageData.js"
 // import editComment from "../api/comments/editComment.js"
 
 export async function getServerSideProps(context) {
-  const authResult = await authUser()
+  const authResult = await authUser(context.req, context.res)
   const result = await getEditCommentPageData(context.query.id, context.req)
   return {
     props: {

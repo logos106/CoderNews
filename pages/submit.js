@@ -8,7 +8,7 @@ import GoogleAnalytics from "../components/googleAnalytics.js"
 import authUser from "../api/users/authUser.js"
 
 export async function getServerSideProps(context) {
-  const authResult = await authUser()
+  const authResult = await authUser(context.req, context.res)
 
   if (!authResult.userSignedIn) {
     // context.res.writeHead(200, { Location: '/' });

@@ -6,7 +6,7 @@ import moment from "moment"
 export default async function handler(req, res) {
   const commentId = JSON.parse(req.body).id;
 
-  const authResult = await authUser()
+  const authResult = await authUser(req, res)
 
   const directus = credential.directus
 

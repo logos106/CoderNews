@@ -9,7 +9,7 @@ import getReplyPageData from "../api/comments/getReplyPageData.js"
 
 export async function getServerSideProps (context/* { req, query, res } */) {
   const commentId = context.query.id ? context.query.id : ""
-  const authResult = await authUser()
+  const authResult = await authUser(context.req, context.res)
   const result = await getReplyPageData(commentId, authResult)
 
   if (!authResult.userSignedIn) {

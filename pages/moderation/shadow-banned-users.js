@@ -8,7 +8,7 @@ import getShadowBannedUsersByPage from "../../api/moderation/getShadowBannedUser
 import styles from "../../styles/pages/moderation/shadow-banned-users.module.css"
 
 export async function getServerSideProps(context) {
-  const authResult = await authUser()
+  const authResult = await authUser(context.req, context.res)
 
   const page = context.query.page ? parseInt(context.query.page) : 1
   const result = await getShadowBannedUsersByPage(page, authResult)

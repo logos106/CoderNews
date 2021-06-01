@@ -14,7 +14,7 @@ import GoogleAnalytics from "../components/googleAnalytics.js"
 import "../styles/pages/edit-item.module.css"
 
 export async function getServerSideProps(context) {
-  const authResult = await authUser()
+  const authResult = await authUser(context.req, context.res)
 
   // Get the Item data with ID
   const id = context.query.id

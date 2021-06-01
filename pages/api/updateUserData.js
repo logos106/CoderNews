@@ -10,7 +10,7 @@ export default async function handler(req, res) {
     const showDead = JSON.parse(req.body).showDead
     const directus = credential.directus
     try {
-        await authUser()
+        await authUser(req, res)
         // let user = await directus.items("directus_users").readOne(id)
         let newAboutText = about
         newAboutText = newAboutText.trim()

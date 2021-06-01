@@ -11,7 +11,7 @@ import getUserUpvotedItemsByPage from "../api/items/getUserUpvotedItemsByPage.js
 import getUserUpvotedCommentsByPage from "../api/comments/getUserUpvotedCommentsByPage.js"
 
 export async function getServerSideProps(context) {
-  const authResult = await authUser()
+  const authResult = await authUser(context.req, context.res)
 
   const uid = context.query.id ? context.query.id : ""
   const page = context.query.page ? parseInt(context.query.page) : 1

@@ -14,7 +14,7 @@ export async function getServerSideProps(context) {
   const day = context.query.day ? context.query.day : moment().subtract(1, "day").format("YYYY-MM-DD")
   const page = context.query.page ? parseInt(context.query.page) : 1
 
-  const authResult = await authUser()
+  const authResult = await authUser(context.req, context.res)
 
   const result = await getRankedItemsByDay(day, page, authResult)
 

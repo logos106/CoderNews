@@ -8,7 +8,7 @@ import GoogleAnalytics from "../components/googleAnalytics.js"
 import getUserHiddenItemsByPage from "../api/items/getUserHiddenItemsByPage.js"
 
 export async function getServerSideProps(context) {
-  const authResult = await authUser()
+  const authResult = await authUser(context.req, context.res)
 
   const page = context.query.page ? parseInt(context.query.page) : 1
   const result = await getUserHiddenItemsByPage(page, authUser)

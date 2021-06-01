@@ -8,7 +8,7 @@ import GoogleAnalytics from "../components/googleAnalytics.js"
 import getItemsSubmittedByUser from "../api/items/getItemsSubmittedByUser.js"
 
 export async function getServerSideProps(context) {
-  const authResult = await authUser()
+  const authResult = await authUser(context.req, context.res)
 
   const userId = context.query.id ? context.query.id : ""
   const page = context.query.page ? parseInt(context.query.page) : 1

@@ -8,7 +8,7 @@ import getBannedUsersByPage from "../../api/moderation/getBannedUsersByPage.js"
 import styles from "../../styles/pages/moderation/banned-users.module.css"
 
 export async function getServerSideProps(context) {
-  const authResult = await authUser()
+  const authResult = await authUser(context.req, context.res)
 
   const page = query.page ? parseInt(context.query.page) : 1
   const result = await getBannedUsersByPage(page, authResult)

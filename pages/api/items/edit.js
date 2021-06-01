@@ -7,7 +7,7 @@ export default async function handler(req, res) {
   const newTitle = JSON.parse(req.body).title;
   const newText = JSON.parse(req.body).text;
 
-  const user = await authUser()
+  const user = await authUser(req, res)
 
   try {
     const directus = credential.directus

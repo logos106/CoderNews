@@ -9,7 +9,7 @@ export default async function handler(req, res) {
   const commentId = JSON.parse(req.body).commentId;
   const parentItemId = JSON.parse(req.body).parentItemId;
 
-  const authResult = await authUser()
+  const authResult = await authUser(req, res)
 
   const directus = credential.directus
 

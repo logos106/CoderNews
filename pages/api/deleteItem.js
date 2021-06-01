@@ -8,7 +8,7 @@ export default async function handler(req, res) {
 
   const directus = credential.directus
 
-  const authResult = await authUser()
+  const authResult = await authUser(req, res)
 
   if (!authResult.userSignedIn) return res.status(200).json({notAllowedError: true})
   else if (!itemId) return res.status(200).json({submitError: true})
