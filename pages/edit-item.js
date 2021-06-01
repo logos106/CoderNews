@@ -1,17 +1,14 @@
 import { Component } from "react"
 import Router from "next/router"
-
 import authUser from "../api/users/authUser.js"
 import renderCreatedTime from "../utils/renderCreatedTime.js"
 import getEditItemPageData from "../api/items/getEditItemPageData.js"
-// import editItem from "../api/items/editItem.js"
-
 import Header from "../components/header.js"
 import Footer from "../components/footer.js"
 import HeadMetadata from "../components/headMetadata.js"
 import GoogleAnalytics from "../components/googleAnalytics.js"
 
-import "../styles/pages/edit-item.module.css"
+import styles from "../styles/pages/edit-item.module.css"
 
 export async function getServerSideProps(context) {
   const authResult = await authUser(context.req, context.res)
@@ -161,40 +158,40 @@ export default class extends Component {
           goto={this.props.goToString}
           label="edit item"
         />
-        <div className="edit-item-content-container">
+        <div className={styles.edit_item_content_container}>
           {
             !this.props.getDataError && !this.state.notAllowedError && !this.state.notFoundError ?
             <>
-              <table className="edit-item-top-section">
+              <table className={styles.edit_item_top_section}>
                 <tbody>
                   <tr>
                     <td valign="top">
-                      <div className="edit-item-star">
+                      <div className={styles.edit_item_star}>
                         <span>*</span>
                       </div>
                     </td>
                     <td>
-                      <span className="edit-item-title">
+                      <span className={styles.edit_item_title}>
                         <a href={item.url ? item.url : `/item?id=${item.id}`}>{item.title}</a>
                       </span>
                       {
                         item.url ?
-                        <span className="edit-item-domain">
+                        <span className={styles.edit_item_domain}>
                           (<a href={`/from?site=${item.domain}`}>{item.domain}</a>)
                         </span> : null
                       }
                     </td>
                   </tr>
-                  <tr className="edit-item-details-bottom">
+                  <tr className={styles.edit_item_details_bottom}>
                     <td colSpan="1"></td>
                     <td>
-                      <span className="edit-item-score">{item.points.toLocaleString()} {item.points === 1 ? "point" : "points"}</span>
+                      <span className={styles.edit_item_score}>{item.points.toLocaleString()} {item.points === 1 ? "point" : "points"}</span>
                       <span> by <a href={`/user?id=${item.by}`}>{item.by}</a> </span>
-                      <span className="edit-item-time">
+                      <span className={styles.edit_item_time}>
                         <a href={`/item?id=${item.id}`}>{renderCreatedTime(item.created)}</a>
                       </span>
                       <span> | </span>
-                      <span className="edit-item-edit">
+                      <span className={styles.edit_item_edit}>
                         <a href="">edit</a>
                       </span>
                       <span> | </span>
@@ -207,15 +204,15 @@ export default class extends Component {
               </table>
               {
                 !item.url && item.text ?
-                <div className="edit-item-text-content">
+                <div className={styles.edit_item_text_content}>
                   <span dangerouslySetInnerHTML={{ __html: item.text }}></span>
                 </div> : null
               }
-              <table className="edit-item-form-section">
+              <table className={styles.edit_item_form_section}>
                 <tbody>
                   <tr>
-                    <td className="edit-item-title-input-label">title:</td>
-                    <td className="edit-item-title-input">
+                    <td className={styles.edit_item_title_input_label}>title:</td>
+                    <td className={styles.edit_item_title_input}>
                       <input
                         type="text"
                         value={this.state.titleInputValue}
@@ -226,15 +223,15 @@ export default class extends Component {
                   {
                     item.url ?
                     <tr>
-                      <td className="edit-item-url-label">url:</td>
-                      <td className="edit-item-url-value">{item.url}</td>
+                      <td className={styles.edit_item_url_label}>url:</td>
+                      <td className={styles.edit_item_url_value}>{item.url}</td>
                     </tr> : null
                   }
                   {
                     item.url == '' ?
                     <tr>
-                      <td className="edit-item-text-input-label">text:</td>
-                      <td className="edit-item-text-input">
+                      <td className={styles.edit_item_text_input_label}>text:</td>
+                      <td className={styles.edit_item_text_input}>
                         <textarea
                           type="text"
                           cols={60}
@@ -247,7 +244,7 @@ export default class extends Component {
                   }
                 </tbody>
               </table>
-              <div className="edit-item-submit-btn">
+              <div className={styles.edit_item_submit_btn}>
                 <input
                   type="submit"
                   value="update"
@@ -256,30 +253,30 @@ export default class extends Component {
               </div>
               {
                 this.state.submitError ?
-                <div className="edit-item-submit-error-msg">
+                <div className={styles.edit_item_submit_error_msg}>
                   <span>An error occurred.</span>
                 </div> : null
               }
               {
                 this.state.titleRequiredError ?
-                <div className="edit-item-submit-error-msg">
+                <div className={styles.edit_item_submit_error_msg}>
                   <span>Title is required.</span>
                 </div> : null
               }
               {
                 this.state.titleTooLongError ?
-                <div className="edit-item-submit-error-msg">
+                <div className={styles.edit_item_submit_error_msg}>
                   <span>Title exceeds limit of 80 characters.</span>
                 </div> : null
               }
               {
                 this.state.textTooLongError ?
-                <div className="edit-item-submit-error-msg">
+                <div className={styles.edit_item_submit_error_msg}>
                   <span>Text exceeds limit of 5,000 characters.</span>
                 </div> : null
               }
             </> :
-            <div className="edit-item-error-msg">
+            <div className={styles.edit_item_error_msg}>
               {
                 this.props.getDataError ?
                 <span>An error occurred.</span> : null

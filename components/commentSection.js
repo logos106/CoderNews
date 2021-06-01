@@ -4,7 +4,7 @@ import sortCommentChildren from "../utils/sortCommentChildren.js"
 import getNumberOfChildrenComments from "../utils/getNumberOfChildrenComments.js"
 import generateCommentTextClassName from "../utils/generateCommentTextClassName.js"
 
-import "../styles/components/commentSection.module.css"
+import styles from "../styles/components/commentSection.module.css"
 
 function Comment({
   parentCommentIndex,
@@ -44,17 +44,17 @@ function Comment({
 
   return (
     <>
-      <div key={comment.id} className={type === "parent" ? "comment-section-comment parent" : "comment-section-comment child"}>
+      <div key={comment.id} className={type === "parent" ? [styles.comment_section_comment, styles.parent].join(' ') : [styles.comment_section_comment, styles.child].join(' ')}>
         {
           !comment.isCollapsed ?
-          <div className="comment-section-comment-details">
+          <div className={styles.comment_section_comment_details}>
             <table>
               <tbody>
                 <tr>
                   <td valign="top">
                     {
                       comment.by === currUsername ?
-                      <div className="comment-section-comment-star">
+                      <div className={styles.comment_section_comment_star}>
                         <span>*</span>
                       </div> : null
                     }
@@ -64,12 +64,12 @@ function Comment({
                         {
                           comment.votedOnByUser || comment.dead ?
                           <>
-                            <div className="comment-section-comment-upvote hide">
+                            <div className={[styles.comment_section_comment_upvote, styles.hide].join(' ')}>
                               <span></span>
                             </div>
                           </> :
                           <>
-                            <div className="comment-section-comment-upvote" onClick={() => requestUpvoteComment(comment.id)}>
+                            <div className={styles.comment_section_comment_upvote} onClick={() => requestUpvoteComment(comment.id)}>
                               <span></span>
                             </div>
                           </>
@@ -82,12 +82,12 @@ function Comment({
                         {
                           comment.votedOnByUser || !showDownvote || comment.dead ?
                           <>
-                            <div className="comment-section-comment-downvote hide">
+                            <div className={[styles.comment_section_comment_downvote, styles.hide].join(' ')}>
                               <span></span>
                             </div>
                           </> :
                           <>
-                            <div className="comment-section-comment-downvote" onClick={() => requestDownvoteComment(comment.id)}>
+                            <div className={styles.comment_section_comment_downvote} onClick={() => requestDownvoteComment(comment.id)}>
                               <span></span>
                             </div>
                           </>
@@ -110,7 +110,7 @@ function Comment({
                       comment.votedOnByUser && !comment.unvoteExpired ?
                       <>
                         <span> | </span>
-                        <span className="comment-section-comment-unvote-btn" onClick={() => requestUnvoteComment(comment.id)}>un-vote</span>
+                        <span className={styles.comment_section_comment_unvote_btn} onClick={() => requestUnvoteComment(comment.id)}>un-vote</span>
                       </> : null
                     }
                     {
@@ -135,21 +135,21 @@ function Comment({
                       isModerator && !comment.dead ?
                       <>
                         <span> | </span>
-                        <span className="comment-section-kill" onClick={() => requestKillComment(comment.id)}>kill</span>
+                        <span className={styles.comment_section_kill} onClick={() => requestKillComment(comment.id)}>kill</span>
                       </> : null
                     }
                     {
                       isModerator && comment.dead ?
                       <>
                         <span> | </span>
-                        <span className="comment-section-kill" onClick={() => requestUnkillComment(comment.id)}>un-kill</span>
+                        <span className={styles.comment_section_kill} onClick={() => requestUnkillComment(comment.id)}>un-kill</span>
                       </> : null
                     }
-                    <span className="comment-section-comment-collapse-btn" onClick={() => collapseComment(comment.id, parentCommentIndex)}> [‒]</span>
+                    <span className={styles.comment_section_comment_collapse_btn} onClick={() => collapseComment(comment.id, parentCommentIndex)}> [‒]</span>
                     <div className={generateCommentTextClassName(comment.points)}>
                       <span dangerouslySetInnerHTML={{ __html: comment.text }}></span>
                     </div>
-                    <div className="comment-section-comment-reply">
+                    <div className={styles.comment_section_comment_reply}>
                       <span>
                         <a href={`/reply?id=${comment.id}`}>reply</a>
                       </span>
@@ -160,16 +160,16 @@ function Comment({
             </table>
             {nestedComments}
           </div> :
-          <div className="comment-section-comment-collapsed">
+          <div className={styles.comment_section_comment_collapsed}>
             <span>
               <a href={`/user?id=${comment.by}`}>{comment.by} </a>
             </span>
             <span>
               <a href={`/comment?id=${comment.id}`}>{renderCreatedTime(comment.created)}</a>
             </span>
-            <div className="comment-section-comment-collapsed-btn">
+            <div className={styles.comment_section_comment_collapsed_btn}>
               <span>[</span>
-              <span className="comment-section-comment-collapsed-btn-value" onClick={() => uncollapseComment(comment.id, parentCommentIndex)}>+{comment.numOfHiddenChildren}</span>
+              <span className={styles.comment_section_comment_collapsed_btn_value} onClick={() => uncollapseComment(comment.id, parentCommentIndex)}>+{comment.numOfHiddenChildren}</span>
               <span>]</span>
             </div>
           </div>
@@ -416,7 +416,7 @@ export default class extends Component {
         }
         {
           this.props.isMore ?
-          <div className="comment-section-more">
+          <div className={styles.comment_section_more}>
             <span>
               <a href={this.props.isMoreLink}>More</a>
             </span>

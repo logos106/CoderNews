@@ -19,8 +19,8 @@ export async function getServerSideProps(context) {
   const result = await getEditCommentPageData(context.query.id, context.req)
   return {
     props: {
-      comment: result.comment,
       authUserData: authResult,
+      comment: typeof result.comment === 'undefined' ? null : result.comment,
       getDataError: typeof result.getDataError === 'undefined' ? false : result.getDataError,
       notAllowedError: typeof result.notAllowedError === 'undefined' ? false : result.notAllowedError,
       notFoundError: typeof result.notFoundError === 'undefined' ? false : result.notFoundError,

@@ -8,6 +8,8 @@ import Item from "../components/item.js"
 import CommentSection from "../components/commentSection.js"
 import GoogleAnalytics from "../components/googleAnalytics.js"
 
+import styles from "../styles/pages/item.module.css"
+
 export async function getServerSideProps (context) {
   const authResult = await authUser(context.req, context.res)
 
@@ -44,7 +46,7 @@ export default class extends Component {
           karma={this.props.authUserData && this.props.authUserData.karma}
           goto={this.props.goToString}
         />
-        <div className="item-content-container">
+        <div className={styles.item_content_container}>
           {
             item && !this.props.notFoundError && !this.props.getDataError ?
             <>
@@ -67,7 +69,7 @@ export default class extends Component {
                 isModerator={this.props.authUserData.isModerator}
               />
             </> :
-            <div className="item-get-data-error-msg">
+            <div className={styles.item_get_data_error_msg}>
               {
                 this.props.notFoundError ?
                 <span>No such item.</span> :

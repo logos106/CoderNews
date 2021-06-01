@@ -1,26 +1,25 @@
 import { Component } from "react"
 import Router from "next/router"
-
+import authUser from "../api/users/authUser.js"
 import HeadMetadata from "../components/headMetadata.js"
 import AlternateHeader from "../components/alternateHeader.js"
 import GoogleAnalytics from "../components/googleAnalytics.js"
 
-import authUser from "../api/users/authUser.js"
+import styles from "../styles/pages/submit.module.css"
 
 export async function getServerSideProps(context) {
   const authResult = await authUser(context.req, context.res)
 
   if (!authResult.userSignedIn) {
-    // context.res.writeHead(200, { Location: '/' });
-    // context.res.end();
+    context.res.writeHead(302, {
+      Location: "/login?goto=submit"
+    })
+
+    context.res.end()
   }
 
-  console.log(authResult);
-  return {
-    props: {
-      authUser: authResult
-    }
-  }
+  const data = null
+  return { props: { data } }
 }
 
 export default class extends Component {
@@ -105,7 +104,7 @@ export default class extends Component {
         })
       })
       let response = await res.json()
-      
+
       if (response.authError) {
         window.location.href = "/login?goto=submit"
       } else if (response.titleRequiredError) {
@@ -184,48 +183,48 @@ export default class extends Component {
         <AlternateHeader
           displayMessage="Submit"
         />
-        <div className="submit-content-container">
+        <div className={styles.submit_content_container}>
           {
             this.state.titleRequiredError ?
-            <div className="submit-content-error-msg">
+            <div className={styles.submit_content_error_msg}>
               <span>Title is required.</span>
             </div> : null
           }
           {
             this.state.titleTooLongError ?
-            <div className="submit-content-error-msg">
+            <div className={styles.submit_content_error_msg}>
               <span>Title exceeds limit of 80 characters.</span>
             </div> : null
           }
           {
             this.state.invalidUrlError ?
-            <div className="submit-content-error-msg">
+            <div className={styles.submit_content_error_msg}>
               <span>URL is invalid.</span>
             </div> : null
           }
           {
             this.state.urlAndTextError ?
-            <div className="submit-content-error-msg">
+            <div className={styles.submit_content_error_msg}>
               <span>Submissions can’t have both urls and text, so you need to pick one. If you keep the url, you can always post your text as a comment in the thread.</span>
             </div> : null
           }
           {
             this.state.textTooLongError ?
-            <div className="submit-content-error-msg">
+            <div className={styles.submit_content_error_msg}>
               <span>Text exceeds limit of 5,000 characters.</span>
             </div> : null
           }
           {
             this.state.submitError ?
-            <div className="submit-content-error-msg">
+            <div className={styles.submit_content_error_msg}>
               <span>An error occurred.</span>
             </div> : null
           }
-          <div className="submit-content-input-item title">
-            <div className="submit-content-input-item-label">
+          <div className={styles.submit_content_input_item, styles.title}>
+            <div className={styles.submit_content_input_item_label}>
               <span>title</span>
             </div>
-            <div className="submit-content-input-item-input">
+            <div className={styles.submit_content_input_item_input}>
               <input
                 type="text"
                 value={this.state.titleInputValue}
@@ -233,11 +232,11 @@ export default class extends Component {
               />
             </div>
           </div>
-          <div className="submit-content-input-item url">
-            <div className="submit-content-input-item-label">
+          <div className={[styles.submit_content_input_item, styles.url].join(" ")}>
+            <div className={styles.submit_content_input_item_label}>
               <span>url</span>
             </div>
-            <div className="submit-content-input-item-input">
+            <div className={styles.submit_content_input_item_input}>
               <input
                 type="text"
                 value={this.state.urlInputValue}
@@ -245,14 +244,14 @@ export default class extends Component {
               />
             </div>
           </div>
-          <div className="submit-content-input-or-divider">
+          <div className={styles.submit_content_input_or_divider}>
             <span>or</span>
           </div>
-          <div className="submit-content-text-input-item">
-            <div className="submit-content-text-input-item-label">
+          <div className={styles.submit_content_text_input_item}>
+            <div className={styles.submit_content_text_input_item_label}>
               <span>text</span>
             </div>
-            <div className="submit-content-text-input-item-input">
+            <div className={styles.submit_content_text_input_item_input}>
               <textarea
                 type="text"
                 value={this.state.textInputValue}
@@ -260,14 +259,14 @@ export default class extends Component {
               />
             </div>
           </div>
-          <div className="submit-content-input-btn">
+          <div className={styles.submit_content_input_btn}>
             <input
               type="submit"
               value="submit"
               onClick={() => this.submitRequest(this.props.authUser)}
             />
           </div>
-          <div className="submit-content-bottom-instructions">
+          <div className={styles.submit_content_bottom_instructions}>
             <span>Leave url blank to submit a question for discussion. If there is no url, the text (if any) will appear at the top of the thread.</span>
           </div>
         </div>

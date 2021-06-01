@@ -16,7 +16,7 @@ export async function getServerSideProps(context) {
   return {
     props: {
       authUserData: authResult,
-      comment: typeof result.comment === 'undefined' ? null : result.comment,
+      comments: typeof result.comments === 'undefined' ? null : result.comments,
       page: page,
       isMore: typeof result.isMore === 'undefined' ? false : result.isMore,
       getDataError: typeof result.getDataError === 'undefined' ? false : result.getDataError,

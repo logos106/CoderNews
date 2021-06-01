@@ -2,6 +2,8 @@ import { Component } from "react"
 import Link from 'next/link'
 import renderCreatedTime from "../utils/renderCreatedTime.js"
 
+import styles from "../styles/components/itemsList.module.css"
+
 export default class extends Component {
   constructor(props) {
     super(props)
@@ -164,11 +166,11 @@ export default class extends Component {
           this.state.items ?
           this.state.items.map((item, index) => {
             return (
-              <div key={item.id} className="listed-item-container">
+              <div key={item.id} className={styles.listed_item_container}>
                 <table>
                   <tbody>
                     <tr>
-                      <td className={this.props.showRank ? "listed-item-rank" : "listed-item-rank hide"}>
+                      <td className={this.props.showRank ? styles.listed_item_rank : [styles.listed_item_rank, styles.hide].join(' ')}>
                         {
                           this.props.showRank ?
                           <span>{item.rank}.</span> : null
@@ -177,7 +179,7 @@ export default class extends Component {
                       <td valign="top">
                         {
                           this.props.currUsername === item.by ?
-                          <div className="listed-item-star">
+                          <div className={styles.listed_item_star}>
                             <span>*</span>
                           </div> : null
                         }
@@ -186,14 +188,14 @@ export default class extends Component {
                           <>
                             {
                               item.votedOnByUser || item.dead ?
-                              <span className="listed-item-upvote hide"></span> :
-                              <span className="listed-item-upvote" onClick={() => this.requestUpvoteItem(item.id, index)}></span>
+                              <span className={[styles.listed_item_upvote, styles.hide].join(' ')}></span> :
+                              <span className={styles.listed_item_upvote} onClick={() => this.requestUpvoteItem(item.id, index)}></span>
                             }
                           </> : null
                         }
                       </td>
                       <td>
-                        <span className="listed-item-title">
+                        <span className={styles.listed_item_title}>
                           <Link href={item.url ? item.url : `/item?id=${item.id}`}>
                             <a>
                               {item.dead ? "[dead] " : null}
@@ -203,16 +205,16 @@ export default class extends Component {
                         </span>
                         {
                           item.url ?
-                          <span className="listed-item-domain">(<a href={`/from?site=${item.domain}`}>{item.domain}</a>)</span> : null
+                          <span className={styles.listed_item_domain}>(<a href={`/from?site=${item.domain}`}>{item.domain}</a>)</span> : null
                         }
                       </td>
                     </tr>
-                    <tr className="listed-item-bottom-section">
+                    <tr className={styles.listed_item_bottom_section}>
                       <td colSpan="2"></td>
                       <td>
                         <span>{item.points.toLocaleString()} {item.points === 1 ? "point" : "points"}</span>
                         <span> by <a href={`/user?id=${item.by}`}>{item.by}</a> </span>
-                        <span className="listed-item-time"><a href={`/item?id=${item.id}`}>{renderCreatedTime(item.created)}</a> </span>
+                        <span className={styles.listed_item_time}><a href={`/item?id=${item.id}`}>{renderCreatedTime(item.created)}</a> </span>
                         {
                           this.props.showPastLink ?
                           <>
@@ -231,28 +233,28 @@ export default class extends Component {
                           item.votedOnByUser && !item.unvoteExpired && !item.dead ?
                           <>
                             <span> | </span>
-                            <span className="listed-item-unvote" onClick={() => this.requestUnvoteItem(item.id, index)}>un-vote</span>
+                            <span className={styles.listed_item_unvote} onClick={() => this.requestUnvoteItem(item.id, index)}>un-vote</span>
                           </> : null
                         }
                         {
                           this.props.showUnfavoriteOption ?
                           <>
                             <span> | </span>
-                            <span className="listed-item-unfavorite" onClick={() => this.requestUnfavoriteItem(item.id)}>un-favorite</span>
+                            <span className={styles.listed_item_unfavorite} onClick={() => this.requestUnfavoriteItem(item.id)}>un-favorite</span>
                           </> : null
                         }
                         {
                           this.props.showHideOption ?
                           <>
                             <span> | </span>
-                            <span className="listed-item-hide" onClick={() => this.requestHideItem(item.id, index)}>hide</span>
+                            <span className={styles.listed_item_hide} onClick={() => this.requestHideItem(item.id, index)}>hide</span>
                           </> : null
                         }
                         {
                           this.props.showUnhideOption ?
                           <>
                             <span> | </span>
-                            <span className="listed-item-unhide" onClick={() => this.requestUnhideItem(item.id)}>un-hide</span>
+                            <span className={styles.listed_item_unhide} onClick={() => this.requestUnhideItem(item.id)}>un-hide</span>
                           </> : null
                         }
                         {
@@ -279,14 +281,14 @@ export default class extends Component {
                           this.props.isModerator && !item.dead ?
                           <>
                             <span> | </span>
-                            <span className="listed-item-kill" onClick={() => this.requestKillItem(item.id)}>kill</span>
+                            <span className={styles.listed_item_kill} onClick={() => this.requestKillItem(item.id)}>kill</span>
                           </> : null
                         }
                         {
                           this.props.isModerator && item.dead ?
                           <>
                             <span> | </span>
-                            <span className="listed-item-kill" onClick={() => this.requestUnkillItem(item.id)}>un-kill</span>
+                            <span className={styles.listed_item_kill} onClick={() => this.requestUnkillItem(item.id)}>un-kill</span>
                           </> : null
                         }
                         {
@@ -296,7 +298,7 @@ export default class extends Component {
                               item.commentCount > 0 ?
                               <>
                                 <span> | </span>
-                                <span className="listed-item-comments">
+                                <span className={styles.listed_item_comments}>
                                   <a href={`/item?id=${item.id}`}>
                                     {item.commentCount.toLocaleString("en")} comment{item.commentCount > 1 ? "s" : null}
                                   </a>
@@ -304,7 +306,7 @@ export default class extends Component {
                               </> :
                               <>
                                 <span> | </span>
-                                <span className="listed-item-comments"><a href={`/item?id=${item.id}`}>discuss</a></span>
+                                <span className={styles.listed_item_comments}><a href={`/item?id=${item.id}`}>discuss</a></span>
                               </>
                             }
                           </> : null
@@ -319,7 +321,7 @@ export default class extends Component {
         }
         {
           this.props.isMore ?
-          <div className={this.props.showRank ? "listed-item-more" : "listed-item-more hide-rank"}>
+          <div className={this.props.showRank ? styles.listed_item_more : [styles.listed_item_more, styles.hide-rank].join(' ')}>
             <a href={this.props.isMoreLink}>
               <span>More</span>
             </a>

@@ -1,13 +1,13 @@
-.edit-item-content-container {
+.edit_item_content-container {
   width: 100%;
   padding: 15px 0px 15px 0px;
 }
 
-.edit-item-top-section {
+.edit_item_top-section {
   margin-bottom: 10px;
 }
 
-.edit-item-star {
+.edit_item_star {
   display: inline-block;
   color: rgb(255, 102, 0);
   width: 20px;
@@ -15,58 +15,58 @@
   font-size: 13.5px;
 }
 
-.edit-item-title {
+.edit_item_title {
   font-size: 13.5px;
 }
 
-.edit-item-title a {
+.edit_item_title a {
   text-decoration: none;
   color: #000000;
 }
 
-.edit-item-title a:visited {
+.edit_item_title a:visited {
   color: #828282;
 }
 
-.edit-item-domain {
+.edit_item_domain {
   font-size: 10.5px;
   margin-left: 4px;
   color: #828282;
 }
 
-.edit-item-domain a {
+.edit_item_domain a {
   text-decoration: none;
   color: #828282;
 }
 
-.edit-item-domain a:hover {
+.edit_item_domain a:hover {
   text-decoration: underline;
 }
 
-.edit-item-details-bottom {
+.edit_item_details_bottom {
   font-size: 9.5px;
   color: #828282;
   cursor: default;
   line-height: 20px;
 }
 
-.edit-item-details-bottom a {
+.edit_item_details_bottom a {
   text-decoration: none;
   color: #828282;
   cursor: pointer;
 }
 
-.edit-item-details-bottom a:hover {
+.edit_item_details_bottom a:hover {
   text-decoration: underline;
 }
 
-.edit-item-top-section-item-details-edit:hover,
-.edit-item-top-section-item-details-delete:hover {
+.edit_item_top-section_item_details_edit:hover,
+.edit_item_top-section_item_details_delete:hover {
   cursor: pointer;
   text-decoration: underline;
 }
 
-.edit-item-text-content {
+.edit_item_text_content {
   color: #828282;
   font-size: 13px;
   margin-top: 7.5px;
@@ -76,7 +76,7 @@
   padding-right: 15px;
 }
 
-.edit-item-text-content a {
+.edit_item_text_content a {
   color: #828282;
   display: inline-block;
   overflow: hidden;
@@ -86,23 +86,23 @@
   vertical-align: top;
 }
 
-.edit-item-text-content a:visited {
+.edit_item_text_content a:visited {
   color: #828282;
 }
 
-.edit-item-form-section {
+.edit_item_form-section {
   margin-top: 20px;
 }
 
-.edit-item-form-section td {
+.edit_item_form-section td {
   padding-bottom: 10px;
 }
 
-.edit-item-title-input {
+.edit_item_title_input {
   margin-bottom: 10px;
 }
 
-.edit-item-title-input-label {
+.edit_item_title_input-label {
   display: inline-block;
   width: 40px;
   vertical-align: top;
@@ -111,7 +111,7 @@
   font-size: 13.5px;
 }
 
-.edit-item-title-input input {
+.edit_item_title_input input {
   width: 450px;
   -webkit-writing-mode: horizontal-tb;
   text-rendering: auto;
@@ -132,12 +132,12 @@
   border: 1px solid #a6a4a4;
 }
 
-.edit-item-title-input input[type="text"] {
+.edit_item_title_input input[type="text"] {
   font-family: monospace;
   font-size: 13.5px;
 }
 
-.edit-item-url-label {
+.edit_item_url_label {
   display: inline-block;
   font-size: 13.5px;
   color: #828282;
@@ -145,7 +145,7 @@
   margin-left: 10px;
 }
 
-.edit-item-url-value {
+.edit_item_url_value {
   margin-bottom: 10px;
   color: #828282;
   font-size: 13.5px;
@@ -153,7 +153,7 @@
   word-wrap: break-word;
 }
 
-.edit-item-text-input-label {
+.edit_item_text_input_label {
   display: inline-block;
   width: 40px;
   vertical-align: top;
@@ -162,7 +162,7 @@
   font-size: 13.5px;
 }
 
-.edit-item-text-input textarea {
+.edit_item_text_input textarea {
   width: 500px;
   max-width: 92.5%;
   vertical-align: middle;
@@ -193,17 +193,17 @@
   padding: 2px 0px 0px 2px;
 }
 
-.edit-item-text-input textarea[type="text"] {
+.edit_item_text_input textarea[type="text"] {
   font-family: monospace;
   font-size: 13.5px;
 }
 
-.edit-item-submit-btn {
+.edit_item_submit_btn {
   margin-left: 10px;
   margin-top: 20px;
 }
 
-.edit-item-submit-btn input {
+.edit_item_submit_btn input {
   -webkit-appearance: push-button;
   user-select: none;
   white-space: pre;
@@ -220,80 +220,80 @@
   border-image: initial;
 }
 
-.edit-item-submit-btn input[type="submit"] {
+.edit_item_submit_btn input[type="submit"] {
   font-family: monospace;
   font-size: 13.5px;
 }
 
-.edit-item-submit-btn input[type="submit"]:active {
+.edit_item_submit_btn input[type="submit"]:active {
   border-style: inset;
 }
 
-.edit-item-submit-error-msg {
+.edit_item_submit_error_msg {
   color: #828282;
   font-size: 13.5px;
   margin-top: 15px;
   margin-left: 10px;
 }
 
-.edit-item-error-msg {
+.edit_item_error_msg {
   margin: 8px;
   font-size: 13.5px;
   color: #828282;
 }
 
 @media only screen and (max-width: 750px) and (min-width: 0px) {
-  .edit-item-title {
+  .edit_item_title {
     font-size: 14.5px;
   }
 
-  .edit-item-details-bottom {
+  .edit_item_details_bottom {
     font-size: 12px;
   }
 
-  .edit-item-text-content a {
+  .edit_item_text_content a {
     max-width: 250px;
   }
 
-  .edit-item-title-input input[type="text"] {
+  .edit_item_title_input input[type="text"] {
     font-size: 16px;
   }
 
-  .edit-item-text-input textarea {
+  .edit_item_text_input textarea {
     width: 90%;
   }
 
-  .edit-item-text-input textarea[type="text"] {
+  .edit_item_text_input textarea[type="text"] {
     font-size: 16px;
   }
 }
 
 @media only screen and (max-width: 600px) and (min-width: 500px) {
-  .edit-item-title-input input {
+  .edit_item_title_input input {
     width: 400px;
   }
 
-  .edit-item-url-value {
+  .edit_item_url_value {
     width: 400px;
   }
 }
 
 @media only screen and (max-width: 500px) and (min-width: 400px) {
-  .edit-item-title-input input {
+  .edit_item_title_input input {
     width: 325px;
   }
 
-  .edit-item-url-value {
+  .edit_item_url_value {
     width: 325px;
   }
 }
 
 @media only screen and (max-width: 400px) and (min-width: 0px) {
-  .edit-item-title-input input {
+  .edit_item_title_input input {
     width: 250px;
   }
 
-  .edit-item-url-value {
+  .edit_item_url_value {
     max-width: 200px;
   }
 }

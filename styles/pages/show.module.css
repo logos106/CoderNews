@@ -1,16 +1,16 @@
-.show-items-top-text {
+.show_items_top_text {
   color: #828282;
   font-size: 13.5px;
   margin: 10px 0px 15px 47.5px;
 }
 
-.show-items-top-text a,
-.show-items-top-text a:visited {
+.show_items_top_text a,
+.show_items_top_text a:visited {
   color: #828282;
 }
 
 @media only screen and (max-width: 750px) and (min-width: 0px) {
-  .show-items-top-text {
+  .show_items_top_text {
     font-size: 12.5px;
     margin-left: 52.5px;
   }

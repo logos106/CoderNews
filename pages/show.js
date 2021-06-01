@@ -1,15 +1,13 @@
 import { Component } from "react"
-
-import "../styles/pages/show.module.css"
-
+import authUser from "../api/users/authUser.js"
 import Header from "../components/header.js"
 import Footer from "../components/footer.js"
 import HeadMetadata from "../components/headMetadata.js"
 import ItemsList from "../components/itemsList.js"
 import GoogleAnalytics from "../components/googleAnalytics.js"
-import authUser from "../api/users/authUser.js"
-
 import getRankedShowItemsByPage from "../api/items/getRankedShowItemsByPage.js"
+
+import styles from  "../styles/pages/show.module.css"
 
 export async function getServerSideProps(context) {
   const authResult = await authUser(context.req, context.res)
@@ -32,7 +30,6 @@ export async function getServerSideProps(context) {
 }
 
 export default class extends Component {
-
   render () {
     return (
       <div className="layout-wrapper">
@@ -51,7 +48,7 @@ export default class extends Component {
           {
             !this.props.getDataError ?
             <>
-              <div className="show-items-top-text">
+              <div className={styles.show_items_top_text}>
                 <span>Please read the <a href="/showguidelines">rules</a>. You can also browse the <a href="/shownew">newest</a> Show submissions.</span>
               </div>
               <ItemsList

@@ -3,7 +3,7 @@ import renderPointsString from "../utils/renderPointsString.js"
 import renderCreatedTime from "../utils/renderCreatedTime.js"
 import truncateItemTitle from "../utils/truncateItemTitle.js"
 
-import "../styles/components/commentsList.module.css"
+import styles from "../styles/components/commentsList.module.css"
 
 export default class extends Component {
   constructor(props) {
@@ -153,14 +153,14 @@ export default class extends Component {
           this.state.comments.map((comment, index) => {
             console.log("Comment: ", comment)
             return (
-              <div key={comment.id} className="listed-comment">
+              <div key={comment.id} className={styles.listed_comment}>
                 <table>
                   <tbody>
                     <tr>
                       <td valign="top">
                         {
                           currUsername === comment.by ?
-                          <div className="listed-comment-star">
+                          <div className={styles.listed_comment_star}>
                             <span>*</span>
                           </div> : null
                         }
@@ -170,12 +170,12 @@ export default class extends Component {
                             {
                               comment.votedOnByUser || comment.dead ?
                               <>
-                                <div className="listed-comment-upvote hide">
+                                <div className={[styles.listed_comment_upvote, styles.hide].join(' ')}>
                                   <span></span>
                                 </div>
                               </> :
                               <>
-                                <div className="listed-comment-upvote" onClick={() => this.requestUpvoteComment(comment.id, comment.parent_id, index)}>
+                                <div className={styles.listed_comment_upvote} onClick={() => this.requestUpvoteComment(comment.id, comment.parent_id, index)}>
                                   <span></span>
                                 </div>
                               </>
@@ -188,12 +188,12 @@ export default class extends Component {
                             {
                               comment.votedOnByUser || !this.props.showDownvote || comment.dead ?
                               <>
-                                <div className="listed-comment-downvote hide">
+                                <div className={[styles.listed_comment_downvote, styles.hide].join(' ')}>
                                   <span></span>
                                 </div>
                               </> :
                               <>
-                                <div className="listed-comment-downvote" onClick={() => this.requestDownvoteComment(comment.id, comment.parent_id, index)}>
+                                <div className={styles.listed_comment_downvote} onClick={() => this.requestDownvoteComment(comment.id, comment.parent_id, index)}>
                                   <span></span>
                                 </div>
                               </>
@@ -202,7 +202,7 @@ export default class extends Component {
                         }
                       </td>
                       <td>
-                        <div className="listed-comment-head">
+                        <div className={styles.listed_comment_head}>
                           {
                             currUsername === comment.by ?
                             <span>{comment.points.toLocaleString()} {renderPointsString(comment.points)} by </span> : null
@@ -221,18 +221,18 @@ export default class extends Component {
                             comment.votedOnByUser && !comment.unvoteExpired ?
                             <>
                               <span> | </span>
-                              <span className="listed-comment-unvote" onClick={() => this.requestUnvoteComment(comment.id, index)}>un-vote</span>
+                              <span className={styles.listed_comment_unvote} onClick={() => this.requestUnvoteComment(comment.id, index)}>un-vote</span>
                             </> : null
                           }
                           <span> | </span>
-                          <span className="listed-comment-parent">
+                          <span className={styles.listed_comment_parent}>
                             <a href={comment.isParent ? `/item?id=${comment.parent_id}` : `/comment?id=${comment.parent_comment_id}`}>parent</a>
                           </span>
                           {
                             this.props.showUnfavoriteOption ?
                             <>
                               <span> | </span>
-                              <span className="listed-comment-unfavorite" onClick={() => this.requestUnfavoriteComment(comment.id)}>un-favorite</span>
+                              <span className={styles.listed_comment_unfavorite} onClick={() => this.requestUnfavoriteComment(comment.id)}>un-favorite</span>
                             </> : null
                           }
                           {
@@ -257,14 +257,14 @@ export default class extends Component {
                             this.props.isModerator && !comment.dead ?
                             <>
                               <span> | </span>
-                              <span className="listed-comment-kill" onClick={() => this.requestKillComment(comment.id)}>kill</span>
+                              <span className={styles.listed_comment_kill} onClick={() => this.requestKillComment(comment.id)}>kill</span>
                             </> : null
                           }
                           {
                             this.props.isModerator && comment.dead ?
                             <>
                               <span> | </span>
-                              <span className="listed-comment-kill" onClick={() => this.requestUnkillComment(comment.id)}>un-kill</span>
+                              <span className={styles.listed_comment_kill} onClick={() => this.requestUnkillComment(comment.id)}>un-kill</span>
                             </> : null
                           }
                           <span> | </span>
@@ -272,7 +272,7 @@ export default class extends Component {
                             on: <a href={`/item?id=${comment.parent_id}`}>{truncateItemTitle(comment.parent_title)}</a>
                           </span>
                         </div>
-                        <div className="listed-comment-text">
+                        <div className={styles.listed_comment_text}>
                           <span dangerouslySetInnerHTML={{ __html: comment.text }}></span>
                         </div>
                       </td>
@@ -285,7 +285,7 @@ export default class extends Component {
         }
         {
           this.props.isMore ?
-          <div className="listed-comments-more">
+          <div className={styles.listed_comments_more}>
             <a href={this.props.isMoreLink}>
               <span>More</span>
             </a>

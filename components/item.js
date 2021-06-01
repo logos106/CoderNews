@@ -1,7 +1,7 @@
 import { Component } from "react"
 import renderCreatedTime from "../utils/renderCreatedTime.js"
 
-import "../styles/components/item.module.css"
+import styles from "../styles/components/item.module.css"
 
 export default class extends Component {
   constructor(props) {
@@ -265,14 +265,14 @@ export default class extends Component {
     const currUsername = this.props.currUsername
 
     return (
-      <div className="item-details">
+      <div className={styles.item_details}>
         <table>
           <tbody>
             <tr>
               <td valign="top">
                 {
                   item.by === currUsername ?
-                  <div className="item-star">
+                  <div className={styles.item_star}>
                     <span>*</span>
                   </div> : null
                 }
@@ -281,14 +281,14 @@ export default class extends Component {
                   <>
                     {
                       item.votedOnByUser || item.dead ?
-                      <span className="item-upvote hide"></span> :
+                      <span className={[styles.item_upvote, styles.hide].join(' ')}></span> :
                       <span className="item-upvote" onClick={() => this.requestUpvoteItem()}></span>
                     }
                   </> : null
                 }
               </td>
               <td>
-                <span className="item-title">
+                <span className={styles.item_title}>
                   <a href={item.url ? item.url : `/item?id=${item.id}`}>
                     {item.dead ? "[dead] " : null}
                     {item.title}
@@ -296,11 +296,11 @@ export default class extends Component {
                 </span>
                 {
                   item.url ?
-                  <span className="item-domain">(<a href={`/from?site=${item.domain}`}>{item.domain}</a>)</span> : null
+                  <span className={styles.item_domain}>(<a href={`/from?site=${item.domain}`}>{item.domain}</a>)</span> : null
                 }
               </td>
             </tr>
-            <tr className="item-details-bottom">
+            <tr className={styles.item_details_bottom}>
               <td colSpan="1"></td>
               <td>
                 <span>{item.points.toLocaleString()} {item.points === 1 ? "point" : "points"}</span>
@@ -317,11 +317,11 @@ export default class extends Component {
                   !item.hiddenByUser ?
                   <>
                     <span> | </span>
-                    <span className="item-hide" onClick={() => this.requestHideItem()}>hide</span>
+                    <span className={styles.item_hide} onClick={() => this.requestHideItem()}>hide</span>
                   </> :
                   <>
                     <span> | </span>
-                    <span className="item-hide" onClick={() => this.requestUnhideItem()}>un-hide</span>
+                    <span className={styles.item_hide} onClick={() => this.requestUnhideItem()}>un-hide</span>
                   </>
                 }
                 <span> | </span>
@@ -343,7 +343,7 @@ export default class extends Component {
                   item.by === currUsername && !item.editAndDeleteExpired && !item.dead ?
                   <>
                     <span> | </span>
-                    <span className="item-edit">
+                    <span className={styles.item_edit}>
                       <a href={`/edit-item?id=${item.id}`}>edit</a>
                     </span>
                   </> : null
@@ -352,7 +352,7 @@ export default class extends Component {
                   item.by === currUsername && !item.editAndDeleteExpired && !item.dead ?
                   <>
                     <span> | </span>
-                    <span className="item-delete">
+                    <span className={styles.item_delete}>
                       <a href={`/delete-item?id=${item.id}&goto=${encodeURIComponent(this.props.goToString)}`}>delete</a>
                     </span>
                   </> : null
@@ -361,14 +361,14 @@ export default class extends Component {
                   this.props.isModerator && !item.dead ?
                   <>
                     <span> | </span>
-                    <span className="item-kill" onClick={() => this.requestKillItem()}>kill</span>
+                    <span className={styles.item_kill} onClick={() => this.requestKillItem()}>kill</span>
                   </> : null
                 }
                 {
                   this.props.isModerator && item.dead ?
                   <>
                     <span> | </span>
-                    <span className="item-kill" onClick={() => this.requestUnkillItem()}>un-kill</span>
+                    <span className={styles.item_kill} onClick={() => this.requestUnkillItem()}>un-kill</span>
                   </> : null
                 }
                 {
@@ -378,13 +378,13 @@ export default class extends Component {
                       item.commentCount > 0 ?
                       <>
                         <span> | </span>
-                        <span className="item-comments">
+                        <span className={styles.item_comments}>
                           <a href={`/item?id=${item.id}`}>{item.commentCount.toLocaleString()} comment{item.commentCount > 1 ? "s" : null}</a>
                         </span>
                       </> :
                       <>
                         <span> | </span>
-                        <span className="item-comments">
+                        <span className={styles.item_comments}>
                           <a href={`/item?id=${item.id}`}>discuss</a>
                         </span>
                       </>
@@ -397,21 +397,21 @@ export default class extends Component {
         </table>
         {
           !item.url && item.text ?
-          <div className="item-text-content">
+          <div className={styles.item_text_content}>
             <span dangerouslySetInnerHTML={{ __html: item.text }}></span>
           </div> : null
         }
         {
           !item.dead ?
           <>
-            <div className="item-comment-box">
+            <div className={styles.item_comment_box}>
               <textarea
                 type="text"
                 value={this.state.commentInputValue}
                 onChange={this.updateCommentInputValue}
               />
             </div>
-            <div className="item-add-comment-btn">
+            <div className={styles.item_add_comment_btn}>
               <input
                 type="submit"
                 value="add comment"
@@ -420,19 +420,19 @@ export default class extends Component {
             </div>
             {
               this.state.commentTextTooLongError ?
-              <div className="item-add-comment-error">
+              <div className={styles.item-add-comment-error}>
                 <span>Text exceeds limit of 5,000 characters.</span>
               </div> : null
             }
             {
               this.state.commentTextRequiredError ?
-              <div className="item-add-comment-error">
+              <div className={styles.item-add-comment-error}>
                 <span>Text is required.</span>
               </div> : null
             }
             {
               this.state.commentSubmitError ?
-              <div className="item-add-comment-error">
+              <div className={styles.item-add-comment-error}>
                 <span>An error occurred.</span>
               </div> : null
             }

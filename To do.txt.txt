@@ -1,0 +1,30 @@
+Here are a few thing I've spotted:
+
+Threads:
+Doesn't show anything (I had to post something to get to show content)
+
+New & others:
+The number of comments aren't showing like the original?
+
+Past:
+If I click on "month" I get APRIL as a date, but it shows me the last 8 days
+
+Comments:
+Is empty
+
+Submit:
+Submitting a URL gives an error and doesn't post anything - however submitting a normal post works
+
+Comments on a post:
+- If they are nested (replies to other comments) they don't seem to show 
+- Commenting on a comment and then clicking on "Parent" gives an error
+
+Favorite:
+Doesn't seem to be working? 
+
+Delete:
+It says "You can’t delete that item." even if it's my item
+
+On a post:
+- Clicking on "past" gives an error "An error occurred."
+- The upvote feature isn't showing (it's not showing on the other pages either)

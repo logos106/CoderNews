@@ -1,4 +1,4 @@
-.item-star {
+.item_star {
   display: inline-block;
   color: rgb(255, 102, 0);
   width: 20px;
@@ -6,7 +6,7 @@
   font-size: 13.5px;
 }
 
-.item-upvote {
+.item_upvote {
   display: inline-block;
   color: #828282;
   background: url("/upvote-arrow.png") no-repeat;
@@ -19,39 +19,39 @@
   cursor: pointer;
 }
 
-.item-upvote.hide {
+.item_upvote.hide {
   background: none;
 }
 
-.item-title {
+.item_title {
   font-size: 13.5px;
 }
 
-.item-title a {
+.item_title a {
   text-decoration: none;
   color: #000000;
 }
 
-.item-title a:visited {
+.item_title a:visited {
   color: #828282;
 }
 
-.item-domain {
+.item_domain {
   font-size: 10.5px;
   margin-left: 4px;
   color: #828282;
 }
 
-.item-domain a {
+.item_domain a {
   text-decoration: none;
   color: #828282;
 }
 
-.item-domain a:hover {
+.item_domain a:hover {
   text-decoration: underline;
 }
 
-.item-details-bottom {
+.item_details_bottom {
   font-size: 9.5px;
   color: #828282;
   cursor: default;
@@ -60,29 +60,29 @@
   overflow: hidden;
 }
 
-.item-details-bottom a {
+.item_details_bottom a {
   text-decoration: none;
   color: #828282;
   cursor: pointer;
 }
 
-.item-details-bottom a:hover {
+.item_details_bottom a:hover {
   text-decoration: underline;
 }
 
-.item-unvote:hover,
-.item-hide:hover,
-.item-favorite:hover,
-.item-kill:hover {
+.item_unvote:hover,
+.item_hide:hover,
+.item_favorite:hover,
+.item_kill:hover {
   text-decoration: underline;
   cursor: pointer;
 }
 
-.item-kill {
+.item_kill {
   color: #b82727;
 }
 
-.item-text-content {
+.item_text_content {
   margin-top: 12.5px;
   color: #828282;
   font-size: 13px;
@@ -93,7 +93,7 @@
   padding-right: 15px;
 }
 
-.item-text-content a {
+.item_text_content a {
   color: #828282;
   display: inline-block;
   overflow: hidden;
@@ -103,16 +103,16 @@
   vertical-align: top;
 }
 
-.item-text-content a:visited {
+.item_text_content a:visited {
   color: #828282;
 }
 
-.item-comment-box {
+.item_comment_box {
   margin-top: 15px;
   margin-left: 20px;
 }
 
-.item-comment-box textarea {
+.item_comment_box textarea {
   width: 500px;
   max-width: 98%;
   height: 90px;
@@ -144,17 +144,17 @@
   padding: 2px 0px 0px 2px;
 }
 
-.item-comment-box textarea[type="text"] {
+.item_comment_box textarea[type="text"] {
   font-family: monospace;
   font-size: 13.5px;
 }
 
-.item-add-comment-btn {
+.item_add_comment_btn {
   margin-top: 20px;
   margin-left: 20px;
 }
 
-.item-add-comment-btn input {
+.item_add_comment_btn input {
   -webkit-appearance: push-button;
   user-select: none;
   white-space: pre;
@@ -171,16 +171,16 @@
   border-image: initial;
 }
 
-.item-add-comment-btn input[type="submit"] {
+.item_add_comment_btn input[type="submit"] {
   font-family: monospace;
   font-size: 13.5px;
 }
 
-.item-add-comment-btn input[type="submit"]:active {
+.item_add_comment_btn input[type="submit"]:active {
   border-style: inset;
 }
 
-.item-add-comment-error {
+.item_add_comment_error {
   color: #828282;
   font-size: 13.5px;
   margin-left: 20px;
@@ -188,56 +188,56 @@
 }
 
 @media only screen and (max-width: 750px) and (min-width: 0px) {
-  .item-upvote {
+  .item_upvote {
     background: url("/upvote-arrow-mobile.png") no-repeat;
     background-size: 10px;
     transform: scale(1.3,1.3);
     background-position: center;
   }
 
-  .item-title {
+  .item_title {
     font-size: 14.5px;
   }
 
-  .item-details-bottom {
+  .item_details_bottom {
     font-size: 12px;
   }
 
-  .item-text-content a {
+  .item_text_content a {
     max-width: 250px;
   }
 
 
-  .item-comment-box textarea {
+  .item_comment_box textarea {
     width: 90%;
     height: 120px;
   }
 
-  .item-comment-box textarea[type="text"] {
+  .item_comment_box textarea[type="text"] {
     font-size: 16px;
   }
 }
 
 @media only screen and (max-width: 700px) and (min-width: 600px) {
-  .item-text-content {
+  .item_text_content {
     max-width: 580px;
   }
 }
 
 @media only screen and (max-width: 600px) and (min-width: 500px) {
-  .item-text-content {
+  .item_text_content {
     max-width: 480px;
   }
 }
 
 @media only screen and (max-width: 500px) and (min-width: 400px) {
-  .item-text-content {
+  .item_text_content {
     max-width: 380px;
   }
 }
 
 @media only screen and (max-width: 400px) and (min-width: 300px) {
-  .item-text-content {
+  .item_text_content {
     max-width: 280px;
   }
 }
