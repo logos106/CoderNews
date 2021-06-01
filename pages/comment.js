@@ -16,7 +16,7 @@ export async function getServerSideProps(context) {
   const commentId = context.query.id ? context.query.id : ""
   const page = context.query.page ? parseInt(context.query.page) : 1
 
-  const result = await getCommentById(commentId, page, context.req)
+  const result = await getCommentById(commentId, page, authResult)
 
   return {
     props: {

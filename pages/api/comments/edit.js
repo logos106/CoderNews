@@ -6,8 +6,8 @@ const xss = require("xss")
 const linkifyUrls = require("linkify-urls")
 
 export default async function handler(req, res) {
-  const commentId = JSON.parse(req.body).id;
-  const newCommentText = JSON.parse(req.body).newCommentText;
+  let commentId = JSON.parse(req.body).id;
+  let newCommentText = JSON.parse(req.body).newCommentText;
 
   const authResult = await authUser(req, res)
 

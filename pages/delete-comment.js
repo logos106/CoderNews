@@ -14,17 +14,17 @@ import getDeleteCommentPageData from "../api/comments/getDeleteCommentPageData.j
 // import deleteComment from "../api/comments/deleteComment.js"
 
 export async function getServerSideProps(context) {
-  const authResult = authUser()
+  const authResult = await authUser(context.req, context.res)
   const result = await getDeleteCommentPageData(context.query.id, authResult)
-
+  
   return {
     props: {
-      comment: result.comment,
+      comment: typeof result.comment === 'undefined' ? null : result.comment,
       authUserData: authResult,
       getDataError: typeof result.getDataError === 'undefined' ? false : result.getDataError,
       notAllowedError: typeof result.notAllowedError === 'undefined' ? false : result.notAllowedError,
       notFoundError: typeof result.notFoundError === 'undefined' ? false : result.notFoundError,
-      goToString: query.goto ? decodeURIComponent(context.query.goto) : ""
+      goToString: context.query.goto ? decodeURIComponent(context.query.goto) : ""
     }
   }
 }
@@ -111,7 +111,7 @@ export default class extends Component {
                         </span>
                         <span> | </span>
                         <span className="delete-comment-top-section-parent">
-                          <a href={comment.isParent ? `/item?id=${comment.parentItemId}` : `/comment?id=${comment.parentCommentId}`}>parent</a>
+                          <a href={comment.is_parent ? `/item?id=${comment.parent_id}` : `/comment?id=${comment.parent_comment_id}`}>parent</a>
                         </span>
                         <span> | </span>
                         <span>
@@ -119,7 +119,7 @@ export default class extends Component {
                         </span>
                         <span> | </span>
                         <span className="delete-comment-top-section-article-title">
-                          on: <a href={`/item?id=${comment.parentItemId}`}>{truncateItemTitle(comment.parentItemTitle)}</a>
+                          on: <a href={`/item?id=${comment.parent_id}`}>{truncateItemTitle(comment.parent_title)}</a>
                         </span>
                         <div className="delete-comment-content-text">
                           <span dangerouslySetInnerHTML={{ __html: comment.text }}></span>

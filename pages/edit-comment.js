@@ -16,7 +16,7 @@ import getEditCommentPageData from "../api/comments/getEditCommentPageData.js"
 
 export async function getServerSideProps(context) {
   const authResult = await authUser(context.req, context.res)
-  const result = await getEditCommentPageData(context.query.id, context.req)
+  const result = await getEditCommentPageData(context.query.id, authResult)
   return {
     props: {
       authUserData: authResult,
@@ -158,7 +158,7 @@ export default class extends Component {
                         </span>
                         <span> | </span>
                         <span className="edit-comment-top-section-parent">
-                          <a href={comment.isParent ? `/item?id=${comment.parent_id}` : `/comment?id=${comment.parentCommentId}`}>parent</a>
+                          <a href={comment.is_parent ? `/item?id=${comment.parent_id}` : `/comment?id=${comment.parent_comment_id}`}>parent</a>
                         </span>
                         <span> | </span>
                         <span>
