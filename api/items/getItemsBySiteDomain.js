@@ -2,7 +2,7 @@ import credential from "../../utils/apiCredential.js"
 import config from "../../utils/config.js"
 import moment from "moment"
 
-export default async function getItemsBySiteDomain(page, user) {
+export default async function getItemsBySiteDomain(site, page, user) {
   // Get config
   const directus = credential.directus
 
@@ -10,13 +10,13 @@ export default async function getItemsBySiteDomain(page, user) {
   const itemsPerPage = config.itemsPerPage
   const commentsPerPage = config.commentsPerPage
   const startDate = moment().unix() - (86400 * maxAgeOfRankedItemsInDays)
-
+  console.log('ip', page, itemsPerPage)
   // Fetch items with conditions
   try {
     if (!user.signedIn) {  // If he is a guest
       let items = await directus.items('items').readMany({
         filter: {
-          created: { _gte: startDate },
+          domain: { _eq: site },
           dead: { _eq: false }
         },
         offset: (page - 1) * itemsPerPage,

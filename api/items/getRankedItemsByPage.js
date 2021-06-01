@@ -13,7 +13,7 @@ export default async function getRankedItemsByPage(page, user) {
 
   // Fetch items with conditions
   try {
-    if (!user.signedIn) {  // If he is a guest
+    if (!user.userSignedIn) {  // If he is a guest
       let items = await directus.items('items').readMany({
         filter: {
           created: { _gte: startDate },
@@ -40,7 +40,7 @@ export default async function getRankedItemsByPage(page, user) {
     }
     else {
       // Get hidden * for this user
-      const hiddens = await directus.items('user_hiddens').readMany({
+      let hiddens = await directus.items('user_hiddens').readMany({
         filter: {
           username: { _eq: user.username },
           item_creation_date: { _gte: startDate }
@@ -70,6 +70,7 @@ export default async function getRankedItemsByPage(page, user) {
       items = items.data
 
       let iids = items.map((item) => item.id)
+      console.log('iids', iids)
 
       // Votes
       let votes = []
@@ -78,7 +79,7 @@ export default async function getRankedItemsByPage(page, user) {
           filter: {
             username: { _eq: user.username },
             date: { _gte: startDate },
-            id: { _in: iids },
+            item_id: { _in: iids },
             type: { _in: 'item' }
           }
         })
@@ -97,7 +98,7 @@ export default async function getRankedItemsByPage(page, user) {
         }
 
         const vote = votes.find(function(e) {
-          return e.id === item.id
+          return e.item_id === item.id
         })
 
         if (vote) {
@@ -114,6 +115,7 @@ export default async function getRankedItemsByPage(page, user) {
     }
 
   } catch(error) {
+    console.log(error)
     return {getDataError: true}
   }
 

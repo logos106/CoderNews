@@ -95,7 +95,7 @@ export default class extends Component {
 
       const self = this
 
-      let res = await fetch("/api/submitNewItem", {
+      let res = await fetch("/api/items/submitNewItem", {
         method: "POST",
         body: JSON.stringify({
           title: this.state.titleInputValue,

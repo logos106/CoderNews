@@ -12,7 +12,7 @@ export async function getServerSideProps(context) {
 
   const site = context.query.site ? context.query.site : ""
   const page = context.query.page ? parseInt(context.query.page) : 1
-  const apiResult = await getItemsBySiteDomain(site, page, authResult)
+  const result = await getItemsBySiteDomain(site, page, authResult)
 
   // Pass data to the page via props
   return {

@@ -1,18 +1,15 @@
 import { Component } from "react"
-
-import "../styles/pages/edit-comment.module.css"
 import authUser from "../api/users/authUser.js"
 import Header from "../components/header.js"
 import Footer from "../components/footer.js"
 import HeadMetadata from "../components/headMetadata.js"
 import GoogleAnalytics from "../components/googleAnalytics.js"
-
 import renderPointsString from "../utils/renderPointsString.js"
 import renderCreatedTime from "../utils/renderCreatedTime.js"
 import truncateItemTitle from "../utils/truncateItemTitle.js"
-
 import getEditCommentPageData from "../api/comments/getEditCommentPageData.js"
-// import editComment from "../api/comments/editComment.js"
+
+import styles from "../styles/pages/edit-comment.module.css"
 
 export async function getServerSideProps(context) {
   const authResult = await authUser(context.req, context.res)
@@ -123,7 +120,7 @@ export default class extends Component {
     const comment = this.props.comment
 
     return (
-      <div className="layout-wrapper">
+      <div className={styles.layout_wrapper}>
         <HeadMetadata
           title="Edit Comment | Coder News"
         />
@@ -135,21 +132,21 @@ export default class extends Component {
           goto={this.props.goToString}
           label="edit comment"
         />
-        <div className="edit-comment-content-container">
+        <div className={styles.edit_comment_content_container}>
           {
             !this.props.getDataError && !this.state.notAllowedError && !this.state.notFoundError ?
             <>
-              <div className="edit-comment-top-section">
+              <div className={styles.edit_comment_top_section}>
                 <table>
                   <tbody>
                     <tr>
                       <td valign="top">
-                        <div className="edit-comment-top-section-star">
+                        <div className={styles.edit_comment_top_section_star}>
                           <span>*</span>
                         </div>
                       </td>
                       <td>
-                        <span className="edit-comment-top-section-points">
+                        <span className={styles.edit_comment_top_section_points}>
                           {comment.points.toLocaleString()} {renderPointsString(comment.points)}
                         </span>
                         <span> by <a href={`/user?id=${comment.by}`}>{comment.by}</a> </span>
@@ -157,7 +154,7 @@ export default class extends Component {
                           <a href={`/comment?id=${comment.id}`}>{renderCreatedTime(comment.created)}</a>
                         </span>
                         <span> | </span>
-                        <span className="edit-comment-top-section-parent">
+                        <span className={styles.edit_comment_top_section_parent}>
                           <a href={comment.is_parent ? `/item?id=${comment.parent_id}` : `/comment?id=${comment.parent_comment_id}`}>parent</a>
                         </span>
                         <span> | </span>
@@ -165,10 +162,10 @@ export default class extends Component {
                           <a href={`/delete-comment?id=${comment.id}`}>delete</a>
                         </span>
                         <span> | </span>
-                        <span className="edit-comment-top-section-article-title">
+                        <span className={styles.edit_comment_top_section_article_title}>
                           on: <a href={`/item?id=${comment.parent_id}`}>{truncateItemTitle(comment.parent_title)}</a>
                         </span>
-                        <div className="edit-comment-content">
+                        <div className={styles.edit_comment_content}>
                           <span dangerouslySetInnerHTML={{ __html: comment.text }}></span>
                         </div>
                       </td>
@@ -176,8 +173,8 @@ export default class extends Component {
                   </tbody>
                 </table>
               </div>
-              <div className="edit-comment-input-box">
-                <div className="edit-comment-input-box-label">text:</div>
+              <div className={styles.edit_comment_input_box}>
+                <div className={styles.edit_comment_input_box_label}>text:</div>
                 <textarea
                   type="text"
                   cols={60}
@@ -185,9 +182,9 @@ export default class extends Component {
                   value={this.state.commentInputValue}
                   onChange={this.updateCommentInputValue}
                 />
-                <span className="edit-comment-input-box-help"><a href="/formatdoc">help</a></span>
+                <span className={styles.edit_comment_input_box_help}><a href="/formatdoc">help</a></span>
               </div>
-              <div className="edit-comment-input-submit-btn">
+              <div className={styles.edit_comment_input_submit_btn}>
                 <input
                   type="submit"
                   value="update"
@@ -196,24 +193,24 @@ export default class extends Component {
               </div>
               {
                 this.state.textRequiredError ?
-                <div className="edit-comment-submit-error-msg">
+                <div className={styles.edit_comment_submit_error_msg}>
                   <span>Text is required.</span>
                 </div> : null
               }
               {
                 this.state.textTooLongError ?
-                <div className="edit-comment-submit-error-msg">
+                <div className={styles.edit_comment_submit_error_msg}>
                   <span>Text exceeds limit of 5,000 characters.</span>
                 </div> : null
               }
               {
                 this.state.submitError ?
-                <div className="edit-comment-submit-error-msg">
+                <div className={styles.edit_comment_submit_error_msg}>
                   <span>An error occurred.</span>
                 </div> : null
               }
             </> :
-            <div className="edit-comment-error-msg">
+            <div className={styles.edit_comment_error_msg}>
               {
                 this.props.getDataError ?
                 <span>An error occurred.</span> : null

@@ -41,7 +41,7 @@ export default class extends Component {
     this.setState({loading: true})
 
     const self = this
-    let res = await fetch("/api/deleteItem", {
+    let res = await fetch("/api/items/deleteItem", {
       method: "POST",
       body: JSON.stringify({
         itemId: this.props.item.id
@@ -170,12 +170,12 @@ export default class extends Component {
               }
               {
                 this.state.notAllowedError ?
-                <span>You can’t delete that item.</span> : null
+                <span>You are not allowed to delete that item.</span> : null
               }
               {
                 this.state.notFoundError ?
                 <span>Item not found.</span> : null
-              }
+              } 
             </div>
           }
         </div>

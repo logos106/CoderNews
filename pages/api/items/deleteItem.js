@@ -1,6 +1,6 @@
-import authUser from "../../api/users/authUser.js"
-import credential from "../../utils/apiCredential.js"
-import config from "../../utils/config.js"
+import authUser from "../../../api/users/authUser.js"
+import credential from "../../../utils/apiCredential.js"
+import config from "../../../utils/config.js"
 import moment from "moment"
 
 export default async function handler(req, res) {
@@ -19,7 +19,7 @@ export default async function handler(req, res) {
 
     if (!item) return res.status(200).json({notFoundError: true})
     else if (
-        item.dead 
+        item.dead
         || item.by != authResult.username
         || item.created + (3600 * config.hrsUntilEditAndDeleteExpires) < moment().unix()
         || item.comment_count > 0 ) {

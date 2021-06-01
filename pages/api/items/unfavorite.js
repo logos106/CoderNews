@@ -10,7 +10,7 @@ export default async function handler(req, res) {
     const directus = credential.directus
 
     // Find the item and delete
-    const hiddens = await directus.items('user_favorites').readMany({
+    let hiddens = await directus.items('user_favorites').readMany({
       filter: {
         username: { _eq: user.username },
         item_id: { _eq: itemId }

@@ -1,31 +1,31 @@
-.edit-comment-content-container {
+.edit_comment_content_container {
   width: 100%;
   padding: 15px 0px 15px 0px;
 }
 
-.edit-comment-top-section {
+.edit_comment_top_section {
   margin-bottom: 10px;
   color: #828282;
   font-size: 10.75px;
 }
 
-.edit-comment-top-section a,
-.edit-comment-top-section a:visited {
+.edit_comment_top_section a,
+.edit_comment_top_section a:visited {
   text-decoration: none;
   color: #828282;
 }
 
-.edit-comment-top-section a:hover {
+.edit_comment_top_section a:hover {
   text-decoration: underline;
 }
 
-.edit-comment-top-section-left-section {
+.edit_comment_top_section_left_section {
   display: inline-block;
   vertical-align: top;
   text-align: center;
 }
 
-.edit-comment-top-section-star {
+.edit_comment_top_section_star {
   position:relative;
   top: -2px;
   vertical-align: top;
@@ -35,11 +35,11 @@
   width: 20px;
 }
 
-.edit-comment-top-section-right-section {
+.edit_comment_top_section_right_section {
   display: inline-block;
 }
 
-.edit-comment-content {
+.edit_comment_content {
   padding-top: 7.5px;
   padding-bottom: 15px;
   padding-right: 15px;
@@ -50,7 +50,7 @@
   white-space: pre-wrap;
 }
 
-.edit-comment-content a {
+.edit_comment_content a {
   color: #000000;
   display: inline-block;
   overflow: hidden;
@@ -60,19 +60,19 @@
   vertical-align: top;
 }
 
-.edit-comment-content a:link {
+.edit_comment_content a:link {
   text-decoration: underline;
 }
 
-.edit-comment-content a:visited {
+.edit_comment_content a:visited {
   color: #828282;
 }
 
-.edit-comment-input-box {
+.edit_comment_input_box {
   margin-left: 10px;
 }
 
-.edit-comment-input-box-label {
+.edit_comment_input_box-label {
   display: inline-block;
   width: 37.5px;
   vertical-align: top;
@@ -80,7 +80,7 @@
   color: #828282;
 }
 
-.edit-comment-input-box textarea {
+.edit_comment_input_box textarea {
   width: 600px;
   max-width: 92.5%;
   vertical-align: middle;
@@ -111,28 +111,28 @@
   padding: 2px 0px 0px 2px;
 }
 
-.edit-comment-input-box textarea[type="text"] {
+.edit_comment_input_box textarea[type="text"] {
   font-family: monospace;
   font-size: 13.5px;
 }
 
-.edit-comment-input-box-help {
+.edit_comment_input_box_help {
   vertical-align: bottom;
   margin-left: 2.5px;
 }
 
-.edit-comment-input-box-help a {
+.edit_comment_input_box_help a {
   text-decoration: none;
   font-size: 10px;
   color: rgb(175, 175, 175);;
 }
 
-.edit-comment-input-submit-btn {
+.edit_comment_input_submit_btn {
   margin-left: 10px;
   margin-top: 15px;
 }
 
-.edit-comment-input-submit-btn input {
+.edit_comment_input_submit_btn input {
   -webkit-appearance: push-button;
   user-select: none;
   white-space: pre;
@@ -149,68 +149,68 @@
   border-image: initial;
 }
 
-.edit-comment-input-submit-btn input[type="submit"] {
+.edit_comment_input_submit_btn input[type="submit"] {
   font-family: monospace;
   font-size: 13.5px;
 }
 
-.edit-comment-input-submit-btn input[type="submit"]:active {
+.edit_comment_input_submit_btn input[type="submit"]:active {
   border-style: inset;
 }
 
-.edit-comment-submit-error-msg {
+.edit_comment_submit_error_msg {
   color: #828282;
   font-size: 13.5px;
   margin-top: 15px;
   margin-left: 10px;
 }
 
-.edit-comment-error-msg {
+.edit_comment_error-msg {
   margin: 8px;
   font-size: 13.5px;
   color: #828282;
 }
 
 @media only screen and (max-width: 800px) and (min-width: 0px) {
-  .edit-comment-content {
+  .edit_comment_content {
     font-size: 13.5px;
   }
 
-  .edit-comment-content a {
+  .edit_comment_content a {
     max-width: 250px;
   }
 
-  .edit-comment-input-box textarea {
+  .edit_comment_input_box textarea {
     width: 80%;
     max-width: 80%;
     height: 120px;
   }
 
-  .edit-comment-input-box textarea[type="text"] {
+  .edit_comment_input_box textarea[type="text"] {
     font-size: 16px;
   }
 
-  .edit-comment-submit-error-msg {
+  .edit_comment_submit_error-msg {
     font-size: 13.5px;
   }
 }
 
 @media only screen and (max-width: 400px) and (min-width: 0px) {
-  .edit-comment-content {
+  .edit_comment_content {
     font-size: 13.5px;
   }
 
-  .edit-comment-input-box textarea {
+  .edit_comment_input_box textarea {
     width: 75%;
     max-width: 75%;
     height: 150px;
   }
 
-  .edit-comment-input-box textarea[type="text"] {
+  .edit_comment_input_box textarea[type="text"] {
     font-size: 16px;
   }
 
-  .edit-comment-submit-error-msg {
+  .edit_comment_submit_error_msg {
     font-size: 13.5px;
   }
 }
