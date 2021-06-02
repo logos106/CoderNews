@@ -74,19 +74,20 @@ export default async function getItemById(itemId, page, user) {
 
       // Set various properties of the item(article)
       item.votedOnByUser = votes.length > 0 ? true : false
-      item.unvoteExpired = votes.length > 0 && (votes.data[0].date + (3600 * config.hrsUntilUnvoteExpires) < moment().unix())
+      item.unvoteExpired = votes.length > 0 && (votes[0].date + (3600 * config.hrsUntilUnvoteExpires) < moment().unix())
       item.favoritedByUser = favs.length > 0 ? true : false
       item.hiddenByUser = hiddens.length > 0 ? true : false
 
       if (item.by === user.username) {
         const hasEditAndDeleteExpired =
           item.created + (3600 * config.hrsUntilEditAndDeleteExpires) < moment().unix() ||
-          item.commentCount > 0
+          item.comment_count > 0
 
         item.editAndDeleteExpired = hasEditAndDeleteExpired
       }
 
       let cvids = commentVotes.map((cv) => cv.item_id)
+      console.log("cvids: ", cvids);
 
       const updateComment = async function(comment) {
         // Split children
@@ -107,7 +108,7 @@ export default async function getItemById(itemId, page, user) {
           comment.votedOnByUser = true
 
           for (let i = 0; i < commentVotes.length; i++) {
-            if (comment.id === commentVotes[i].id) {
+            if (comment.id == commentVotes[i].item_id) {
               comment.unvoteExpired = commentVotes[i].date + (3600 * config.hrsUntilUnvoteExpires) < moment().unix() ? true : false
             }
           }
