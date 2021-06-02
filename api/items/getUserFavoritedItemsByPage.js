@@ -55,7 +55,7 @@ export default async function getUserFavoritedItemsByPage(author, page, user) {
       return {
         success: true,
         items: items,
-        isMore: totalFavoriteItemsCount > (((page -1) * itemsPerPage) + itemsPerPage) ? true : false
+        isMore: totalFavs > (((page -1) * itemsPerPage) + itemsPerPage) ? true : false
       }
     }
     else {
@@ -99,6 +99,7 @@ export default async function getUserFavoritedItemsByPage(author, page, user) {
     }
 
   } catch(error) {
+    console.log(error)
     return {getDataError: true}
   }
 

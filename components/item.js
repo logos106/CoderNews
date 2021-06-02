@@ -420,19 +420,19 @@ export default class extends Component {
             </div>
             {
               this.state.commentTextTooLongError ?
-              <div className={styles.item-add-comment-error}>
+              <div className={styles.item_add_comment_error}>
                 <span>Text exceeds limit of 5,000 characters.</span>
               </div> : null
             }
             {
               this.state.commentTextRequiredError ?
-              <div className={styles.item-add-comment-error}>
+              <div className={styles.item_add_comment_error}>
                 <span>Text is required.</span>
               </div> : null
             }
             {
               this.state.commentSubmitError ?
-              <div className={styles.item-add-comment-error}>
+              <div className={styles.item_add_comment_error}>
                 <span>An error occurred.</span>
               </div> : null
             }

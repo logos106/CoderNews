@@ -17,6 +17,8 @@ export async function getServerSideProps (context) {
   const page = context.query.page ? parseInt(context.query.page) : 1
   const result = await getItemById(itemId, page, authResult)
 
+  console.log(result)
+  
   return {
     props: {
       item: typeof result.item === 'undefined' ? null : result.item,

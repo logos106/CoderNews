@@ -64,7 +64,7 @@ export default async function getUserFavoritedCommentsByPage(author, page, user)
     else {
       // Votes
       let votes = []
-    
+
       votes = await directus.items('user_votes').readMany({
         filter: {
           username: { _eq: user.username },
@@ -73,7 +73,7 @@ export default async function getUserFavoritedCommentsByPage(author, page, user)
         }
       })
       votes = votes.data
-    
+
       comments.forEach((comment, i) => {
         if (comment.by === user.username) {
           const hasEditAndDeleteExpired =
@@ -101,6 +101,7 @@ export default async function getUserFavoritedCommentsByPage(author, page, user)
     }
 
   } catch(error) {
+    console.log(error)
     return {getDataError: true}
   }
 

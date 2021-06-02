@@ -40,12 +40,13 @@ export default async function getRankedShowItemsByPage(page, user) {
       }
     } else {
       // Get hidden * for this user
-      const hiddens = await directus.items('user_hiddens').readMany({
+      let hiddens = await directus.items('user_hiddens').readMany({
         filter: {
           username: { _eq: user.username },
           item_creation_date: { _gte: startDate }
         }
       });
+      hiddens = hiddens.data
 
       let filterItems = {
         type: { _eq: "show" },
@@ -113,6 +114,7 @@ export default async function getRankedShowItemsByPage(page, user) {
       }
     }
   } catch(error) {
+    console.log(error)
     return {getDataError: true}
   }
 }

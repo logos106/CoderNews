@@ -8,6 +8,7 @@ import CommentSection from "../components/commentSection.js"
 import GoogleAnalytics from "../components/googleAnalytics.js"
 import truncateCommentText from "../utils/truncateCommentText.js"
 import getCommentById from "../api/comments/getCommentById.js"
+
 import styles from "../styles/pages/comment.module.css"
 
 export async function getServerSideProps(context) {
@@ -45,7 +46,7 @@ export default class extends Component {
           karma={this.props.authUserData && this.props.authUserData.karma}
           goto={this.props.goToString}
         />
-        <div className="comment-content-container">
+        <div className={styles.comment_content_container}>
           {
             this.props.comment && !this.props.getDataError && !this.props.notFoundError ?
             <>
@@ -70,7 +71,7 @@ export default class extends Component {
                 isModerator={this.props.authUserData.isModerator}
               />
             </> :
-            <div className="comment-get-data-error-msg">
+            <div className={styles.comment_get_data_error_msg}>
               {
                 this.props.notFoundError ?
                 <span>No such comment.</span> :
