@@ -74,7 +74,7 @@ export default async function getItemById(itemId, page, user) {
 
       // Set various properties of the item(article)
       item.votedOnByUser = votes.length > 0 ? true : false
-      item.unvoteExpired = votes.length > 0 && votes.data[0].date + (3600 * config.hrsUntilUnvoteExpires) < moment().unix()
+      item.unvoteExpired = votes.length > 0 && (votes.data[0].date + (3600 * config.hrsUntilUnvoteExpires) < moment().unix())
       item.favoritedByUser = favs.length > 0 ? true : false
       item.hiddenByUser = hiddens.length > 0 ? true : false
 
