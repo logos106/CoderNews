@@ -37,9 +37,9 @@ export default async function getUserHiddenItemsByPage(page, user) {
     });
 
     items = items.data
-    items.forEach((item, i) => {
-      item.rank = (page - 1) * itemsPerPage + i + 1
-    })
+    for (let i = 0; i < items.length; i++) {
+      items[i].rank = (page - 1) * itemsPerPage + i + 1
+    }
 
     // Votes
     let votes = []
@@ -54,9 +54,11 @@ export default async function getUserHiddenItemsByPage(page, user) {
       votes = votes.data
     }
 
-    items.forEach((item, i) => {
-      item.rank = ((page - 1) * itemsPerPage) + (i + 1)
+    for (let i = 0; i < items.length; i++) {
+      items[i].rank = (page - 1) * itemsPerPage + i + 1
+    }
 
+    for (let item of items) {
       item.hiddenByUser = true
 
       if (item.by === user.username) {
@@ -75,7 +77,7 @@ export default async function getUserHiddenItemsByPage(page, user) {
         item.votedOnByUser = true
         item.unvoteExpired = vote.date + (3600 * config.hrsUntilUnvoteExpires) < moment().unix() ? true : false
       }
-    })
+    }
 
     return {
       success: true,

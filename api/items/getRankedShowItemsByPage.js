@@ -28,9 +28,9 @@ export default async function getRankedShowItemsByPage(page, user) {
       const totalItems = items.length
 
       items = items.data
-      items.forEach((item, i) => {
+      for (let item of items) {
         item.rank = (page - 1) * itemsPerPage + i + 1
-      })
+      }
 
       return {
         success: true,
@@ -86,9 +86,11 @@ export default async function getRankedShowItemsByPage(page, user) {
         votes = votes.data
       }
 
-      items.forEach((item, i) => {
-        item.rank = ((page - 1) * itemsPerPage) + (i + 1)
+      for (let i = 0; i < items.length; i++) {
+        items[i].rank = (page - 1) * itemsPerPage + i + 1
+      }
 
+      for (let item of items) {
         if (item.by === user.username) {
           const hasEditAndDeleteExpired =
             item.created + (3600 * config.hrsUntilEditAndDeleteExpires) < moment().unix() ||
@@ -105,7 +107,7 @@ export default async function getRankedShowItemsByPage(page, user) {
           item.votedOnByUser = true
           item.unvoteExpired = vote.date + (3600 * config.hrsUntilUnvoteExpires) < moment().unix() ? true : false
         }
-      })
+      }
 
       return {
         success: true,

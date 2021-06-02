@@ -17,15 +17,13 @@ export async function getServerSideProps (context) {
   const page = context.query.page ? parseInt(context.query.page) : 1
   const result = await getItemById(itemId, page, authResult)
 
-  console.log(result)
-  
   return {
     props: {
       item: typeof result.item === 'undefined' ? null : result.item,
       page: page,
       authUserData: authResult,
       getDataError: typeof result.getDataError === 'undefined' ? false : result.getDataError,
-      comments: typeof result.comments === 'undefined' ? false : result.comments,
+      comments: typeof result.comments === 'undefined' ? [] : result.comments,
       isMoreComments: typeof result.isMoreComments === 'undefined' ? false : result.isMoreComments,
       goToString: page > 1 ? `item?id=${itemId}&page=${page}` : `item?id=${itemId}`,
     }

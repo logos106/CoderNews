@@ -29,6 +29,23 @@ export default async function getItemById(itemId, page, user) {
     comments = comments.data
 
     if (!user.userSignedIn) {
+      for (let comment of comments) {
+        // Split children ids
+        let childIds = []
+        if (comment.children) {
+          childIds = comment.children.split(';')
+          // Replace array of id for array of child objects
+          let children = await directus.items('comments').readMany({
+            filter: {
+              id: {_in: childIds}
+            }
+          })
+          children = children.data
+
+          comment.children = children
+        }
+      }
+
       return {
         success: true,
         item: item,
@@ -86,15 +103,23 @@ export default async function getItemById(itemId, page, user) {
         item.editAndDeleteExpired = hasEditAndDeleteExpired
       }
 
-      let cvids = commentVotes.map((cv) => cv.item_id)
-
       const updateComment = async function(comment) {
-        // Split children
-        if (!comment.children)
-          comment.children = []
-        else
-          comment.children = comment.children.split(';')
+        // Split and fetch child objects
+        let childIds = []
+        if (comment.children) {
+          childIds = comment.children.split(';')
 
+          let children = await directus.items('comments').readMany({
+            filter: {
+              id: {_in: childIds}
+            }
+          })
+          children = children.data
+
+          comment.children = children
+        }
+
+        // Set expired for add ana delegte
         if (comment.by === user.username) {
           const hasEditAndDeleteExpired =
             comment.created + (3600 * config.hrsUntilEditAndDeleteExpires) < moment().unix() ||
@@ -103,24 +128,26 @@ export default async function getItemById(itemId, page, user) {
           comment.editAndDeleteExpired = hasEditAndDeleteExpired
         }
 
-        if (cvids.includes(comment.id)) {
+
+
+        // Set expired for unvote
+        commentVotes.forEach((cvote) => {
           comment.votedOnByUser = true
 
-          for (let i = 0; i < commentVotes.length; i++) {
-            if (comment.id === commentVotes[i].item_id) {
-              comment.unvoteExpired = commentVotes[i].date + (3600 * config.hrsUntilUnvoteExpires) < moment().unix() ? true : false
-            }
+          if (comment.id === cvote.item_id) {
+            comment.unvoteExpired = cvote.date + (3600 * config.hrsUntilUnvoteExpires) < moment().unix() ? true : false
           }
-        }
+        });
 
-        comment.children.forEach(async (child_id) => {
-          const child = await directus.items('comments').readOne(child_id)
-          await updateComment(child)
-        })
+        if (comment.children) {
+          comment.children.forEach(async (child) => {
+            await updateComment(child)
+          })
+        }
       }
 
-      for (let i = 0; i < comments.length; i++) {
-        await updateComment(comments[i])
+      for (let comment of comments) {
+        await updateComment(comments)
       }
 
       return {

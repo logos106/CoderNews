@@ -12,7 +12,6 @@ import getRankedAskItemsByPage from "../api/items/getRankedAskItemsByPage.js"
 export async function getServerSideProps(context) {
   const authResult = await authUser(context.req, context.res)
   const page = context.query.page? parseInt(context.query.page) : 1
-  console.log("Page Number: ", page)
 
   const result = await getRankedAskItemsByPage(page, authResult)
 

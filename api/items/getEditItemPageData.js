@@ -6,13 +6,7 @@ import config from "../../utils/config.js"
 export default async function getEditItemPageData(itemId, username) {
   try {
     // Instantiate a new Directus object
-    const directus = new Directus(credential.baseURL)
-
-    // Login to Directus
-    await directus.auth.login({
-      email: credential.email,
-      password: credential.password,
-    });
+    const directus = credential.directus
 
     // Find the item by ID
     const item = await directus.items('items').readOne(itemId);

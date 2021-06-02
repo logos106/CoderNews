@@ -34,11 +34,11 @@ export default class extends Component {
       createAccountUsernameInputValue: "",
       createAccountUseremailInputValue: "",
       createAcountPasswordInputValue: "",
-      createAccountUsernameExistsError: false,
-      createAccountUseremailExistsError: false,
-      createAccountUsernameLengthError: false,
-      createAccountUseremailLengthError: false,
-      createAccountPasswordLengthError: false,
+      UsernameExistsError: false,
+      EmailExistsError: false,
+      UsernameLengthError: false,
+      EmailInvalidError: false,
+      PasswordLengthError: false,
       createAccountSubmitError: false
     }
   }
@@ -131,26 +131,27 @@ export default class extends Component {
 
     if (username.length < 2 || username.length > 15) {
       this.setState({
-        createAccountUsernameExistsError: false,
-        createAccountUsernameLengthError: true,
-        createAccountUseremailExistsError: false,
-        createAccountPasswordLengthError: false,
+        UsernameExistsError: false,
+        UsernameLengthError: true,
+        EmailExistsError: false,
+        PasswordLengthError: false,
         createAccountSubmitError: false
       })
     }
     else if (!pattern.test(useremail)) {
       this.setState({
-        createAccountUseremailExistsError: false,
-        createAccountUsernameLengthError: false,
-        createAccountUseremailLengthError: true,
-        createAccountPasswordLengthError: false,
+        EmailExistsError: false,
+        UsernameLengthError: false,
+        EmailInvalidError: true,
+        PasswordLengthError: false,
         createAccountSubmitError: false
       })
     } else if (password.length < 8) {
       this.setState({
-        createAccountUseremailExistsError: false,
-        createAccountUseremailLengthError: false,
-        createAccountPasswordLengthError: true,
+        EmailExistsError: false,
+        UsernameLengthError: false,
+        EmailInvalidError: false,
+        PasswordLengthError: true,
         createAccountSubmitError: false
       })
     } else {
@@ -169,41 +170,41 @@ export default class extends Component {
       if (response.usernameLengthError) {
         self.setState({
           loading: false,
-          createAccountUseremailExistsError: false,
-          createAccountUseremailLengthError: true,
-          createAccountPasswordLengthError: false,
+          EmailExistsError: false,
+          EmailInvalidError: true,
+          PasswordLengthError: false,
           createAccountSubmitError: false
         })
       } else if (response.useremailLengthError) {
         self.setState({
           loading: false,
-          createAccountUseremailExistsError: false,
-          createAccountUseremailLengthError: true,
-          createAccountPasswordLengthError: false,
+          EmailExistsError: false,
+          EmailInvalidError: true,
+          PasswordLengthError: false,
           createAccountSubmitError: false
         })
       } else if (response.passwordLengthError) {
         self.setState({
           loading: false,
-          createAccountUseremailExistsError: false,
-          createAccountUseremailLengthError: false,
-          createAccountPasswordLengthError: true,
+          EmailExistsError: false,
+          EmailInvalidError: false,
+          PasswordLengthError: true,
           createAccountSubmitError: false
         })
       } else if (response.alreadyExistsError) {
         self.setState({
           loading: false,
-          createAccountUseremailExistsError: true,
-          createAccountUseremailLengthError: false,
-          createAccountPasswordLengthError: false,
+          EmailExistsError: true,
+          EmailInvalidError: false,
+          PasswordLengthError: false,
           createAccountSubmitError: false
         })
       } else if (response.submitError || !response.success) {
         self.setState({
           loading: false,
-          createAccountUseremailExistsError: false,
-          createAccountUseremailLengthError: false,
-          createAccountPasswordLengthError: false,
+          EmailExistsError: false,
+          EmailInvalidError: false,
+          PasswordLengthError: false,
           createAccountSubmitError: true
         })
       } else {
@@ -280,31 +281,31 @@ export default class extends Component {
           </span>
         </div>
         {
-          this.state.createAccountUsernameExistsError ?
+          this.state.UsernameExistsError ?
           <div className={styles.login_error_msg}>
             <span>That username is taken.</span>
           </div> : null
         }
         {
-          this.state.createAccountUsernameLengthError ?
+          this.state.UsernameLengthError ?
           <div className={styles.login_error_msg}>
             <span>Userename must be between 2 and 15 characters long.</span>
           </div> : null
         }
         {
-          this.state.createAccountUseremailExistsError ?
+          this.state.EmailExistsError ?
           <div className={styles.login_error_msg}>
             <span>That useremail is taken.</span>
           </div> : null
         }
         {
-          this.state.createAccountUseremailLengthError ?
+          this.state.EmailInvalidError ?
           <div className={styles.login_error_msg}>
-            <span>Useremail must be at least 5 characters long.</span>
+            <span>Enter a valid email address.</span>
           </div> : null
         }
         {
-          this.state.createAccountPasswordLengthError ?
+          this.state.PasswordLengthError ?
           <div className={styles.login_error_msg}>
             <span>Passwords should be at least 8 characters.</span>
           </div> : null

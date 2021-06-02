@@ -51,7 +51,7 @@ export default async function handler(req, res) {
     let comment = await directus.items('comments').readOne(parentCommentId)
 
     let children = ''
-    if (!comment.children)
+    if (comment.children)
       children = comment.children
 
     children = children + ';' + new_comment.id
