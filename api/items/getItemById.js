@@ -9,7 +9,6 @@ export default async function getItemById(itemId, page, user) {
   try {
     // Find the item by ID
     let item = await directus.items('items').readOne(itemId)
-    item = item
 
     // Fetch the comments to the item
     let filterComments = {
@@ -19,14 +18,15 @@ export default async function getItemById(itemId, page, user) {
     if (!user.showDead) filterComments.dead = { _eq: false }
 
     let comments = await directus.items('comments').readMany({
-      filter: filterComments
+      filter: filterComments,
+      offset: (page - 1) * commentsPerPage,
+      limit: page * commentsPerPage,
+      meta: 'total_count'
     });
 
-    const totalComments = comments.length
+    const totalComments = comments.meta.total_count
 
-    const start = (page - 1) * commentsPerPage
-    const end = page * commentsPerPage
-    comments = comments.data.slice(start, end)
+    comments = comments.data
 
     if (!user.userSignedIn) {
       return {
@@ -40,7 +40,7 @@ export default async function getItemById(itemId, page, user) {
       let votes = await directus.items('user_votes').readMany({
         filter: {
           username: { _eq : user.username },
-          id: { _eq: itemId },
+          item_id: { _eq: itemId },
           type: { _eq: 'item' }
         }
       });
@@ -49,7 +49,7 @@ export default async function getItemById(itemId, page, user) {
       let favs = await directus.items('user_favorites').readMany({
         filter: {
           username: { _eq : user.username },
-          id: { _eq: itemId },
+          item_id: { _eq: itemId },
           type: { _eq: 'item' }
         }
       });
@@ -58,7 +58,7 @@ export default async function getItemById(itemId, page, user) {
       let hiddens = await directus.items('user_hiddens').readMany({
         filter: {
           username: { _eq : user.username },
-          id: { _eq: itemId }
+          item_id: { _eq: itemId }
         }
       });
       hiddens = hiddens.data
@@ -86,7 +86,7 @@ export default async function getItemById(itemId, page, user) {
         item.editAndDeleteExpired = hasEditAndDeleteExpired
       }
 
-      let cvids = commentVotes.map((cv) => cv.id)
+      let cvids = commentVotes.map((cv) => cv.item_id)
 
       const updateComment = async function(comment) {
         // Split children

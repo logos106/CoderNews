@@ -10,7 +10,7 @@ export default async function handler(req, res) {
     const directus = credential.directus
 
     // Find the item by ID
-    const item = await directus.items('items').readOne(id)
+    const item = await directus.items('items').readOne(itemId)
 
     // Get the hidden
     let hiddens = await directus.items('user_hiddens').readMany({

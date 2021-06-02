@@ -15,8 +15,7 @@ export default async function getEditItemPageData(itemId, username) {
     });
 
     // Find the item by ID
-    const items = directus.items('items')
-    const item = await items.readOne(itemId);
+    const item = await directus.items('items').readOne(itemId);
 
     // Check the item
     if (!item)

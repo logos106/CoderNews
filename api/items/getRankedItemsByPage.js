@@ -52,7 +52,7 @@ export default async function getRankedItemsByPage(page, user) {
         created: { _gte: startDate }
       }
 
-      let hids = hiddens.map((hidden) => hidden.id)
+      let hids = hiddens.map((hidden) => hidden.item_id)
       if (hids.length > 0) filterItems.id = { _nin: hids }
 
       if (!user.showDead) filterItems.dead = { _eq: false }

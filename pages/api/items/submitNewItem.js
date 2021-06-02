@@ -29,9 +29,7 @@ export default async function handler(req, res) {
     if (text.length > 5000) return res.status(200).json({textTooLongError: true})
 
     try {
-      const items = directus.items('items')
-
-      await items.createOne({
+      await directus.items('items').createOne({
         by: authResult.username,
         title: title,
         type: helper.getItemType(title, url, text),

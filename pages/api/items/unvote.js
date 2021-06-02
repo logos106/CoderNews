@@ -12,12 +12,12 @@ export default async function handler(req, res) {
     const directus = credential.directus
 
     // Find the item by ID
-    const item = await directus.items('items').readOne(id)
+    const item = await directus.items('items').readOne(itemId)
     if (!item || item.by == user.by || item.dead)
       return res.json({ submitError: true })
 
     // Get the vote
-    const votes = await directus.items('user_votes').readMany({
+    let votes = await directus.items('user_votes').readMany({
       filter: {
         username: { _eq: user.username },
         item_id: { _eq: itemId },

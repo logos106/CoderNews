@@ -13,7 +13,7 @@ export default async function getRankedShowItemsByPage(page, user) {
 
   // Fetch items with conditions
   try {
-    if (!user.signedIn) {  // If he is a guest
+    if (!user.userSignedIn) {  // If he is a guest
       let items = await directus.items('items').readMany({
         filter: {
           type: { _eq: "show" },
@@ -52,7 +52,7 @@ export default async function getRankedShowItemsByPage(page, user) {
         created: { _gte: startDate }
       }
 
-      let hids = hiddens.map((hidden) => hidden.id)
+      let hids = hiddens.map((hidden) => hidden.item_id)
       if (hids.length > 0) filterItems.id = { _nin: hids }
 
       if (!user.showDead) filterItems.dead = { _eq: false }
@@ -78,7 +78,7 @@ export default async function getRankedShowItemsByPage(page, user) {
           filter: {
             username: user.username,
             date: { _gte: startDate },
-            id: { _in: itemIds },
+            item_id: { _in: itemIds },
             type: "item"
           }
         })
@@ -97,7 +97,7 @@ export default async function getRankedShowItemsByPage(page, user) {
         }
 
         const vote = votes.find(function(e) {
-          return e.id === item.id
+          return e.item_id === item.id
         })
 
         if (vote) {

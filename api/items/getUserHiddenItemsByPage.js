@@ -26,7 +26,7 @@ export default async function getUserHiddenItemsByPage(page, user) {
     let filterItems = {}
 
     hiddens = hiddens.data
-    let hids = hiddens.map((hidden) => hidden.id)
+    let hids = hiddens.map((hidden) => hidden.item_id)
     if (hids.length > 0) filterItems.id = { _in: hids }
 
     if (!user.showDead) filterItems.dead = { _eq: false }
@@ -47,7 +47,7 @@ export default async function getUserHiddenItemsByPage(page, user) {
       votes = await directus.items('user_votes').readMany({
         filter: {
           username: { _eq: user.username },
-          id: { _in: iids },
+          item_id: { _in: iids },
           type: { _in: 'item' }
         }
       })
@@ -68,7 +68,7 @@ export default async function getUserHiddenItemsByPage(page, user) {
       }
 
       const vote = votes.find(function(e) {
-        return e.id === item.id
+        return e.item_id === item.id
       })
 
       if (vote) {

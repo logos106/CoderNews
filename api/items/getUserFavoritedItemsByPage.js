@@ -36,7 +36,7 @@ export default async function getUserFavoritedItemsByPage(author, page, user) {
     let filterItems = {}
 
     favs = favs.data
-    let fids = favs.map((fav) => fav.id)
+    let fids = favs.map((fav) => fav.item_id)
     if (fids.length > 0) filterItems.id = { _in: fids }
 
     if (!user.showDead) filterItems.dead = { _eq: false }
@@ -51,7 +51,7 @@ export default async function getUserFavoritedItemsByPage(author, page, user) {
       item.rank = (page - 1) * itemsPerPage + i + 1
     })
 
-    if (!user.signedIn) {
+    if (!user.userSignedIn) {
       return {
         success: true,
         items: items,
@@ -65,7 +65,7 @@ export default async function getUserFavoritedItemsByPage(author, page, user) {
         votes = await directus.items('user_votes').readMany({
           filter: {
             username: { _eq: user.username },
-            id: { _in: iids },
+            item_id: { _in: iids },
             type: { _in: 'item' }
           }
         })
@@ -82,7 +82,7 @@ export default async function getUserFavoritedItemsByPage(author, page, user) {
         }
 
         const vote = votes.find(function(e) {
-          return e.id === item.id
+          return e.item_id === item.id
         })
 
         if (vote) {

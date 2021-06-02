@@ -10,10 +10,10 @@ export default async function getItemsBySiteDomain(site, page, user) {
   const itemsPerPage = config.itemsPerPage
   const commentsPerPage = config.commentsPerPage
   const startDate = moment().unix() - (86400 * maxAgeOfRankedItemsInDays)
-  console.log('ip', page, itemsPerPage)
+
   // Fetch items with conditions
   try {
-    if (!user.signedIn) {  // If he is a guest
+    if (!user.userSignedIn) {  // If he is a guest
       let items = await directus.items('items').readMany({
         filter: {
           domain: { _eq: site },
@@ -37,7 +37,7 @@ export default async function getItemsBySiteDomain(site, page, user) {
     }
     else {
       // Get hidden * for this user
-      const hiddens = await directus.items('user_hiddens').readMany({
+      let hiddens = await directus.items('user_hiddens').readMany({
         filter: {
           username: { _eq: user.username }
         }
@@ -48,7 +48,7 @@ export default async function getItemsBySiteDomain(site, page, user) {
         domain: { _eq: domain }
       }
 
-      let hids = hiddens.map((hidden) => hidden.id)
+      let hids = hiddens.map((hidden) => hidden.item_id)
       if (hids.length > 0) filterItems.id = { _nin: hids }
 
       if (!user.showDead) filterItems.dead = { _eq: false }
@@ -73,7 +73,7 @@ export default async function getItemsBySiteDomain(site, page, user) {
         votes = await directus.items('user_votes').readMany({
           filter: {
             username: { _eq: user.username },
-            id: { _in: iids },
+            item_id: { _in: iids },
             type: { _in: 'item' }
           }
         })
@@ -90,7 +90,7 @@ export default async function getItemsBySiteDomain(site, page, user) {
         }
 
         const vote = votes.find(function(e) {
-          return e.id === item.id
+          return e.item_id === item.id
         })
 
         if (vote) {

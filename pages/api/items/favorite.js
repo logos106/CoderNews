@@ -14,10 +14,10 @@ export default async function handler(req, res) {
 
     // Get the item
     const itemId = req.query.id
-    let item = await directus.items('items').readOne(req.query.id);
+    let item = await directus.items('items').readOne(itemId);
 
     // Get the favorite
-    const favs = await directus.items('user_favorites').readMany({
+    let favs = await directus.items('user_favorites').readMany({
       filter: {
         username: { _eq: user.username },
         item_id: { _eq: itemId },

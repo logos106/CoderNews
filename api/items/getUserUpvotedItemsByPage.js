@@ -26,7 +26,7 @@ export default async function getUserHiddenItemsByPage(page, user) {
     let filterItems = {}
 
     upvotes = upvotes.data
-    let vids = upvotes.map((upvote) => upvote.id)
+    let vids = upvotes.map((upvote) => upvote.item_id)
     if (vids.length > 0) filterItems.id = { _in: vids }
     if (!user.showDead) filterItems.dead = { _eq: false }
 

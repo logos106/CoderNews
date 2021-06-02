@@ -75,7 +75,7 @@ export default async function getNewestItemsByPage(page, user) {
           filter: {
             username: { _eq: user.username },
             date: { _gte: startDate },
-            id: { _in: iids },
+            item_id: { _in: iids },
             type: { _eq: 'item' }
           }
         })
@@ -95,7 +95,7 @@ export default async function getNewestItemsByPage(page, user) {
         }
 
         const vote = votes.find(function(e) {
-          return e.id === item.id
+          return e.item_id === item.id
         })
 
         if (vote) {
