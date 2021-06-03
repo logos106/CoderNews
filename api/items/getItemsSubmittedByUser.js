@@ -38,8 +38,7 @@ export default async function getItemsSubmittedByUser(author, page, user) {
       // Get hidden * for this user
       let hiddens = await directus.items('user_hiddens').readMany({
         filter: {
-          username: { _eq: user.username },
-          item_creation_date: { _gte: startDate }
+          username: { _eq: user.username }
         }
       });
       hiddens = hiddens.data

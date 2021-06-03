@@ -28,8 +28,8 @@ export default async function getRankedShowItemsByPage(page, user) {
       const totalItems = items.length
 
       items = items.data
-      for (let item of items) {
-        item.rank = (page - 1) * itemsPerPage + i + 1
+      for (let i = 0; i < items.length; i++) {
+        items[i].rank = (page - 1) * itemsPerPage + i + 1
       }
 
       return {

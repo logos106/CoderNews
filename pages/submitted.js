@@ -12,7 +12,7 @@ export async function getServerSideProps(context) {
 
   const userId = context.query.id ? context.query.id : ""
   const page = context.query.page ? parseInt(context.query.page) : 1
-  const apiResult = await getItemsSubmittedByUser(userId, page, authResult)
+  const result = await getItemsSubmittedByUser(userId, page, authResult)
 
   return {
     props: {
