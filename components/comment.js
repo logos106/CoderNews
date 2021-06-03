@@ -132,8 +132,8 @@ export default class extends Component {
       let res = await fetch("/api/comments/downvote", {
         method: "POST",
         body: JSON.stringify({
-          commentId: commentId,
-          parentItemId: parentItemId,
+          commentId: this.state.comment.id,
+          parentItemId: this.state.comment.parent_id,
         })
       })
 

@@ -266,7 +266,7 @@ export default class extends Component {
         method: "POST",
         body: JSON.stringify({
           commentId: commentId,
-          parentItemId: parentItemId,
+          parentItemId: this.props.parentItemId,
         })
       })
 

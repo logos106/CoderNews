@@ -98,7 +98,7 @@ export default async function getItemById(itemId, page, user) {
       if (item.by === user.username) {
         const hasEditAndDeleteExpired =
           item.created + (3600 * config.hrsUntilEditAndDeleteExpires) < moment().unix() ||
-          item.commentCount > 0
+          item.comment_count > 0
 
         item.editAndDeleteExpired = hasEditAndDeleteExpired
       }
