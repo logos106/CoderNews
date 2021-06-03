@@ -26,12 +26,12 @@ export async function getServerSideProps(context) {
 
   const data = null
   return { props: { data } }
-  let res = await directus.items("test").createOne({
+/*   let res = await directus.items("test").createOne({
     uname: "hello"
   })
   const data = null
   console.log("RES: ", res)
-  return { props: { data } }
+  return { props: { data } } */
 }
 
 export default class extends Component {
