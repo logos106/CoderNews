@@ -45,7 +45,7 @@ export default async function getUserHiddenItemsByPage(page, user) {
       item.votedOnByUser = true
       item.unvoteExpired = upvotes[i].date + (3600 * config.hrsUntilUnvoteExpires) < moment().unix() ? true : false
 
-    })
+    }
 
     return {
       success: true,
