@@ -9,24 +9,24 @@ import GoogleAnalytics from "../components/googleAnalytics.js"
 import authUser from "../api/users/authUser.js"
 import changePassword from "../api/users/changePassword.js"
 
-export default class extends Component {
-  static async getInitialProps ({req, res, query}) {
-    const authResult = await authUser(req)
+export async function getServerSideProps (context) {
+  const authResult = await authUser(context.req, context.res)
 
-    if (!authResult.success) {
-      res.writeHead(302, {
-        Location: "/login?goto=changepw"
-      })
+  if (!authResult.success) {
+    res.writeHead(302, {
+      Location: "/login?goto=changepw"
+    })
 
-      res.end()
-    }
-
-    return {
-      userContainsEmail: authResult.authUser.containsEmail,
-      username: authResult.authUser.username
-    }
+    res.end()
   }
 
+  return {
+    userContainsEmail: authResult.authUser.containsEmail,
+    username: authResult.authUser.username
+  }
+}
+
+export default class extends Component {
   constructor(props) {
     super(props)
     this.state = {
