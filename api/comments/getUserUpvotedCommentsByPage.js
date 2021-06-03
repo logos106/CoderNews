@@ -21,10 +21,11 @@ export default async function getUserUpvotedCommentsByPage(author, page, user) {
     if (users.length < 1)
       return { notFoundError: true }
 
-    let favs = await directus.items('user_favorites').readMany({
+    let votes = await directus.items('user_votes').readMany({
       filter: {
         username: { _eq: author },
-        type: { _eq: 'comment' }
+        type: { _eq: 'comment' },
+        upvote: { _eq: true }
       },
       offset: (page - 1) * commentsPerPage,
       limit: commentsPerPage,
@@ -32,16 +33,16 @@ export default async function getUserUpvotedCommentsByPage(author, page, user) {
     });
 
     // Remember the total number of favorites selected
-    const totalFavs = favs.meta.total_count
+    const totalVotes = votes.meta.total_count
 
     // Filter for items
     let filterItems = {}
     let comments = []
 
-    favs = favs.data
-    let fids = favs.map((fav) => fav.id)
-    if (fids.length > 0) {
-      filterItems.id = { _in: fids }
+    votes = votes.data
+    let vids = votes.map((vote) => vote.item_id)
+    if (vids.length > 0) {
+      filterItems.id = { _in: vids }
 
       if (!user.showDead) filterItems.dead = { _eq: false }
       // Aggregate items
@@ -50,57 +51,23 @@ export default async function getUserUpvotedCommentsByPage(author, page, user) {
       });
 
       comments = comments.data
-      comments.forEach((comment, i) => {
-        comment.rank = (page - 1) * commentsPerPage + i + 1
-      })
-    }
-
-    if (!user.userSignedIn) {
-      return {
-        success: true,
-        items: comments,
-        isMore: totalFavoriteItemsCount > (((page -1) * commentsPerPage) + commentsPerPage) ? true : false
-      }
-    }
-    else {
-      // Votes
-      let votes = []
-      console.log("______________")
-      votes = await directus.items('user_votes').readMany({
-        filter: {
-          username: { _eq: user.username },
-          item_id: { _in: iids },
-          type: { _in: 'comment' }
-        }
-      })
-      votes = votes.data
-      console.log("----------------", votes)
-      comments.forEach((comment, i) => {
-        if (comment.by === user.username) {
-          const hasEditAndDeleteExpired =
-            comment.created + (3600 * config.hrsUntilEditAndDeleteExpires) < moment().unix() ||
-            (comment.children && comment.children > 0)
-
-          comment.editAndDeleteExpired = hasEditAndDeleteExpired
-        }
-
-        const vote = votes.find(function(e) {
-          return e.id === comment.id
+      for (let i=0; i < votes.length; i++) {
+        const idx = comments.findIndex(function(comment) {
+          return comment.id === votes[i].item_id
         })
-
-        if (vote) {
-          comment.votedOnByUser = true
-          comment.unvoteExpired = vote.date + (3600 * config.hrsUntilUnvoteExpires) < moment().unix() ? true : false
+        let commentObj = comments[idx]
+        if (commentObj) {
+          commentObj.votedOnByUser = true
+          commentObj.unvoteExpired = votes[i].date + (3600 * config.hrsUntilUnvoteExpires) < moment().unix() ? true : false
         }
-      })
-
-      return {
-        success: true,
-        items: comments,
-        isMore: totalFavs > (((page - 1) * commentsPerPage) + commentsPerPage) ? true : false
       }
     }
-
+      
+    return {
+      success: true,
+      comments: comments,
+      isMore: totalVotes > (((page -1) * commentsPerPage) + commentsPerPage) ? true : false
+    }
   } catch(error) {
     return {getDataError: true}
   }

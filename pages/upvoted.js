@@ -9,6 +9,7 @@ import GoogleAnalytics from "../components/googleAnalytics.js"
 
 import getUserUpvotedItemsByPage from "../api/items/getUserUpvotedItemsByPage.js"
 import getUserUpvotedCommentsByPage from "../api/comments/getUserUpvotedCommentsByPage.js"
+import comment from "../components/comment.js"
 
 export async function getServerSideProps(context) {
   const authResult = await authUser(context.req, context.res)
@@ -28,14 +29,14 @@ export async function getServerSideProps(context) {
   const goToString = page > 1 ?
     `upvoted?id=${uid}${showItems ? "" : "&comments=t"}&page=${page}` :
     `upvoted?id=${uid}${showItems ? "" : "&comments=t"}`
-
+    
   return {
     props: {
       authUserData: authResult,
       items: typeof itemResult.items === 'undefined' ? null : itemResult.items,
       showItems: showItems,
       isMoreItems: typeof itemResult.isMore === 'undefined' ? false : itemResult.isMore,
-      comments: typeof commentResult.items === 'undefined' ? null : commentResult.items,
+      comments: typeof commentResult.comments === 'undefined' ? null : commentResult.comments,
       showComments: !showItems,
       isMoreComments: typeof commentResult.isMore === 'undefined' ? false : commentResult.isMore,
       page: page,
