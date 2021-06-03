@@ -1,7 +1,5 @@
 import { Component } from "react"
 
-import styles from "../styles/pages/changepw.module.css"
-
 import HeadMetadata from "../components/headMetadata.js"
 import AlternateHeader from "../components/alternateHeader.js"
 import GoogleAnalytics from "../components/googleAnalytics.js"
@@ -9,20 +7,23 @@ import GoogleAnalytics from "../components/googleAnalytics.js"
 import authUser from "../api/users/authUser.js"
 import changePassword from "../api/users/changePassword.js"
 
+import styles from "../styles/pages/comment.module.css"
+
 export async function getServerSideProps (context) {
   const authResult = await authUser(context.req, context.res)
-
-  if (!authResult.success) {
-    res.writeHead(302, {
+  if (!authResult.userSignedIn) {
+    context.res.writeHead(302, {
       Location: "/login?goto=changepw"
     })
 
-    res.end()
+    context.res.end()
   }
 
   return {
-    userContainsEmail: authResult.authUser.containsEmail,
-    username: authResult.authUser.username
+    props: {
+      userContainsEmail: typeof authResult.email === 'undefined' ? '' : authResult.email,
+      username: typeof authResult.username === 'undefined' ? '' : authResult.username
+    }
   }
 }
 
@@ -47,7 +48,7 @@ export default class extends Component {
     this.setState({newInputValue: event.target.value})
   }
 
-  submitRequest = () => {
+  submitRequest = async () => {
     if (this.state.loading) return
 
     const currentPassword = this.state.currentInputValue
@@ -70,40 +71,47 @@ export default class extends Component {
 
       const self = this
 
-      changePassword(currentPassword, newPassword, function(response) {
-        if (response.authError) {
-          window.location.href = "/login?goto=changepw"
-        } else if (response.newPasswordLengthError) {
-          self.setState({
-            loading: false,
-            invalidCurrentPassword: false,
-            newPasswordLengthError: true,
-            submitError: false
-          })
-        } else if (response.invalidCurrentPassword) {
-          self.setState({
-            loading: false,
-            invalidCurrentPassword: true,
-            newPasswordLengthError: false,
-            submitError: false
-          })
-        } else if (response.submitError || !response.success) {
-          self.setState({
-            loading: false,
-            invalidCurrentPassword: false,
-            newPasswordLengthError: false,
-            submitError: true
-          })
-        } else {
-          window.location.href = "/login"
-        }
+      let res = await fetch("/api/changePassword", {
+        method: "POST",
+        body: JSON.stringify({
+          currentPassword: currentPassword,
+          newPassword: newPassword,
+        })
       })
+
+      let response = await res.json()
+      if (response.authError) {
+        window.location.href = "/login?goto=changepw"
+      } else if (response.newPasswordLengthError) {
+        self.setState({
+          loading: false,
+          invalidCurrentPassword: false,
+          newPasswordLengthError: true,
+          submitError: false
+        })
+      } else if (response.invalidCurrentPassword) {
+        self.setState({
+          loading: false,
+          invalidCurrentPassword: true,
+          newPasswordLengthError: false,
+          submitError: false
+        })
+      } else if (response.submitError || !response.success) {
+        self.setState({
+          loading: false,
+          invalidCurrentPassword: false,
+          newPasswordLengthError: false,
+          submitError: true
+        })
+      } else {
+        window.location.href = "/login"
+      }
     }
   }
 
   render () {
     return (
-      <div className="layout-wrapper">
+      <div className={styles.layout_wrapper}>
         <HeadMetadata
           title="Change Password | Coder News"
         />
@@ -111,28 +119,28 @@ export default class extends Component {
         <AlternateHeader
           displayMessage={`Change Password for ${this.props.username}`}
         />
-      <div className={styles.changepw-content-container}>
+      <div className={styles.changepw_content_container}>
           {
             !this.props.userContainsEmail ?
-            <div className={styles.changepw-error-msg}>
+            <div className={styles.changepw_error_msg}>
               <span>First, please put a valid email address in your <a href={`/user?id=${this.props.username}`}>profile</a>. Otherwise you could lose your account if you mistype your new password.</span>
             </div> : null
           }
           {
             this.state.invalidCurrentPassword ?
-            <div className={styles.changepw-error-msg}>
+            <div className={styles.changepw_error_msg}>
               <span>Invalid current password.</span>
             </div> : null
           }
           {
             this.state.newPasswordLengthError ?
-            <div className={styles.changepw-error-msg}>
+            <div className={styles.changepw_error_msg}>
               <span>Passwords should be at least 8 characters.</span>
             </div> : null
           }
           {
             this.state.submitError ?
-            <div className={styles.changepw-error-msg}>
+            <div className={styles.changepw_error_msg}>
               <span>An error occurred.</span>
             </div> : null
           }
@@ -140,7 +148,7 @@ export default class extends Component {
             <div className={styles.changepw_input_item_label}>
               <span>Current Password:</span>
             </div>
-            <div className="changepw-input-item-input">
+            <div className={styles.changepw_input_item_input}>
               <input
                 type="password"
                 value={this.state.currentInputValue}
@@ -152,7 +160,7 @@ export default class extends Component {
             <div className={styles.changepw_input_item_label}>
               <span>New Password:</span>
             </div>
-            <div className="changepw-input-item-input">
+            <div className={styles.changepw_input_item_input}>
               <input
                 type="password"
                 value={this.state.newInputValue}
@@ -160,7 +168,7 @@ export default class extends Component {
               />
             </div>
           </div>
-          <div className="changepw-submit-btn">
+          <div className={styles.changepw_submit_btn}>
             <input
               type="submit"
               value="Change"

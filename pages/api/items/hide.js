@@ -1,5 +1,6 @@
 import authUser from "../../../api/users/authUser.js"
 import credential from "../../../utils/apiCredential.js"
+import moment from "moment"
 
 export default async function handler(req, res) {
   const itemId = req.query.id
@@ -20,17 +21,17 @@ export default async function handler(req, res) {
       }
     });
     hiddens = hiddens.data
-
+    
     // If exist already, error  ???
     if (hiddens.length > 0)
       return res.json({ submitError: true })
-
+    console.log("ITEM CREATED: ", item.created)
     // Create a favorite
     await directus.items('user_hiddens').createOne({
       username: user.username,
-      id: itemId,
+      item_id: itemId,
       date: moment().unix(),
-      itemCreationDate: item.created
+      item_creation_date: item.created
     })
 
     return res.status(200).json({ success: true })

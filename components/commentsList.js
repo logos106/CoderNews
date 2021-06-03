@@ -151,7 +151,6 @@ export default class extends Component {
         {
           this.state.comments ?
           this.state.comments.map((comment, index) => {
-            console.log("Comment: ", comment)
             return (
               <div key={comment.id} className={styles.listed_comment}>
                 <table>

@@ -5,7 +5,6 @@ import config from "../../../utils/config"
 
 export default async function handler(req, res) {
   const commentId = JSON.parse(req.body).commentId
-
   if (!commentId)
     return res.json({ submitError: true })
 
@@ -25,9 +24,12 @@ export default async function handler(req, res) {
         type: { _eq: "comment" }
       }
     })
-    voteDoc = !voteDoc.data.length ? voteDoc.data[0] : null;
+    voteDoc = voteDoc.data
+
     if (!comment || comment.by === user.username || comment.dead) return res.json({submitError: true})
-    else if (!voteDoc || voteDoc.date + (3600 * config.hrsUntilUnvoteExpires) < moment().unix()) return res.json({submitError: true})
+    else if (voteDoc.length == 0 || voteDoc[0].date + (3600 * config.hrsUntilUnvoteExpires) < moment().unix()) return res.json({submitError: true})
+    
+    voteDoc = voteDoc[0]
     
     await directus.items("user_votes").deleteOne(voteDoc.id)
 

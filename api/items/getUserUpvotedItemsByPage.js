@@ -5,7 +5,7 @@ import moment from "moment"
 export default async function getUserHiddenItemsByPage(page, user) {
   const directus = credential.directus
   const itemsPerPage = config.itemsPerPage
-
+  console.log("OFFSET: ", (page - 1) * itemsPerPage)
   try {
     // Get hidden
     let upvotes = await directus.items('user_votes').readMany({
@@ -24,27 +24,27 @@ export default async function getUserHiddenItemsByPage(page, user) {
 
     // Filter for items
     let filterItems = {}
+    let items = []
 
     upvotes = upvotes.data
     let vids = upvotes.map((upvote) => upvote.item_id)
-    if (vids.length > 0) filterItems.id = { _in: vids }
-    if (!user.showDead) filterItems.dead = { _eq: false }
 
-    // Aggregate items
-    let items = await directus.items('items').readMany({
-      filter: filterItems
-    });
-
-    items = items.data
-
-    for (let i = 0; i < items.length; i++) {
-      items[i].rank = (page - 1) * itemsPerPage + i + 1
-    }
-
-    for (let item of items) {
-      item.votedOnByUser = true
-      item.unvoteExpired = upvotes[i].date + (3600 * config.hrsUntilUnvoteExpires) < moment().unix() ? true : false
-
+    if (vids.length > 0) {
+      filterItems.id = { _in: vids }
+      if (!user.showDead) filterItems.dead = { _eq: false }
+  
+      // Aggregate items
+      items = await directus.items('items').readMany({
+        filter: filterItems
+      });
+  
+      items = items.data
+      console.log("UPVOTES: ", upvotes, items)
+      for (let i = 0; i < items.length; i++) {
+        items[i].votedOnByUser = true
+        items[i].rank = (page - 1) * itemsPerPage + i + 1
+        items[i].unvoteExpired = upvotes[i].date + (3600 * config.hrsUntilUnvoteExpires) < moment().unix() ? true : false
+      }
     }
 
     return {

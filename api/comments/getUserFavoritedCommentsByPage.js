@@ -54,7 +54,7 @@ export default async function getUserFavoritedCommentsByPage(author, page, user)
       comment.rank = (page - 1) * commentsPerPage + i + 1
     })
 
-    if (!user.signedIn) {
+    if (!user.userSignedIn) {
       return {
         success: true,
         items: comments,

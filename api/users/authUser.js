@@ -15,6 +15,7 @@ export default async function authUser(req, res) {
         return {
           id: me.id,
           userSignedIn: true,
+          email: !me.email ? '' : me.email,
           username: !me.username ? '' : me.username,
           karma: !me.karma ? 0 : me.karma,
           shadowBanned: me.shadow_banned,

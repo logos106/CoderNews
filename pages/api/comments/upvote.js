@@ -26,11 +26,12 @@ export default async function handler(req, res) {
         type: { _eq: "comment" }
       }
     })
-    voteDoc = !voteDoc.data.length ? voteDoc.data[0] : null;
-    if (!comment || comment.by === user.username || comment.dead) return res.json({submitError: true})
-    else if (!voteDoc) return res.json({submitError: true})
     
-    await directus.items("user_votes").createOne({
+    voteDoc = voteDoc.data
+    if (!comment || comment.by === user.username || comment.dead) return res.json({submitError: true})
+    else if (voteDoc.length > 0) return res.json({submitError: true})
+    
+    let result = await directus.items("user_votes").createOne({
         username: user.username,
         type: "comment",
         item_id: commentId,
@@ -39,23 +40,23 @@ export default async function handler(req, res) {
         downvote: false,
         date: moment().unix()
     })
-
+    console.log("result: ", result)
     let points = comment.points + 1
 
     await directus.items("comments").updateOne(comment.id, {
         points: points
     })
 
-    let u = await directus.items("directus_users").readMany({
+    let author = await directus.items("directus_users").readMany({
         filter: {
             username: { _eq: comment.by }
         }
     })
-    if (u.data.length == 0) return res.json({ submitError: true })
-    u = u.data[0]
+    if (author.data.length == 0) return res.json({ submitError: true })
+    author = author.data[0]
     
-    await directus.items("direcuts_users").updateOne(u.id, {
-        karma: u.karma + 1
+    await directus.items("direcuts_users").updateOne(author.id, {
+        karma: author.karma + 1
     })
     // await searchApi.updateCommentPointsValue(comment.id, comment.points)
     return res.status(200).json({ success: true })

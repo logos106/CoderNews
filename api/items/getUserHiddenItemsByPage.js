@@ -1,11 +1,11 @@
 import credential from "../../utils/apiCredential.js"
 import config from "../../utils/config.js"
 import moment from "moment"
+import hidden from "../../pages/hidden.js"
 
 export default async function getUserHiddenItemsByPage(page, user) {
   const directus = credential.directus
   const itemsPerPage = config.itemsPerPage
-
   try {
     // Get hidden
     let hiddens = await directus.items('user_hiddens').readMany({
@@ -16,9 +16,8 @@ export default async function getUserHiddenItemsByPage(page, user) {
       limit: itemsPerPage,
       meta: 'total_count'
     });
-
     // Remember the total number of favorites selected
-    const totalFavs = hiddens.meta.total_count
+    const totalHiddens = hiddens.meta.total_count
     if (totalHiddens < 1)
       return { success: true, items: [], isMore: false }
 
@@ -26,6 +25,7 @@ export default async function getUserHiddenItemsByPage(page, user) {
     let filterItems = {}
 
     hiddens = hiddens.data
+
     let hids = hiddens.map((hidden) => hidden.item_id)
     if (hids.length > 0) filterItems.id = { _in: hids }
 
@@ -43,6 +43,7 @@ export default async function getUserHiddenItemsByPage(page, user) {
 
     // Votes
     let votes = []
+    let iids = items.map((item) => item.id)
     if (iids.length > 0) {
       votes = await directus.items('user_votes').readMany({
         filter: {
@@ -87,7 +88,7 @@ export default async function getUserHiddenItemsByPage(page, user) {
 
 
   } catch(error) {
-    console.log(error)
+    console.log("Error: ", error)
     return { getDataError: true }
   }
 

@@ -13,14 +13,15 @@ export default async function getNewestCommentsByPage(page, user) {
     let comments = await directus.items('comments').readMany({
       filter: filterComments,
       offset: (page - 1) * commentsPerPage,
-      limit: commentsPerPage
+      limit: commentsPerPage,
+      meta: 'total_count'
     });
     // Remember the total number of selected comments
-    const totalComments = comments.data.length
+    const totalComments = comments.meta.total_count
 
     comments = comments.data
 
-    if (!user.signedIn) {  // If he is a guest
+    if (!user.userSignedIn) {  // If he is a guest
       return {
         success: true,
         comments: comments,
@@ -28,42 +29,43 @@ export default async function getNewestCommentsByPage(page, user) {
       }
     }
     else {
+      
       let arrayOfCommentIds = []
-
       for (let i = 0; i < comments.length; i++) {
         if (comments[i].by !== user.username) arrayOfCommentIds.push(comments[i].id)
-
+        
         if (comments[i].by === user.username) {
           const hasEditAndDeleteExpired =
-            comments[i].created + (3600 * config.hrsUntilEditAndDeleteExpires) < moment().unix() ||
-            comments[i].children.length > 0
-
+          comments[i].created + (3600 * config.hrsUntilEditAndDeleteExpires) < moment().unix() ||
+          (comments[i].children && comments[i].children.length > 0)
+          
           comments[i].editAndDeleteExpired = hasEditAndDeleteExpired
         }
       }
-
+      
       // Get votes
       let filterVotes = {
         username: { _eq: user.username },
         type: { _eq: 'type' }
       }
-
-      if (arrayOfCommentIds.length > 0)
-        filterVotes.id = { _in: arrayOfCommentIds };
-
-      let votes = directus.items('user_votes').readMany({
-        filter: filterVotes
-      })
-      votes = votes.data
-
-      for (let i = 0; i < votes.length; i++) {
-        const commentObj = comments.find(function(comment) {
-          return comment.id === votes[i].id
+      
+      if (arrayOfCommentIds.length > 0) {
+        let votes = await directus.items('user_votes').readMany({
+          filter: {
+            item_id: { _in: arrayOfCommentIds }
+          }
         })
 
-        if (commentObj) {
-          commentObj.votedOnByUser = true
-          commentObj.unvoteExpired = votes[i].date + (3600 * config.hrsUntilUnvoteExpires) < moment().unix() ? true : false
+        votes = votes.data
+        for (let i = 0; i < votes.length; i++) {
+          const idx = comments.findIndex(function(comment) {
+            return comment.id === votes[i].item_id
+          })
+          let commentObj = comments[idx]
+          if (commentObj) {
+            commentObj.votedOnByUser = true
+            commentObj.unvoteExpired = votes[i].date + (3600 * config.hrsUntilUnvoteExpires) < moment().unix() ? true : false
+          }
         }
       }
 

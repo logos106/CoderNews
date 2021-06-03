@@ -11,7 +11,7 @@ export async function getServerSideProps(context) {
   const authResult = await authUser(context.req, context.res)
 
   const page = context.query.page ? parseInt(context.query.page) : 1
-  const result = await getUserHiddenItemsByPage(page, authUser)
+  const result = await getUserHiddenItemsByPage(page, authResult)
 
   // if (apiResult.authError) {
   //   res.writeHead(302, {

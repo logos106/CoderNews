@@ -36,24 +36,26 @@ export default async function getUserUpvotedCommentsByPage(author, page, user) {
 
     // Filter for items
     let filterItems = {}
+    let comments = []
 
     favs = favs.data
     let fids = favs.map((fav) => fav.id)
-    if (fids.length > 0) filterItems.id = { _in: fids }
+    if (fids.length > 0) {
+      filterItems.id = { _in: fids }
 
-    if (!user.showDead) filterItems.dead = { _eq: false }
+      if (!user.showDead) filterItems.dead = { _eq: false }
+      // Aggregate items
+      comments = await directus.items('comments').readMany({
+        filter: filterItems
+      });
 
-    // Aggregate items
-    let comments = await directus.items('comments').readMany({
-      filter: filterItems
-    });
+      comments = comments.data
+      comments.forEach((comment, i) => {
+        comment.rank = (page - 1) * commentsPerPage + i + 1
+      })
+    }
 
-    comments = comments.data
-    comments.forEach((comment, i) => {
-      comment.rank = (page - 1) * commentsPerPage + i + 1
-    })
-
-    if (!user.signedIn) {
+    if (!user.userSignedIn) {
       return {
         success: true,
         items: comments,
@@ -63,16 +65,16 @@ export default async function getUserUpvotedCommentsByPage(author, page, user) {
     else {
       // Votes
       let votes = []
-    
+      console.log("______________")
       votes = await directus.items('user_votes').readMany({
         filter: {
           username: { _eq: user.username },
-          id: { _in: iids },
+          item_id: { _in: iids },
           type: { _in: 'comment' }
         }
       })
       votes = votes.data
-    
+      console.log("----------------", votes)
       comments.forEach((comment, i) => {
         if (comment.by === user.username) {
           const hasEditAndDeleteExpired =

@@ -17,17 +17,17 @@ export async function getServerSideProps(context) {
   const page = context.query.page ? parseInt(context.query.page) : 1
   const showItems = context.query.comments === "t" ? false : true
 
-  let itemsApiResult = {}
-  let commentsApiResult = {}
+  let itemResult = {}
+  let commentResult = {}
 
   if (showItems)
-    itemResult = await getUserUpvotedItemsByPage(uid, page, authUser)
+    itemResult = await getUserUpvotedItemsByPage(page, authResult)
   else
-    commentResult = await getUserUpvotedCommentsByPage(uid, page, authUser)
+    commentResult = await getUserUpvotedCommentsByPage(uid, page, authResult)
 
   const goToString = page > 1 ?
-    `upvoted?id=${userId}${showItems ? "" : "&comments=t"}&page=${page}` :
-    `upvoted?id=${userId}${showItems ? "" : "&comments=t"}`
+    `upvoted?id=${uid}${showItems ? "" : "&comments=t"}&page=${page}` :
+    `upvoted?id=${uid}${showItems ? "" : "&comments=t"}`
 
   return {
     props: {

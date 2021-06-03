@@ -37,8 +37,7 @@ export default async function getCommentById(commentId, page, user) {
     })
 
     comment.children = comment.children.slice((page - 1) * commentsPerPage, page * commentsPerPage)
-
-    if (!user.signedIn) {  // If he is a guest
+    if (!user.userSignedIn) {  // If he is a guest
       return {
         success: true,
         comment: comment,
@@ -54,7 +53,6 @@ export default async function getCommentById(commentId, page, user) {
         }
       })
       votes = votes.data
-
       let favs = await directus.items('user_favorites').readMany({
         filter: {
           username: { _eq: user.username },
