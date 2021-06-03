@@ -18,8 +18,8 @@ export async function getServerSideProps(context) {
   const page = context.query.page ? parseInt(context.query.page) : 1
   const showItems = context.query.comments === "t" ? false : true
 
-  let itemsApiResult = {}
-  let commentsApiResult = {}
+  let itemResult = {}
+  let commentResult = {}
 
   if (showItems)
     itemResult = await getUserFavoritedItemsByPage(uid, page, authUser)
@@ -27,8 +27,8 @@ export async function getServerSideProps(context) {
     commentResult = await getUserFavoritedCommentsByPage(uid, page, authUser)
 
   const goToString = page > 1 ?
-    `favorites?id=${userId}${showItems ? "" : "&comments=t"}&page=${page}` :
-    `favorites?id=${userId}${showItems ? "" : "&comments=t"}`
+    `favorites?id=${uid}${showItems ? "" : "&comments=t"}&page=${page}` :
+    `favorites?id=${uid}${showItems ? "" : "&comments=t"}`
 
   return {
     props: {
@@ -36,14 +36,14 @@ export async function getServerSideProps(context) {
       items: typeof itemResult.items === 'undefined' ? null : itemResult.items,
       showItems: showItems,
       isMoreItems: typeof itemResult.isMore === 'undefined' ? false : itemResult.isMore,
-      comments: typeof commentResult.items === 'undefined' ? null : commentResult.items,
+      comments: typeof commentResult.comments === 'undefined' ? null : commentResult.comments,
       showComments: !showItems,
       isMoreComments: typeof commentResult.isMore === 'undefined' ? false : commentResult.isMore,
       page: page,
       notFoundError: typeof itemResult.notFoundError !== 'undefined' && itemResult.notFoundError ||
                       typeof commentResult.notFoundError !== 'undefined' && commentResult.notFoundError,
       getDataError: typeof itemResult.getDataError !== 'undefined' && itemResult.getDataError ||
-                      typeof commentResult.notFoundError !== 'undefined' && commentResult.notFoundError,
+                      typeof commentResult.getDataError !== 'undefined' && commentResult.getDataError,
       goToString: goToString
     }
   }
@@ -68,7 +68,7 @@ export default class extends Component {
           {
             !this.props.getDataError && !this.props.notFoundError ?
             <>
-              <div className={this.props.showItems ? "favorites-top-links items" : "favorites-top-links comments"}>
+              <div className={this.props.showItems ? [styles.favorites_top_links, styles.items].join(' ') : [styles.favorites_top_links, styles.comments].join(' ')}>
                 <span className={this.props.showItems ? "active" : null}>
                   <a href={`/favorites?id=${this.props.userId}`}>submissions</a>
                 </span>
@@ -94,7 +94,7 @@ export default class extends Component {
                         isMore={this.props.isMoreItems}
                         isModerator={this.props.authUserData.isModerator}
                       /> :
-                      <div className="favorites-none-found-msg items">
+                      <div className={[styles.favorites_none_found_msg, styles.items].join(' ')}>
                         <p>{this.props.userId} hasn’t added any favorite submissions yet.</p>
                         <p>To add an item to your own favorites, click on its timestamp to go to its page, then click 'favorite' at the top.</p>
                       </div>
@@ -117,7 +117,7 @@ export default class extends Component {
                         isMore={this.props.isMoreComments}
                         isModerator={this.props.authUserData.isModerator}
                       /> :
-                      <div className="favorites-none-found-msg comments">
+                      <div className={[styles.favorites_none_found_msg, styles.comments].join(' ')}>
                         <p>{this.props.userId} hasn’t added any favorite comments yet.</p>
                         <p>To add a comment to your own favorites, click on its timestamp to go to its page, then click 'favorite' at the top.</p>
                       </div>

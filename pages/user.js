@@ -303,12 +303,12 @@ export default class extends Component {
                   </div>
                   {
                     this.state.submitError ?
-                    <div className="user-submit-error-msg">
+                    <div className={styles.user_submit_error_msg}>
                       <span>An error occurred.</span>
                     </div> : null
                   }
                 </div> :
-                <div className="user-public-data">
+                <div className={styles.user_public_data}>
                   <div className={styles.user_item}>
                     <div className={styles.user_item, styles.user_item_label, styles.public}>
                       <span>user:</span>

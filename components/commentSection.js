@@ -22,6 +22,7 @@ function Comment({
   requestKillComment,
   requestUnkillComment
 }) {
+  
   const nestedComments = (sortCommentChildren(comment.children) || []).map((comment) => {
     return <Comment
       key={comment.id}
@@ -327,7 +328,7 @@ export default class extends Component {
     const findAndUpdateComment = function(comment) {
       if (comment.id === commentId) {
         comment.isCollapsed = true
-
+        console.log('joe=comment', comment)
         if (comment.children) {
           comment.numOfHiddenChildren = getNumberOfChildrenComments(comment)
         } else {
@@ -337,7 +338,7 @@ export default class extends Component {
         self.forceUpdate()
       } else {
         if (comment.children) {
-          for (let i=0; i < comment.children.length; i++) {
+          for (let i = 0; i < comment.children.length; i++) {
             findAndUpdateComment(comment.children[i])
           }
         }

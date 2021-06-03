@@ -1,11 +1,12 @@
 import { Component } from "react"
-
+import authUser from "../api/users/authUser.js"
 import AlternateHeader from "../components/alternateHeader.js"
 import HeadMetadata from "../components/headMetadata.js"
 import Comment from "../components/comment.js"
 import GoogleAnalytics from "../components/googleAnalytics.js"
-import authUser from "../api/users/authUser.js"
 import getReplyPageData from "../api/comments/getReplyPageData.js"
+
+import styles from "../styles/pages/comment.module.css"
 
 export async function getServerSideProps (context/* { req, query, res } */) {
   const commentId = context.query.id ? context.query.id : ""
@@ -31,7 +32,6 @@ export async function getServerSideProps (context/* { req, query, res } */) {
 }
 
 export default class extends Component {
-
   render () {
     return (
       <div className="layout-wrapper">
@@ -42,7 +42,7 @@ export default class extends Component {
         <AlternateHeader
           displayMessage="Reply to Comment"
         />
-        <div className="comment-content-container">
+        <div className={styles.comment_content_container}>
           {
             !this.props.getDataError && !this.props.notFoundError ?
             <>
@@ -54,7 +54,7 @@ export default class extends Component {
                 goToString={this.props.goToString}
               />
             </> :
-            <div className="comment-get-data-error-msg">
+            <div className={styles.comment_get_data_error_msg}>
               {
                 this.props.notFoundError ?
                 <span>No such comment.</span> :

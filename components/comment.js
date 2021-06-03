@@ -1,10 +1,9 @@
 import { Component } from "react"
-
-import "../styles/components/comment.module.css"
-
 import renderPointsString from "../utils/renderPointsString.js"
 import renderCreatedTime from "../utils/renderCreatedTime.js"
 import truncateItemTitle from "../utils/truncateItemTitle.js"
+
+import styles from "../styles/components/comment.module.css"
 
 export default class extends Component {
   constructor(props) {
@@ -258,14 +257,14 @@ export default class extends Component {
     const currUsername = this.props.currUsername
 
     return (
-      <div className="comment-content">
+      <div className={styles.comment_content}>
         <table>
           <tbody>
             <tr>
               <td valign="top">
                 {
                   comment.by === currUsername ?
-                  <div className="comment-content-star">
+                  <div className={styles.comment_content_star}>
                     <span>*</span>
                   </div> : null
                 }
@@ -275,12 +274,12 @@ export default class extends Component {
                     {
                       comment.votedOnByUser || comment.dead ?
                       <>
-                        <div className="comment-content-upvote hide">
+                        <div className={[styles.comment_content_upvote, styles.hide].join(' ')}>
                           <span></span>
                         </div>
                       </> :
                       <>
-                        <div className="comment-content-upvote" onClick={() => this.requestUpvoteComment()}>
+                        <div className={styles.comment_content_upvote} onClick={() => this.requestUpvoteComment()}>
                           <span></span>
                         </div>
                       </>
@@ -293,12 +292,12 @@ export default class extends Component {
                     {
                       comment.votedOnByUser || comment.dead || !this.props.showDownvote ?
                       <>
-                        <div className="comment-content-downvote hide">
+                        <div className={[styles.comment_content_downvote, styles.hide].join(' ')}>
                           <span></span>
                         </div>
                       </> :
                       <>
-                        <div className="comment-content-downvote" onClick={() => this.requestDownvoteComment()}>
+                        <div className={styles.comment_content_downvote} onClick={() => this.requestDownvoteComment()}>
                           <span></span>
                         </div>
                       </>
@@ -307,31 +306,31 @@ export default class extends Component {
                 }
               </td>
               <td>
-                <div className="comment-content-details">
+                <div className={styles.comment_content_details}>
                   {
                     currUsername === comment.by ?
                     <span>{comment.points.toLocaleString()} {renderPointsString(comment.points)} by </span> : null
                   }
-                  <span className="comment-content-author">
+                  <span className={styles.comment_content_author}>
                     <a href={`/user?id=${comment.by}`}>{comment.by}</a>
                   </span>
-                  <span className="comment-content-time">
+                  <span className={styles.comment_content_time}>
                     <a href={`/comment?id=${comment.id}`}>{renderCreatedTime(comment.created)}</a>
                   </span>
                   {
                     comment.dead ?
-                    <span className="comment-content-dead"> [dead]</span> : null
+                    <span className={styles.comment_content_dead}> [dead]</span> : null
                   }
                   {
                     comment.votedOnByUser && !comment.unvoteExpired && !comment.dead ?
                     <>
                       <span> | </span>
-                      <span className="comment-content-unvote" onClick={() => this.requestUnvoteComment()}>un-vote</span>
+                      <span className={styles.comment_content_unvote} onClick={() => this.requestUnvoteComment()}>un-vote</span>
                     </> : null
                   }
                   <span> | </span>
-                  <span className="comment-content-parent">
-                    <a href={comment.isParent ? `/item?id=${comment.parent_id}` : `/comment?id=${comment.parentCommentId}`}>parent</a>
+                  <span className={styles.comment_content_parent}>
+                    <a href={comment.is_parent ? `/item?id=${comment.parent_id}` : `/comment?id=${comment.parent_comment_id}`}>parent</a>
                   </span>
                   {
                     this.props.showFavoriteOption ?
@@ -340,11 +339,11 @@ export default class extends Component {
                         comment.favoritedByUser ?
                         <>
                           <span> | </span>
-                          <span className="comment-content-favorite" onClick={() => this.requestUnfavoriteComment()}>un-favorite</span>
+                          <span className={styles.comment_content_favorite} onClick={() => this.requestUnfavoriteComment()}>un-favorite</span>
                         </> :
                         <>
                           <span> | </span>
-                          <span className="comment-content-favorite" onClick={() => this.requestFavoriteComment()}>favorite</span>
+                          <span className={styles.comment_content_favorite} onClick={() => this.requestFavoriteComment()}>favorite</span>
                         </>
                       }
                     </> : null
@@ -371,14 +370,14 @@ export default class extends Component {
                     this.props.isModerator && !comment.dead ?
                     <>
                       <span> | </span>
-                      <span className="comment-content-kill" onClick={() => this.requestKillComment()}>kill</span>
+                      <span className={styles.comment_content_kill} onClick={() => this.requestKillComment()}>kill</span>
                     </> : null
                   }
                   {
                     this.props.isModerator && comment.dead ?
                     <>
                       <span> | </span>
-                      <span className="comment-content-kill" onClick={() => this.requestUnkillComment()}>un-kill</span>
+                      <span className={styles.comment_content_kill} onClick={() => this.requestUnkillComment()}>un-kill</span>
                     </> : null
                   }
                   <span> | </span>
@@ -386,7 +385,7 @@ export default class extends Component {
                     on: <a href={`/item?id=${comment.parent_id}`}>{truncateItemTitle(comment.parent_title)}</a>
                   </span>
                 </div>
-                <div className="comment-content-text">
+                <div className={styles.comment_content_text}>
                   <span dangerouslySetInnerHTML={{ __html: comment.text }}></span>
                 </div>
               </td>
@@ -396,14 +395,14 @@ export default class extends Component {
         {
           !comment.dead ?
           <>
-            <div className="comment-content-repy-box">
+            <div className={styles.comment_content_repy_box}>
               <textarea
                 type="text"
                 value={this.state.replyInputValue}
                 onChange={this.updateReplyInputValue}
               />
             </div>
-            <div className="comment-content-reply-btn">
+            <div className={styles.comment_content_reply_btn}>
               <input
                 type="submit"
                 value="reply"
@@ -412,19 +411,19 @@ export default class extends Component {
             </div>
             {
               this.state.replyTextRequiredError ?
-              <div className="comment-content-reply-error-msg">
+              <div className={styles.comment_content_reply_error_msg}>
                 <span>Text is required.</span>
               </div> : null
             }
             {
               this.state.replyTextTooLongError ?
-              <div className="comment-content-reply-error-msg">
+              <div className={styles.comment_content_reply_error_msg}>
                 <span>Text exceeds limit of 5,000 characters.</span>
               </div> : null
             }
             {
               this.state.replySubmitError ?
-              <div className="comment-content-reply-error-msg">
+              <div className={styles.comment_content_reply_error_msg}>
                 <span>An error occurred.</span>
               </div> : null
             }

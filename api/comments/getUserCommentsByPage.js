@@ -4,7 +4,7 @@ import moment from "moment"
 
 export default async function getUserCommentsByPage(username, page, user) {
   const directus = credential.directus
-  
+
   const maxAgeOfRankedItemsInDays = config.maxAgeOfRankedItemsInDays
   const itemsPerPage = config.itemsPerPage
   const commentsPerPage = config.commentsPerPage
@@ -52,9 +52,9 @@ export default async function getUserCommentsByPage(username, page, user) {
     let filtered_comments = await directus.items('comments').readMany(commentsDbQuery)
     let totalCommentsCount = filtered_comments.meta.total_count
     let comments = filtered_comments.data
-    console.log("Comments: ", comments)
+
     if (!user.userSignedIn) {
-      console.log("--------------------")
+
       return {
         success: true,
         comments: comments,
@@ -74,7 +74,7 @@ export default async function getUserCommentsByPage(username, page, user) {
           comments[i].editAndDeleteExpired = hasEditAndDeleteExpired
         }
       }
-      console.log("arrayOfCommentIds for _in: ", arrayOfCommentIds)
+
       let filtered_voteDocs;
       if (arrayOfCommentIds.length > 0) {
         filtered_voteDocs = await directus.items('user_votes').readMany({
@@ -95,7 +95,7 @@ export default async function getUserCommentsByPage(username, page, user) {
           const commentObj = comments.find(function(comment) {
             return comment.id === voteDocs[i].id
           })
-  
+
           if (commentObj) {
             commentObj.votedOnByUser = true
             commentObj.unvoteExpired = voteDocs[i].date + (3600 * config.hrsUntilUnvoteExpires) < moment().unix() ? true : false

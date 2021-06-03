@@ -80,7 +80,7 @@ export default async function getItemsBySiteDomain(site, page, user) {
         votes = votes.data
       }
 
-      items.forEach((item, i) => {
+      for (let item of items) {
         if (item.by === user.username) {
           const hasEditAndDeleteExpired =
             item.created + (3600 * config.hrsUntilEditAndDeleteExpires) < moment().unix() ||
@@ -97,7 +97,7 @@ export default async function getItemsBySiteDomain(site, page, user) {
           item.votedOnByUser = true
           item.unvoteExpired = vote.date + (3600 * config.hrsUntilUnvoteExpires) < moment().unix() ? true : false
         }
-      })
+      }
 
       return {
         success: true,

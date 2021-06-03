@@ -20,7 +20,7 @@ export default async function handler(req, res) {
     // text = xss(text)
 
     // Save the comment into the table
-    await directus.items('comments').createOne({
+    let new_comment = await directus.items('comments').createOne({
       by: authResult.username,
       parent_id: parentItemId,
       parent_title: '',
@@ -48,6 +48,20 @@ export default async function handler(req, res) {
     );
 
     // Update parent comment's children field
+    let comment = await directus.items('comments').readOne(parentCommentId)
+
+    let children = ''
+    if (comment.children)
+      children = comment.children
+
+    children = children + ';' + new_comment.id
+
+    await directus.items('comments').updateMany(
+    	[parentCommentId],
+    	{
+    		children: children
+    	}
+    );
 
     return res.status(200).json({ success: true })
   } catch (error) {

@@ -36,13 +36,12 @@ export default async function getUserHiddenItemsByPage(page, user) {
     });
 
     items = items.data
-    items.forEach((item, i) => {
-      item.rank = (page - 1) * itemsPerPage + i + 1
-    })
 
-    items.forEach((item, i) => {
-      item.rank = ((page - 1) * itemsPerPage) + (i + 1)
+    for (let i = 0; i < items.length; i++) {
+      items[i].rank = (page - 1) * itemsPerPage + i + 1
+    }
 
+    for (let item of items) {
       item.votedOnByUser = true
       item.unvoteExpired = upvotes[i].date + (3600 * config.hrsUntilUnvoteExpires) < moment().unix() ? true : false
 

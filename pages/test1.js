@@ -14,17 +14,18 @@ export async function getServerSideProps(context) {
 			auto: true,
 		},
 	});
-/* 
-  const token = directus.auth.token
-  console.log(token)
 
-  const cookies = new Cookies(context.req, context.res)
-  cookies.set('joe_token', token, {
-      httpOnly: true // true by default
+  let votes = await directus.items('user_votes').readMany({
+    filter: {
+      item_id: {_in: [23]}
+    }
   })
+  votes = votes.data
+  console.log('v', votes)
+
 
   const data = null
-  return { props: { data } } */
+  return { props: { data } }
   let res = await directus.items("test").createOne({
     uname: "hello"
   })

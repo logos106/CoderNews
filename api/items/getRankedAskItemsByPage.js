@@ -28,9 +28,9 @@ export default async function getRankedAskItemsByPage(page, user) {
       const totalItems = items.meta.total_count
 
       items = items.data
-      items.forEach((item, i) => {
-        item.rank = (page - 1) * itemsPerPage + i + 1
-      })
+      for (let i = 0; i < items.length; i++) {
+        items[i].rank = (page - 1) * itemsPerPage + i + 1
+      }
 
       return {
         success: true,
