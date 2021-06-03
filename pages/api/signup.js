@@ -1,5 +1,6 @@
 import authUser from "../../api/users/authUser.js"
 import credential from "../../utils/apiCredential.js"
+import moment from "moment"
 
 export default async function handler(req, res) {
   const username = JSON.parse(req.body).username;
@@ -40,7 +41,8 @@ export default async function handler(req, res) {
       username: username,
       email: useremail,
       password: password,
-      role: readerRole.data[0].id
+      role: readerRole.data[0].id,
+      created: moment().unix()
     })
 
     console.log("new user: ", newuser)

@@ -32,7 +32,9 @@ export default class extends Component {
       if (response.authError) {
         window.location.href = `/login?goto=${encodeURIComponent(self.props.goToString)}`
       } else {
-        self.setState({loading: false})
+        self.setState({loading: false })
+        this.state.items[itemIndexPosition].points = response.points
+        this.forceUpdate()
       }
     }
   }
@@ -57,6 +59,8 @@ export default class extends Component {
         window.location.href = `/login?goto=${encodeURIComponent(self.props.goToString)}`
       } else {
         self.setState({loading: false})
+        this.state.items[itemIndexPosition].points = response.points
+        this.forceUpdate()
       }
     }
   }

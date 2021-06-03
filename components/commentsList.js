@@ -226,7 +226,7 @@ export default class extends Component {
                           }
                           <span> | </span>
                           <span className={styles.listed_comment_parent}>
-                            <a href={comment.isParent ? `/item?id=${comment.parent_id}` : `/comment?id=${comment.parent_comment_id}`}>parent</a>
+                            <a href={comment.is_parent ? `/item?id=${comment.parent_id}` : `/comment?id=${comment.parent_comment_id}`}>parent</a>
                           </span>
                           {
                             this.props.showUnfavoriteOption ?

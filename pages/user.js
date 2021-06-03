@@ -36,6 +36,7 @@ export default class extends Component {
       aboutInputValue: this.props.userData ? this.props.userData.about : "",
       emailInputValue:  this.props.userData ? this.props.userData.email : "",
       showDeadValue: this.props.userData && this.props.userData.showDead ? "yes" : "no",
+      isModerator: this.props.userData && this.props.userData.is_moderator,
       loading: false,
       submitError: false
     }
@@ -229,17 +230,21 @@ export default class extends Component {
                       />
                     </div>
                   </div>
-                  <div className={styles.user_item}>
-                    <div className={styles.user_item, styles.user_item_label}>
-                      <span>showdead:</span>
-                    </div>
-                    <div className={styles.user_item, styles.user_item_content, styles.email}>
-                      <select value={this.state.showDeadValue} onChange={this.updateShowDeadValue}>
-                        <option value="no">no</option>
-                        <option value="yes">yes</option>
-                      </select>
-                    </div>
-                  </div>
+                  {
+                    this.state.isModerator ?
+                      <div className={styles.user_item}>
+                        <div className={styles.user_item, styles.user_item_label}>
+                          <span>showdead:</span>
+                        </div>
+                        <div className={styles.user_item, styles.user_item_content, styles.email}>
+                          <select value={this.state.showDeadValue} onChange={this.updateShowDeadValue}>
+                            <option value="no">no</option>
+                            <option value="yes">yes</option>
+                          </select>
+                        </div>
+                      </div>
+                      : null
+                  }
                   <div className={styles.user_item}>
                     <div className={styles.user_item, styles.user_item_label}>
                       <span></span>

@@ -45,7 +45,7 @@ export default async function getItemsBySiteDomain(site, page, user) {
       hiddens = hiddens.data
 
       let filterItems = {
-        domain: { _eq: domain }
+        domain: { _eq: site }
       }
 
       let hids = hiddens.map((hidden) => hidden.item_id)

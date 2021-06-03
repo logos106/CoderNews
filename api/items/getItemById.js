@@ -5,7 +5,6 @@ import moment from "moment"
 export default async function getItemById(itemId, page, user) {
   const directus = credential.directus
   const commentsPerPage = config.commentsPerPage
-
   try {
     // Find the item by ID
     let item = await directus.items('items').readOne(itemId)
@@ -29,12 +28,14 @@ export default async function getItemById(itemId, page, user) {
     comments = comments.data
 
     if (!user.userSignedIn) {
-      for (let comment of comments) {
-        // Split children ids
+      // Change children from string to array of object
+      const changeChildren = async function(comment) {
+        // Iterate it for child
         let childIds = []
         if (comment.children) {
           childIds = comment.children.split(';')
-          // Replace array of id for array of child objects
+          childIds.shift()
+
           let children = await directus.items('comments').readMany({
             filter: {
               id: {_in: childIds}
@@ -42,10 +43,18 @@ export default async function getItemById(itemId, page, user) {
           })
           children = children.data
 
+          for (let i = 0; i < children.length; i++) {
+            await changeChildren(children[i])
+          }
+
           comment.children = children
         }
       }
 
+      for (let comment of comments) {
+        await changeChildren(comment)
+      }
+    
       return {
         success: true,
         item: item,
@@ -104,10 +113,28 @@ export default async function getItemById(itemId, page, user) {
       }
 
       const updateComment = async function(comment) {
-        // Split and fetch child objects
+        // Set expired for add ana delegte
+        if (comment.by === user.username) {
+          const hasEditAndDeleteExpired =
+            comment.created + (3600 * config.hrsUntilEditAndDeleteExpires) < moment().unix() ||
+            (comment.children && comment.children.length > 0)
+
+          comment.editAndDeleteExpired = hasEditAndDeleteExpired
+        }
+
+        comment.votedOnByUser = true
+
+        // Set expired for unvote
+        for (let cvote of commentVotes) {
+          if (comment.id === cvote.item_id)
+            comment.unvoteExpired = cvote.date + (3600 * config.hrsUntilUnvoteExpires) < moment().unix() ? true : false
+        }
+
+        // Iterate it for child
         let childIds = []
         if (comment.children) {
           childIds = comment.children.split(';')
+          childIds.shift()
 
           let children = await directus.items('comments').readMany({
             filter: {
@@ -116,38 +143,16 @@ export default async function getItemById(itemId, page, user) {
           })
           children = children.data
 
-          comment.children = children
-        }
-
-        // Set expired for add ana delegte
-        if (comment.by === user.username) {
-          const hasEditAndDeleteExpired =
-            comment.created + (3600 * config.hrsUntilEditAndDeleteExpires) < moment().unix() ||
-            comment.children.length > 0
-
-          comment.editAndDeleteExpired = hasEditAndDeleteExpired
-        }
-
-
-
-        // Set expired for unvote
-        commentVotes.forEach((cvote) => {
-          comment.votedOnByUser = true
-
-          if (comment.id === cvote.item_id) {
-            comment.unvoteExpired = cvote.date + (3600 * config.hrsUntilUnvoteExpires) < moment().unix() ? true : false
+          for (let i = 0; i < children.length; i++) {
+            await updateComment(children[i])
           }
-        });
 
-        if (comment.children) {
-          comment.children.forEach(async (child) => {
-            await updateComment(child)
-          })
+          comment.children = children
         }
       }
 
       for (let comment of comments) {
-        await updateComment(comments)
+        await updateComment(comment)
       }
 
       return {

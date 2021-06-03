@@ -79,7 +79,7 @@ export default async function getRankedShowItemsByPage(page, user) {
           filter: {
             username: user.username,
             date: { _gte: startDate },
-            item_id: { _in: itemIds },
+            item_id: { _in: iids },
             type: "item"
           }
         })
