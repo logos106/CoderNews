@@ -22,7 +22,7 @@ function Comment({
   requestKillComment,
   requestUnkillComment
 }) {
-  
+
   const nestedComments = (sortCommentChildren(comment.children) || []).map((comment) => {
     return <Comment
       key={comment.id}
@@ -45,7 +45,7 @@ function Comment({
 
   return (
     <>
-      <div key={comment.id} className={type === "parent" ? [styles.comment_section_comment, styles.parent].join(' ') : [styles.comment_section_comment, styles.child].join(' ')}>
+      <div key={comment.id} className={type === "parent" ? styles.comment_section_comment_parent : styles.comment_section_comment_child }>
         {
           !comment.isCollapsed ?
           <div className={styles.comment_section_comment_details}>

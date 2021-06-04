@@ -33,6 +33,7 @@ export default class extends Component {
       titleTooLongError: false,
       invalidUrlError: false,
       urlAndTextError: false,
+      urlFormatError: false,
       textTooLongError: false,
       submitError: false,
       loading: false
@@ -115,7 +116,8 @@ export default class extends Component {
           invalidUrlError: false,
           urlAndTextError: false,
           textTooLongError: false,
-          submitError: false
+          submitError: false,
+          urlFormatError: false
         })
       } else if (response.urlAndTextError) {
         self.setState({
@@ -125,7 +127,8 @@ export default class extends Component {
           invalidUrlError: false,
           urlAndTextError: true,
           textTooLongError: false,
-          submitError: false
+          submitError: false,
+          urlFormatError: false
         })
       } else if (response.invalidUrlError) {
         self.setState({
@@ -135,7 +138,8 @@ export default class extends Component {
           invalidUrlError: true,
           urlAndTextError: false,
           textTooLongError: false,
-          submitError: false
+          submitError: false,
+          urlFormatError: false
         })
       } else if (response.titleTooLongError) {
         self.setState({
@@ -145,7 +149,8 @@ export default class extends Component {
           invalidUrlError: false,
           urlAndTextError: false,
           textTooLongError: false,
-          submitError: false
+          submitError: false,
+          urlFormatError: false
         })
       } else if (response.textTooLongError) {
         self.setState({
@@ -155,7 +160,19 @@ export default class extends Component {
           invalidUrlError: false,
           urlAndTextError: false,
           textTooLongError: true,
-          submitError: false
+          submitError: false,
+          urlFormatError: false
+        })
+      } else if (response.urlFormatError) {
+        self.setState({
+          loading: false,
+          titleRequiredError: false,
+          titleTooLongError: false,
+          invalidUrlError: false,
+          urlAndTextError: false,
+          textTooLongError: false,
+          submitError: false,
+          urlFormatError: true
         })
       } else if (response.submitError || !response.success) {
         self.setState({
@@ -165,7 +182,8 @@ export default class extends Component {
           invalidUrlError: false,
           urlAndTextError: false,
           textTooLongError: false,
-          submitError: true
+          submitError: true,
+          urlFormatError: false
         })
       } else {
         Router.push('/newest')
@@ -218,6 +236,12 @@ export default class extends Component {
             this.state.submitError ?
             <div className={styles.submit_content_error_msg}>
               <span>An error occurred.</span>
+            </div> : null
+          }
+          {
+            this.state.urlFormatError ?
+            <div className={styles.submit_content_error_msg}>
+              <span>URL format is invalid.</span>
             </div> : null
           }
           <div className={styles.submit_content_input_item, styles.title}>

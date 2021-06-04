@@ -1,5 +1,6 @@
 import Cookies from 'cookies'
-import credential from '../../utils/apiCredential.js';
+import credential from '../../utils/apiCredential.js'
+import config from "../../utils/config.js"
 
 export default async function authUser(req, res) {
   const directus = credential.directus
@@ -20,7 +21,8 @@ export default async function authUser(req, res) {
           karma: !me.karma ? 0 : me.karma,
           shadowBanned: me.shadow_banned,
           showDead: me.show_dead,
-          isModerator: me.is_moderator
+          isModerator: me.is_moderator,
+          showDownvote : !me.karma ? false : (me.karma >= config.minimumKarmaToDownvote)
         }
       }
     } catch (e) {

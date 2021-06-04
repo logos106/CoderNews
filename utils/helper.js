@@ -15,7 +15,6 @@ export default {
   },
   getDomainFromUrl: function(paramUrl) {
     const hostname = url.parse(paramUrl).hostname
-
     const parsed = psl.parse(hostname)
 
     return parsed ? parsed.domain : null

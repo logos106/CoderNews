@@ -282,7 +282,7 @@ export default class extends Component {
                     {
                       item.votedOnByUser || item.dead ?
                       <span className={[styles.item_upvote, styles.hide].join(' ')}></span> :
-                      <span className="item-upvote" onClick={() => this.requestUpvoteItem()}></span>
+                      <span className={styles.item_upvote} onClick={() => this.requestUpvoteItem()}></span>
                     }
                   </> : null
                 }
@@ -310,7 +310,7 @@ export default class extends Component {
                   item.votedOnByUser && !item.unvoteExpired && !item.dead ?
                   <>
                     <span> | </span>
-                    <span className="item-unvote" onClick={() => this.requestUnvoteItem()}>un-vote</span>
+                    <span className={styles.item_unvote} onClick={() => this.requestUnvoteItem()}>un-vote</span>
                   </> : null
                 }
                 {
@@ -332,11 +332,11 @@ export default class extends Component {
                   !item.favoritedByUser ?
                   <>
                     <span> | </span>
-                    <span className="item-favorite" onClick={() => this.requestFavoriteItem()}>favorite</span>
+                    <span className={styles.item_favorite} onClick={() => this.requestFavoriteItem()}>favorite</span>
                   </> :
                   <>
                     <span> | </span>
-                    <span className="item-favorite" onClick={() => this.requestUnfavoriteItem()}>un-favorite</span>
+                    <span className={styles.item_favorite} onClick={() => this.requestUnfavoriteItem()}>un-favorite</span>
                   </>
                 }
                 {

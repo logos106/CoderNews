@@ -34,7 +34,7 @@ export default async function handler(req, res) {
     }, {
       refresh: {
         auto: true,
-        time: 30000
+        time: 600000
       }
     })
 
