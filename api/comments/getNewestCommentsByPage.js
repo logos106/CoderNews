@@ -13,6 +13,7 @@ export default async function getNewestCommentsByPage(page, user) {
     let comments = await directus.items('comments').readMany({
       filter: filterComments,
       offset: (page - 1) * commentsPerPage,
+      sort: ['-created'],
       limit: commentsPerPage,
       sort: ['-created'],
       meta: 'total_count'
@@ -30,26 +31,26 @@ export default async function getNewestCommentsByPage(page, user) {
       }
     }
     else {
-      
+
       let arrayOfCommentIds = []
       for (let i = 0; i < comments.length; i++) {
         if (comments[i].by !== user.username) arrayOfCommentIds.push(comments[i].id)
-        
+
         if (comments[i].by === user.username) {
           const hasEditAndDeleteExpired =
           comments[i].created + (3600 * config.hrsUntilEditAndDeleteExpires) < moment().unix() ||
           (comments[i].children && comments[i].children.length > 0)
-          
+
           comments[i].editAndDeleteExpired = hasEditAndDeleteExpired
         }
       }
-      
+
       // Get votes
       let filterVotes = {
         username: { _eq: user.username },
         type: { _eq: 'type' }
       }
-      
+
       if (arrayOfCommentIds.length > 0) {
         let votes = await directus.items('user_votes').readMany({
           filter: {

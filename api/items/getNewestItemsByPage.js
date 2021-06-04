@@ -59,6 +59,7 @@ export default async function getNewestItemsByPage(page, user) {
       let items = await directus.items('items').readMany({
         filter: filterItems,
         offset: (page - 1) * itemsPerPage,
+        sort: ['-created'],
         limit: itemsPerPage,
         meta: 'total_count'
       })
