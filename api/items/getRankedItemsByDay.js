@@ -15,7 +15,6 @@ export default async function getRankedItemsByDay(day, page, user) {
 
   const startTimestamp = moment(day).startOf("day").unix()
   const endTimestamp = moment(day).endOf("day").unix()
-console.log(day, moment.unix(startTimestamp), moment.unix(endTimestamp))
   try {
     if (!user.userSignedIn) {  // If he is a guest
       let items = await directus.items('items').readMany({
@@ -35,7 +34,6 @@ console.log(day, moment.unix(startTimestamp), moment.unix(endTimestamp))
       items = items.data
       for (let i = 0; i < items.length; i++) {
         items[i].rank = (page - 1) * itemsPerPage + i + 1
-        console.log(moment.unix(items[i].created))
       }
 
       return {
