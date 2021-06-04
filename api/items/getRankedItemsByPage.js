@@ -19,6 +19,7 @@ export default async function getRankedItemsByPage(page, user) {
           created: { _gte: startDate },
           dead: { _eq: false }
         },
+        sort: "created:desc",
         offset: (page - 1) * itemsPerPage,
         limit: itemsPerPage,
         meta: 'total_count'

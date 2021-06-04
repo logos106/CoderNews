@@ -22,7 +22,7 @@ export default async function authUser(req, res) {
           shadowBanned: me.shadow_banned,
           showDead: me.show_dead,
           isModerator: me.is_moderator,
-          showDownvote : !me.karma ? false : (me.karma >= config.minimumKarmaToDownvote)
+          showDownvote : false //!me.karma ? false : (me.karma >= config.minimumKarmaToDownvote)
         }
       }
     } catch (e) {

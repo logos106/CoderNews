@@ -15,7 +15,7 @@ import styles from "../../styles/pages/search/index.module.css"
 
 export async function getServerSideProps(context) {
   const authResult = await authUser(context.req, context.res)
-  const result = await getAlgoliaData(query, req.headers.cookie)
+  const result = await getAlgoliaData(context.req.query, context.req.headers.cookie)
 
   return {
     props: {

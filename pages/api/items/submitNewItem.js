@@ -28,9 +28,10 @@ export default async function handler(req, res) {
     if (url && text) return res.status(200).json({ urlAndTextError: true })
     if (text.length > 5000) return res.status(200).json({textTooLongError: true})
 
+    let domain = ''
     if (url != '') {
       try {
-        url = helper.getDomainFromUrl(url)        
+        domain = helper.getDomainFromUrl(url)
       } catch (e) {
         return res.status(200).json({ urlFormatError: true })
       }
@@ -42,7 +43,7 @@ export default async function handler(req, res) {
         title: title,
         type: helper.getItemType(title, url, text),
         url: url,
-        domain: url,
+        domain: domain,
         text: text,
         created: moment().unix(),
         dead: authResult.shadowBanned ? true : false,

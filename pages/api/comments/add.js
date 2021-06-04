@@ -19,15 +19,19 @@ export default async function handler(req, res) {
     // text = linkifyUrls(text)
     // text = xss(text)
 
+    // Get the parent item's title
+    let item = await directus.items('items').readOne(parentItemId);
+    let parent_title = item.title
+
     // Save the comment into the table
     let new_comment = await directus.items('comments').createOne({
       by: authResult.username,
       parent_id: parentItemId,
-      parent_title: '',
+      parent_title: parent_title,
       is_parent: isParent,
       parent_comment_id: parentCommentId,
       text: text,
-      points: 1,
+      points: 0,
       created: moment().unix(),
       dead: authResult.shadowBanned ? true : false
     });
@@ -39,7 +43,6 @@ export default async function handler(req, res) {
     await directus.users.me.update({ karma: me.karma + 1 });
 
     // Update the item  .  count of comment
-    let item = await directus.items('items').readOne(parentItemId)
     await directus.items('items').updateMany(
     	[parentItemId],
     	{
