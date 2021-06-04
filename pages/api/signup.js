@@ -36,7 +36,6 @@ export default async function handler(req, res) {
 
     // Get the role
     let readerRole = await directus.roles.readMany({filter: {name: 'reader'}})
-    console.log("Roles: ", readerRole.data[0])
 
     const newuser = await directus.items('directus_users').createOne({
       username: username,

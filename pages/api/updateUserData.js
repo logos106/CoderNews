@@ -18,7 +18,7 @@ export default async function handler(req, res) {
         newAboutText = newAboutText.replace(/\*([^*]+)\*/g, "<i>$1</i>")
         newAboutText = linkifyUrls(newAboutText)
         newAboutText = xss(newAboutText)
-        
+
         let oldEmail = await directus.users.me.read({
             fields: ['email'],
         });
@@ -43,13 +43,12 @@ export default async function handler(req, res) {
         emailApi.sendChangeEmailNotificationEmail(username, oldEmail, emailAction, function() {
             callback({success: true})
         }) */
-        
-        console.log("updateValues", updateValues, email, oldEmail.email, (email == oldEmail.email))
+
         await directus.users.me.update(updateValues);
-        console.log("Success Saved!")
+
         return res.status(200).json({ success: true })
     } catch (error) {
-        console.log("Error: ", error)
+        console.log(error)
         return res.status(200).json({ submitError: true })
     }
 }

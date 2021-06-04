@@ -26,17 +26,11 @@ export default async function handler(req, res) {
       }
     });
     favs = favs.data
-    
+
     // If exist already, error  ???
     if (favs.length > 0)
       return res.json({ submitError: true })
-      
-      console.log("ItemID: ", {
-        username: user.username,
-        type: "item",
-        item_id: itemId,
-        date: moment().unix()
-      })
+
     // Create a favorite
     let result = await directus.items('user_favorites').createOne({
       username: user.username,

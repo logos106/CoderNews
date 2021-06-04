@@ -10,8 +10,6 @@ export default async function getDeleteItemPageData(itemId, user) {
 
     if (!item) return { notFoundError: true }
 
-    console.log(moment().unix())
-
     if (item.dead
           || item.by != user.username
           || item.created + (3600 * config.hrsUntilEditAndDeleteExpires) < moment().unix()

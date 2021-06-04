@@ -5,7 +5,7 @@ import moment from "moment"
 export default async function getUserHiddenItemsByPage(page, user) {
   const directus = credential.directus
   const itemsPerPage = config.itemsPerPage
-  console.log("OFFSET: ", (page - 1) * itemsPerPage)
+
   try {
     // Get hidden
     let upvotes = await directus.items('user_votes').readMany({
@@ -40,7 +40,6 @@ export default async function getUserHiddenItemsByPage(page, user) {
       });
 
       items = items.data
-      console.log("UPVOTES: ", upvotes, items)
       for (let i = 0; i < items.length; i++) {
         items[i].votedOnByUser = true
         items[i].rank = (page - 1) * itemsPerPage + i + 1

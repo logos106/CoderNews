@@ -11,7 +11,7 @@ export default async function handler(req, res) {
     return res.json({ submitError: true })
 
   const user = await authUser(req, res)
-    
+
   if (!user.userSignedIn)
     return res.json({ authError: true })
 
@@ -26,11 +26,11 @@ export default async function handler(req, res) {
         type: { _eq: "comment" }
       }
     })
-    
+
     voteDoc = voteDoc.data
     if (!comment || comment.by === user.username || comment.dead) return res.json({submitError: true})
     else if (voteDoc.length > 0) return res.json({submitError: true})
-    
+
     let result = await directus.items("user_votes").createOne({
         username: user.username,
         type: "comment",
@@ -40,7 +40,7 @@ export default async function handler(req, res) {
         downvote: false,
         date: moment().unix()
     })
-    console.log("result: ", result)
+
     let points = comment.points + 1
 
     await directus.items("comments").updateOne(comment.id, {
@@ -54,7 +54,7 @@ export default async function handler(req, res) {
     })
     if (author.data.length == 0) return res.json({ submitError: true })
     author = author.data[0]
-    
+
     await directus.items("direcuts_users").updateOne(author.id, {
         karma: author.karma + 1
     })
