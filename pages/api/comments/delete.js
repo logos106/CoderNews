@@ -49,12 +49,13 @@ export default async function handler(req, res) {
 
     if (!comment.is_parent) {
         let parentComment = await directus.items('comments').readOne(comment.parent_comment_id)
-        if (!parentComment.children) parentComment.children = "";
+        if (!parentComment.children) parentComment.children = null;
         else {
             let children = parentComment.children.split(";")
             let str_children = "";
+            children.shift()
             children.forEach(child => {
-                if (child != comment.id) str_children += child + ";"
+                if (child != comment.id) str_children += ";" + child;
             });
             str_children = str_children.splice(0, str_children.lenght-1)
 

@@ -31,50 +31,57 @@ export default async function getUserFavoritedCommentsByPage(author, page, user)
       limit: commentsPerPage,
       meta: 'total_count'
     });
-
+    
     // Remember the total number of favorites selected
     const totalFavs = favs.meta.total_count
 
+    favs = favs.data
+    let fids = favs.map((fav) => fav.item_id)
+    
     // Filter for items
     let filterItems = {}
+    let comments = []
 
-    favs = favs.data
-    let fids = favs.map((fav) => fav.id)
-    if (fids.length > 0) filterItems.id = { _in: fids }
+    if (fids.length > 0) {
+      filterItems.id = { _in: fids }
 
-    if (!user.showDead) filterItems.dead = { _eq: false }
+      if (!user.showDead) filterItems.dead = { _eq: false }
 
-    // Aggregate items
-    let comments = await directus.items('comments').readMany({
-      filter: filterItems
-    });
+      // Aggregate items
+      comments = await directus.items('comments').readMany({
+        filter: filterItems
+      });
 
-    comments = comments.data
-    comments.forEach((comment, i) => {
-      comment.rank = (page - 1) * commentsPerPage + i + 1
-    })
+      comments = comments.data
+      comments.forEach((comment, i) => {
+        comment.rank = (page - 1) * commentsPerPage + i + 1
+      })
+    }
 
     if (!user.userSignedIn) {
       return {
         success: true,
-        items: comments,
-        isMore: totalFavoriteItemsCount > (((page -1) * commentsPerPage) + commentsPerPage) ? true : false
+        comments: comments,
+        isMore: totalFavs > (((page -1) * commentsPerPage) + commentsPerPage) ? true : false
       }
     }
     else {
       // Votes
+      let iids = comments.map((comment) => comment.id)
       let votes = []
+      if (iids.length > 0) {
+        votes = await directus.items('user_votes').readMany({
+          filter: {
+            username: { _eq: user.username },
+            item_id: { _in: iids },
+            type: { _in: 'comment' }
+          }
+        })
+        votes = votes.data
+      }
 
-      votes = await directus.items('user_votes').readMany({
-        filter: {
-          username: { _eq: user.username },
-          id: { _in: iids },
-          type: { _in: 'comment' }
-        }
-      })
-      votes = votes.data
-
-      comments.forEach((comment, i) => {
+      // comments.forEach((comment, i) => {
+      for (let comment of comments) {
         if (comment.by === user.username) {
           const hasEditAndDeleteExpired =
             comment.created + (3600 * config.hrsUntilEditAndDeleteExpires) < moment().unix() ||
@@ -84,18 +91,18 @@ export default async function getUserFavoritedCommentsByPage(author, page, user)
         }
 
         const vote = votes.find(function(e) {
-          return e.id === comment.id
+          return e.item_id === comment.id
         })
 
         if (vote) {
           comment.votedOnByUser = true
           comment.unvoteExpired = vote.date + (3600 * config.hrsUntilUnvoteExpires) < moment().unix() ? true : false
         }
-      })
-
+      }
+      
       return {
         success: true,
-        items: comments,
+        comments: comments,
         isMore: totalFavs > (((page - 1) * commentsPerPage) + commentsPerPage) ? true : false
       }
     }

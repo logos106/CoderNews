@@ -27,7 +27,7 @@ export async function getServerSideProps(context) {
       notFoundError: typeof result.notFoundError === 'undefined' ? false : result.notFoundError,
       getDataError: typeof result.getDataError === 'undefined' ? false : result.getDataError,
       isMoreChildrenComments: typeof result.isMoreChildrenComments === 'undefined' ? false : result.isMoreChildrenComments,
-      goToString: ""
+      goToString: page > 1 ? `comment?id=${commentId}&page=${page}` : `comment?id=${commentId}`
     }
   }
 }
@@ -82,6 +82,7 @@ export default class extends Component {
         </div>
         <Footer />
       </div>
+    
     )
   }
 }
