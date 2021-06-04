@@ -1,4 +1,4 @@
-import { Directus, Auth } from '@directus/sdk';
+import { Directus } from '@directus/sdk';
 
 let baseURL
 

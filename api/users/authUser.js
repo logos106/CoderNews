@@ -26,7 +26,7 @@ export default async function authUser(req, res) {
         }
       }
     } catch (e) {
-      console.log("Static Login Error: ", e)
+      // console.log("Static Login Error: ", e)
     }
   }
 
@@ -38,6 +38,7 @@ export default async function authUser(req, res) {
   }, {
     refresh: {
       auto: true,   // Refresh token automatically
+      time: 600000
     },
   });
 
