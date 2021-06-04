@@ -19,6 +19,7 @@ export default async function getItemsBySiteDomain(site, page, user) {
           domain: { _eq: site },
           dead: { _eq: false }
         },
+        sort: ['-created'],
         offset: (page - 1) * itemsPerPage,
         limit: itemsPerPage,
         meta: 'total_count'
@@ -57,6 +58,7 @@ export default async function getItemsBySiteDomain(site, page, user) {
       let items = await directus.items('items').readMany({
         filter: filterItems,
         offset: (page - 1) * itemsPerPage,
+        sort: ['-created'],
         limit: itemsPerPage,
         meta: 'total_count'
       })

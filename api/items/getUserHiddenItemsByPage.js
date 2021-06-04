@@ -33,7 +33,8 @@ export default async function getUserHiddenItemsByPage(page, user) {
 
     // Aggregate items
     let items = await directus.items('items').readMany({
-      filter: filterItems
+      filter: filterItems,
+      sort: ['-created'],
     });
 
     items = items.data

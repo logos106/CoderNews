@@ -328,7 +328,6 @@ export default class extends Component {
     const findAndUpdateComment = function(comment) {
       if (comment.id === commentId) {
         comment.isCollapsed = true
-        console.log('joe=comment', comment)
         if (comment.children) {
           comment.numOfHiddenChildren = getNumberOfChildrenComments(comment)
         } else {

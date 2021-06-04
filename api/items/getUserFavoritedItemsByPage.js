@@ -45,7 +45,8 @@ export default async function getUserFavoritedItemsByPage(author, page, user) {
 
       // Aggregate items
       items = await directus.items('items').readMany({
-        filter: filterItems
+        filter: filterItems,
+        sort: ['-created'],
       });
 
       items = items.data

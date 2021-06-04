@@ -15,6 +15,7 @@ export default async function getItemsSubmittedByUser(author, page, user) {
           by: { _eq: author },
           dead: { _eq: false }
         },
+        sort: ['-created'],
         offset: (page - 1) * itemsPerPage,
         limit: itemsPerPage,
         meta: 'total_count'
@@ -55,6 +56,7 @@ export default async function getItemsSubmittedByUser(author, page, user) {
       // Get items
       let items = await directus.items('items').readMany({
         filter: filterItems,
+        sort: ['-created'],
         offset: (page - 1) * itemsPerPage,
         limit: itemsPerPage,
         meta: 'total_count'

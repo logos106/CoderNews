@@ -32,12 +32,13 @@ export default async function getUserHiddenItemsByPage(page, user) {
     if (vids.length > 0) {
       filterItems.id = { _in: vids }
       if (!user.showDead) filterItems.dead = { _eq: false }
-  
+
       // Aggregate items
       items = await directus.items('items').readMany({
-        filter: filterItems
+        filter: filterItems,
+        sort: ['-created'],
       });
-  
+
       items = items.data
       console.log("UPVOTES: ", upvotes, items)
       for (let i = 0; i < items.length; i++) {

@@ -18,6 +18,7 @@ export default async function getNewestItemsByPage(page, user) {
           created: { _gte: startDate },
           dead: { _eq: false }
         },
+        sort: ['-created'],
         offset: (page - 1) * itemsPerPage,
         limit: itemsPerPage,
         meta: 'total_count'

@@ -22,6 +22,7 @@ export default async function getRankedItemsByDay(day, page, user) {
           created: { _gte: startTimestamp, _lte: endTimestamp },
           dead: { _eq: false }
         },
+        sort: ['-created'],
         offset: (page - 1) * itemsPerPage,
         limit: itemsPerPage,
         meta: 'total_count'
@@ -62,6 +63,7 @@ export default async function getRankedItemsByDay(day, page, user) {
       // Get items
       let items = await directus.items('items').readMany({
         filter: filterItems,
+        sort: ['-created'],
         offset: (page - 1) * itemsPerPage,
         limit: itemsPerPage,
         meta: 'total_count'

@@ -15,23 +15,17 @@ export async function getServerSideProps(context) {
 		},
 	});
 
-  let votes = await directus.items('user_votes').readMany({
-    filter: {
-      item_id: {_in: [23]}
-    }
+  let items = await directus.items('items').readMany({
+    fields: ['id'],
+    sort: ['-id']
   })
-  votes = votes.data
-  console.log('v', votes)
+
+  console.log(items.data)
 
 
   const data = null
   return { props: { data } }
-/*   let res = await directus.items("test").createOne({
-    uname: "hello"
-  })
-  const data = null
-  console.log("RES: ", res)
-  return { props: { data } } */
+
 }
 
 export default class extends Component {

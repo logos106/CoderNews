@@ -7,7 +7,7 @@ import GoogleAnalytics from "../components/googleAnalytics.js"
 import authUser from "../api/users/authUser.js"
 import changePassword from "../api/users/changePassword.js"
 
-import styles from "../styles/pages/comment.module.css"
+import styles from "../styles/pages/changepw.module.css"
 
 export async function getServerSideProps (context) {
   const authResult = await authUser(context.req, context.res)

@@ -20,6 +20,7 @@ export default async function getItemById(itemId, page, user) {
       filter: filterComments,
       offset: (page - 1) * commentsPerPage,
       limit: page * commentsPerPage,
+      sort: ['-created'],
       meta: 'total_count'
     });
 
@@ -39,7 +40,8 @@ export default async function getItemById(itemId, page, user) {
           let children = await directus.items('comments').readMany({
             filter: {
               id: {_in: childIds}
-            }
+            },
+            sort: ['-created'],
           })
           children = children.data
 
@@ -139,7 +141,8 @@ export default async function getItemById(itemId, page, user) {
           let children = await directus.items('comments').readMany({
             filter: {
               id: {_in: childIds}
-            }
+            },
+            sort: ['-created'],
           })
           children = children.data
 

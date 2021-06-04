@@ -20,6 +20,7 @@ export default async function getRankedAskItemsByPage(page, user) {
           created: { _gte: startDate },
           dead: { _eq: false }
         },
+        sort: ['-created'],
         offset: (page - 1) * itemsPerPage,
         limit: itemsPerPage,
         meta: 'total_count'
@@ -65,6 +66,7 @@ export default async function getRankedAskItemsByPage(page, user) {
       // Get items
       let items = await directus.items('items').readMany({
         filter: filterItems,
+        sort: ['-created'],
         offset: (page - 1) * itemsPerPage,
         limit: itemsPerPage,
         meta: 'total_count'
