@@ -45,8 +45,6 @@ export default async function handler(req, res) {
       created: moment().unix()
     })
 
-    console.log("new user: ", newuser)
-
     return res.status(200).json({
       success: true,
       username: username,

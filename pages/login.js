@@ -209,7 +209,7 @@ export default class extends Component {
         })
       } else {
         // window.location.href = `/${self.props.goto}`
-        Router.push('/')
+        Router.push(`/${self.props.goto}`)
       }
     }
   }
