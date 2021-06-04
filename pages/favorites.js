@@ -22,21 +22,22 @@ export async function getServerSideProps(context) {
   let commentResult = {}
 
   if (showItems)
-    itemResult = await getUserFavoritedItemsByPage(uid, page, authUser)
+    itemResult = await getUserFavoritedItemsByPage(uid, page, authResult)
   else
-    commentResult = await getUserFavoritedCommentsByPage(uid, page, authUser)
-
+    commentResult = await getUserFavoritedCommentsByPage(uid, page, authResult)
+    
   const goToString = page > 1 ?
     `favorites?id=${uid}${showItems ? "" : "&comments=t"}&page=${page}` :
     `favorites?id=${uid}${showItems ? "" : "&comments=t"}`
-
+    
   return {
     props: {
       authUserData: authResult,
-      items: typeof itemResult.items === 'undefined' ? null : itemResult.items,
+      userId: authResult.username,
+      items: typeof itemResult.items === 'undefined' ? [] : itemResult.items,
       showItems: showItems,
       isMoreItems: typeof itemResult.isMore === 'undefined' ? false : itemResult.isMore,
-      comments: typeof commentResult.comments === 'undefined' ? null : commentResult.comments,
+      comments: typeof commentResult.comments === 'undefined' ? [] : commentResult.comments,
       showComments: !showItems,
       isMoreComments: typeof commentResult.isMore === 'undefined' ? false : commentResult.isMore,
       page: page,

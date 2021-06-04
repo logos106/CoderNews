@@ -74,7 +74,7 @@ export default class extends Component {
       window.location.href = `/login?goto=${encodeURIComponent(this.props.goToString)}`
     } else {
 
-      let res = await fetch("/api/items/unhide?id=" + itemId, {method: "GET"})
+      let res = await fetch("/api/items/unfavorite?id=" + itemId, {method: "GET"})
       let response = await res.json()
 
       if (response.authError) {

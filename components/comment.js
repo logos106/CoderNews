@@ -183,15 +183,15 @@ export default class extends Component {
       this.setState({loading: true})
 
       const self = this
-
-      let res = await fetch("/api/login", {
+      let res = await fetch("/api/comments/favorite", {
         method: "POST",
         body: JSON.stringify({
-          id: this.state.comment.id
+          commentId: this.state.comment.id
         })
       })
       let response = await res.json()
-
+      
+      console.log("=======", response)
       if (response.authError) {
         window.location.href = `/login?goto=${encodeURIComponent(self.props.goToString)}`
       } else {
