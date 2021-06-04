@@ -1,7 +1,7 @@
 import moment from "moment"
 
 export default function renderCreatedTime(timestamp) {
-  const secondsSinceCreated = moment().unix() - timestamp
+    const secondsSinceCreated = moment().unix() - timestamp
 
   if (secondsSinceCreated < 60) {
     const labelString = secondsSinceCreated > 1 ? " seconds ago" : " second ago"

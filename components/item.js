@@ -305,7 +305,7 @@ export default class extends Component {
               <td>
                 <span>{item.points.toLocaleString()} {item.points === 1 ? "point" : "points"}</span>
                 <span> by <a href={`/user?id=${item.by}`}>{item.by}</a> </span>
-                <span><a href={`/item?id=${item.id}`}>{renderCreatedTime(item.created)}</a> </span>
+                <span><a href={`/item?id=${item.id}`}>{ renderCreatedTime(item.created) }</a> </span>
                 {
                   item.votedOnByUser && !item.unvoteExpired && !item.dead ?
                   <>

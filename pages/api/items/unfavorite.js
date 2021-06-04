@@ -3,7 +3,7 @@ import credential from "../../../utils/apiCredential.js"
 
 export default async function handler(req, res) {
   const itemId = req.query.id
-console.log("ITEM ID: ", itemId)
+
   const user = await authUser(req, res)
 
   try {

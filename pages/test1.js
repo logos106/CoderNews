@@ -20,8 +20,6 @@ export async function getServerSideProps(context) {
     sort: ['-id']
   })
 
-  console.log(items.data)
-
 
   const data = null
   return { props: { data } }

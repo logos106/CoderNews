@@ -15,7 +15,6 @@ export default async function handler(req, res) {
 
   try {
     let item = await directus.items('items').readOne(itemId)
-    console.log("delete item: ", item)
 
     if (!item) return res.status(200).json({notFoundError: true})
     else if (
@@ -30,7 +29,7 @@ export default async function handler(req, res) {
         return res.status(200).json({ success: true })
     }
   } catch (error) {
-      console.log("Error: ", error)
+      console.log(error)
     res.status(200).json({ submitError: true })
   }
 

@@ -27,15 +27,12 @@ export default async function handler(req, res) {
             return res.status(200).json({submitError: true})
         }
         the_user = the_user.data[0];
-        
+
         if (newPassword.length < 8) return res.json({ newPasswordLengthError: true })
-        
+
         await directus.items("directus_users").updateOne(the_user.id, {
             password: newPassword
         })
-        
-        console.log("newPassword: ", newPassword)
-        console.log("currentPassword: ", currentPassword)
 
         return res.status(200).json({ success: true })
     } catch (error) {

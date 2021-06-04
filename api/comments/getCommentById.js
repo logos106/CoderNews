@@ -70,7 +70,7 @@ export default async function getCommentById(commentId, page, user) {
         }
       })
       commentVotes = commentVotes.data
-      console.log("FAVS: ", favs)
+      
       comment.votedOnByUser = votes.length > 0 ? true : false
       comment.unvoteExpired =  votes.length > 0 && votes[0].date + (3600 * config.hrsUntilUnvoteExpires) < moment().unix()
       comment.favoritedByUser = favs.length > 0 ? true : false

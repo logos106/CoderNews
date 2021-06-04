@@ -21,11 +21,11 @@ export default async function handler(req, res) {
       }
     });
     hiddens = hiddens.data
-    
+
     // If exist already, error  ???
     if (hiddens.length > 0)
       return res.json({ submitError: true })
-    console.log("ITEM CREATED: ", item.created)
+
     // Create a favorite
     await directus.items('user_hiddens').createOne({
       username: user.username,
