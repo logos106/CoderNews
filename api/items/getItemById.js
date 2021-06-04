@@ -54,7 +54,7 @@ export default async function getItemById(itemId, page, user) {
       for (let comment of comments) {
         await changeChildren(comment)
       }
-    
+
       return {
         success: true,
         item: item,
@@ -122,12 +122,12 @@ export default async function getItemById(itemId, page, user) {
           comment.editAndDeleteExpired = hasEditAndDeleteExpired
         }
 
-        comment.votedOnByUser = true
-
         // Set expired for unvote
         for (let cvote of commentVotes) {
-          if (comment.id === cvote.item_id)
+          if (comment.id === cvote.item_id) {
             comment.unvoteExpired = cvote.date + (3600 * config.hrsUntilUnvoteExpires) < moment().unix() ? true : false
+            comment.votedOnByUser = true
+          }
         }
 
         // Iterate it for child

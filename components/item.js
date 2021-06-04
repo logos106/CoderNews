@@ -48,7 +48,7 @@ export default class extends Component {
       }
 
       const self = this
-
+      console.log('joe', commentData)
       let res = await fetch("/api/comments/add", {
         method: "POST",
         body: JSON.stringify(commentData)
@@ -138,14 +138,14 @@ export default class extends Component {
 
   requestFavoriteItem = async () => {
     if (this.state.loading) return
-    
+
     if (!this.props.userSignedIn) {
       window.location.href = `/login?goto=${encodeURIComponent(this.props.goToString)}`
     } else {
       this.setState({loading: true})
 
       const self = this
-    
+
       const itemId = this.state.item.id
       let res = await fetch("/api/items/favorite?id=" + this.state.item.id, {
         method: "GET"

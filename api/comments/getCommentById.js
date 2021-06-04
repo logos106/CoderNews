@@ -15,7 +15,7 @@ export default async function getCommentById(commentId, page, user) {
 
     comment.pageMetadataTitle = comment.text.replace(/<[^>]+>/g, "")
     if (!comment.children) comment.children = "";
-    
+
     // Get list of child comments from string
     const cids = comment.children.split(';')
     if (cids[0] == '') cids.shift()
@@ -30,7 +30,7 @@ export default async function getCommentById(commentId, page, user) {
       comment.children.sort(function(a, b) {
         if (a.points > b.points) return -1
         if (a.points < b.points) return 1
-  
+
         if (a.created > b.created) return -1
         if (a.created < b.created) return 1
       })
@@ -83,11 +83,6 @@ export default async function getCommentById(commentId, page, user) {
         comment.editAndDeleteExpired = hasEditAndDeleteExpired
       }
 
-      let userCommentVotes = []
-      for (let i = 0; i < commentVotes.length; i++) {
-        userCommentVotes.push(commentVotes[i].id)
-      }
-
       const updateComment = async function(comment) {
         if (comment.by === user.username) {
           const hasEditAndDeleteExpired =
@@ -97,21 +92,26 @@ export default async function getCommentById(commentId, page, user) {
           comment.editAndDeleteExpired = hasEditAndDeleteExpired
         }
 
-        if (userCommentVotes.includes(comment.id)) {
-          comment.votedOnByUser = true
-
-          for (let i = 0; i < commentVotes.length; i++) {
-            if (comment.id === commentVotes[i].item_id) {
-              comment.unvoteExpired = commentVotes[i].date + (3600 * config.hrsUntilUnvoteExpires) < moment().unix() ? true : false
-            }
+        for (let i = 0; i < commentVotes.length; i++) {
+          if (comment.id === commentVotes[i].item_id) {
+            comment.votedOnByUser = true
+            comment.unvoteExpired = commentVotes[i].date + (3600 * config.hrsUntilUnvoteExpires) < moment().unix() ? true : false
           }
         }
 
+        for (let cvote of commentVotes) {
+          if (comment.id === cvote.item_id) {
+            comment.unvoteExpired = cvote.date + (3600 * config.hrsUntilUnvoteExpires) < moment().unix() ? true : false
+            comment.votedOnByUser = true
+          }
+        }
+
+        // Iterate it for child
         let childIds = []
         if (comment.children) {
           childIds = comment.children.split(';')
           childIds.shift()
-          
+
           let children = await directus.items('comments').readMany({
             filter: {
               id: {_in: childIds}
@@ -130,7 +130,7 @@ export default async function getCommentById(commentId, page, user) {
       for (let i = 0; i < comment.children.length; i++) {
         await updateComment(comment.children[i])
       }
-      
+
       return {
         success: true,
         comment: comment,
