@@ -14,6 +14,7 @@ export default async function getNewestCommentsByPage(page, user) {
       filter: filterComments,
       offset: (page - 1) * commentsPerPage,
       limit: commentsPerPage,
+      sort: ['-created'],
       meta: 'total_count'
     });
     // Remember the total number of selected comments
