@@ -2,6 +2,7 @@ import credential from "../../utils/apiCredential.js"
 import config from "../../utils/config.js"
 import helper from "../../utils/helper.js"
 import moment from "moment"
+import { create } from "handlebars"
 
 export default async function getRankedItemsByDay(day, page, user) {
   const directus = credential.directus
@@ -14,12 +15,13 @@ export default async function getRankedItemsByDay(day, page, user) {
 
   const startTimestamp = moment(day).startOf("day").unix()
   const endTimestamp = moment(day).endOf("day").unix()
-
+console.log(day, moment.unix(startTimestamp), moment.unix(endTimestamp))
   try {
     if (!user.userSignedIn) {  // If he is a guest
       let items = await directus.items('items').readMany({
         filter: {
-          created: { _gte: startTimestamp, _lte: endTimestamp },
+          created: { _gte: startTimestamp },
+          created: { _lte: endTimestamp },
           dead: { _eq: false }
         },
         sort: ['-created'],
@@ -33,6 +35,7 @@ export default async function getRankedItemsByDay(day, page, user) {
       items = items.data
       for (let i = 0; i < items.length; i++) {
         items[i].rank = (page - 1) * itemsPerPage + i + 1
+        console.log(moment.unix(items[i].created))
       }
 
       return {
@@ -46,13 +49,15 @@ export default async function getRankedItemsByDay(day, page, user) {
       let hiddens = await directus.items('user_hiddens').readMany({
         filter: {
           username: { _eq: user.username  },
-          item_creation_date: {  _gte: startTimestamp, _lte: endTimestamp }
+          item_creation_date: { _gte: startTimestamp },
+          item_creation_date: { _lte: endTimestamp }
         }
       });
       hiddens = hiddens.data
 
       let filterItems = {
-        created: {  _gte: startTimestamp, $lte: endTimestamp }
+        created: { _gte: startTimestamp }, 
+        created: { $lte: endTimestamp }
       }
 
       let hids = hiddens.map((hidden) => hidden.item_id)
