@@ -1,6 +1,7 @@
 import authUser from "../../api/users/authUser.js"
 import credential from "../../utils/apiCredential.js"
 import moment from "moment"
+import Cookies from 'cookies'
 
 export default async function handler(req, res) {
   const username = JSON.parse(req.body).username;
@@ -43,7 +44,30 @@ export default async function handler(req, res) {
       role: readerRole.data[0].id,
       created: moment().unix()
     })
+    console.log("RES: ", newuser)
 
+    if (newuser) {
+      directus.auth.logout
+      // Login with this credential
+      await directus.auth.login({
+        email: useremail,
+        password: password
+      }, {
+        refresh: {
+          auto: true,
+          time: 600000
+        }
+      })
+
+      // Get the token
+      const token = directus.auth.token
+
+      // Set cookie
+      const cookies = new Cookies(req, res)
+      cookies.set('wang_token', token, {
+          httpOnly: true // true by default
+      })
+    }
     return res.status(200).json({
       success: true,
       username: username,
