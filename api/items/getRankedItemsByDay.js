@@ -19,8 +19,7 @@ export default async function getRankedItemsByDay(day, page, user) {
     if (!user.userSignedIn) {  // If he is a guest
       let items = await directus.items('items').readMany({
         filter: {
-          created: { _gte: startTimestamp },
-          created: { _lte: endTimestamp },
+          created: { '_between': [startTimestamp, endTimestamp] },
           dead: { _eq: false }
         },
         sort: ['-created'],
@@ -47,15 +46,13 @@ export default async function getRankedItemsByDay(day, page, user) {
       let hiddens = await directus.items('user_hiddens').readMany({
         filter: {
           username: { _eq: user.username  },
-          item_creation_date: { _gte: startTimestamp },
-          item_creation_date: { _lte: endTimestamp }
+          created: { '_between': [startTimestamp, endTimestamp] },
         }
       });
       hiddens = hiddens.data
 
       let filterItems = {
-        created: { _gte: startTimestamp }, 
-        created: { $lte: endTimestamp }
+        created: { '_between': [startTimestamp, endTimestamp] },
       }
 
       let hids = hiddens.map((hidden) => hidden.item_id)
