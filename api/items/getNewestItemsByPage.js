@@ -115,7 +115,7 @@ export default async function getNewestItemsByPage(page, user) {
       }
     }
   } catch (error) {
-    console.log(error)
+    //console.log(error)
     return {getDataError: true}
   }
 }

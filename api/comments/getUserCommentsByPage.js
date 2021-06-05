@@ -112,7 +112,7 @@ export default async function getUserCommentsByPage(username, page, user) {
     }
 
   } catch(error) {
-    console.log(error)
+    //console.log(error)
     return {getDataError: true}
   }
 }

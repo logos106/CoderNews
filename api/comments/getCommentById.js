@@ -138,7 +138,7 @@ export default async function getCommentById(commentId, page, user) {
       }
     }
   } catch(error) {
-    console.log(error)
+    //console.log(error)
     return { getDataError: true }
   }
 
