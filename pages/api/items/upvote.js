@@ -56,7 +56,7 @@ export default async function handler(req, res) {
       karma: author.karma + 1
     })
 
-    // searchApi.updateItemPointsCount(item.id, item.points, function() {
+    // searchApi.updateItemPointsCount(item.id, item.points, function() {})
 
     return res.status(200).json({ success: true, points: item.points + 1 })
 
