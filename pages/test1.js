@@ -16,10 +16,12 @@ export async function getServerSideProps(context) {
 	});
 
   let items = await directus.items('items').readMany({
-    fields: ['id'],
-    sort: ['-id']
+    filter: {
+      id: { _between: [37, 39 ] }
+    }
   })
 
+  console.log(items.data)
 
   const data = null
   return { props: { data } }
