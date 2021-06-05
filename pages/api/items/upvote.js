@@ -48,19 +48,22 @@ export default async function handler(req, res) {
     await directus.users.me.update({
       karma: me.karma + 1
     }); */
-    const author = await directus.items('directus_users').readMany({
+
+    console.log("ITEM: ", item)
+    let author = await directus.items('directus_users').readMany({
       filter: {
-        username: item.by
+        username: { _eq: item.by }
       }
     })
     
     author = author.data[0];
+    console.log("USER before: ", author)
 
     await directus.items('directus_users').updateOne([author.id], {
       karma: author.karma + 1
     })
-
-    // searchApi.updateItemPointsCount(item.id, item.points, function() {
+    console.log("USER: ", author)
+    // searchApi.updateItemPointsCount(item.id, item.points, function() {})
 
     return res.status(200).json({ success: true, points: item.points + 1 })
 
