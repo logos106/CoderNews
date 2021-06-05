@@ -29,6 +29,10 @@ export async function getServerSideProps(context) {
 
 export default class extends Component {
   render () {
+    // console.log(this.props.items)
+    // return (
+    //   <div></div>
+    // )
     return (
       <div className="layout-wrapper">
         <HeadMetadata

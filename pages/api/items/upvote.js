@@ -43,14 +43,10 @@ export default async function handler(req, res) {
       points: item.points + 1
     })
 
-    // Update user  :  decrease karma
-    /* const me = await directus.users.me.read();
-    await directus.users.me.update({
-      karma: me.karma + 1
-    }); */
-    const author = await directus.items('directus_users').readMany({
+    // Update user  :  increase karma
+    let author = await directus.items('directus_users').readMany({
       filter: {
-        username: item.by
+        username: { _eq: item.by }
       }
     })
 
