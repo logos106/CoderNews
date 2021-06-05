@@ -47,7 +47,7 @@ export default async function handler(req, res) {
     return res.status(200).json({ success: true, points: item.points - 1 })
 
   } catch(error) {
-    console.log(error)
+    //console.log(error)
     return res.json({ submitError: true })
   }
 }

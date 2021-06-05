@@ -73,7 +73,7 @@ export default async function handler(req, res) {
       username: username,
     })
   } catch (error) {
-    console.log(error)
+    //console.log(error)
     res.status(200).json({ submitError: true })
   }
 

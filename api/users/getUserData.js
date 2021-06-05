@@ -42,7 +42,7 @@ export default async function getUserData(username, authUser) {
       }
     }
   } catch(error) {
-    console.log(error)
+    //console.log(error)
     return {getDataError: true}
   }
 }

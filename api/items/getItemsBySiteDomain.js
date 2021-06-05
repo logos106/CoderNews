@@ -109,7 +109,7 @@ export default async function getItemsBySiteDomain(site, page, user) {
     }
 
   } catch(error) {
-    console.log(error)
+    //console.log(error)
     return {getDataError: true}
   }
 

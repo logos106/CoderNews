@@ -28,7 +28,7 @@ export default async function getShadowBannedUsersByPage(page, user) {
     }
 
   } catch(error) {
-    console.log(error)
+    //console.log(error)
     return {getDataError: true}
   }
 

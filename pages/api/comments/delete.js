@@ -67,7 +67,7 @@ export default async function handler(req, res) {
     // await searchApi.deleteComment(comment.id, item.id, item.commentCount - 1)
     return res.status(200).json({ success: true })
   } catch (error) {
-    console.log(error)
+    //console.log(error)
     res.status(200).json({ submitError: true })
   }
 

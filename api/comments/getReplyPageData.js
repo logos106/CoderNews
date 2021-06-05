@@ -38,7 +38,7 @@ export default async function getReplyPageData(commentId, user) {
     return {success: true, comment: comment}
 
   } catch(error) {
-    console.log(error)
+    //console.log(error)
     return {getDataError: true}
   }
 }

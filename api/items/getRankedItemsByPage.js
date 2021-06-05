@@ -118,7 +118,7 @@ export default async function getRankedItemsByPage(page, user) {
     }
 
   } catch(error) {
-    console.log(error)
+    //console.log(error)
     return {getDataError: true}
   }
 
