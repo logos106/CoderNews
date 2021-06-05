@@ -38,12 +38,12 @@ export default async function handler(req, res) {
       date: moment().unix()
     })
 
-    // Update item  :  decrease points
+    // Update item  :  increase points
     await directus.items('items').updateOne([item.id], {
       points: item.points + 1
     })
 
-    // Update user  :  decrease karma
+    // Update user  :  increase karma
     const me = await directus.users.me.read();
     await directus.users.me.update({
       karma: me.karma + 1
