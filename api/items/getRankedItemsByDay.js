@@ -46,7 +46,7 @@ export default async function getRankedItemsByDay(day, page, user) {
       let hiddens = await directus.items('user_hiddens').readMany({
         filter: {
           username: { _eq: user.username  },
-          created: { '_between': [startTimestamp, endTimestamp] },
+          item_creation_date: { '_between': [startTimestamp, endTimestamp] },
         }
       });
       hiddens = hiddens.data
