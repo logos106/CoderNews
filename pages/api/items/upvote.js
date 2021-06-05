@@ -44,10 +44,21 @@ export default async function handler(req, res) {
     })
 
     // Update user  :  decrease karma
-    const me = await directus.users.me.read();
+    /* const me = await directus.users.me.read();
     await directus.users.me.update({
       karma: me.karma + 1
-    });
+    }); */
+    const author = await directus.items('directus_users').readMany({
+      filter: {
+        username: item.by
+      }
+    })
+    
+    author = author.data[0];
+
+    await directus.items('directus_users').updateOne([author.id], {
+      karma: author.karma + 1
+    })
 
     // searchApi.updateItemPointsCount(item.id, item.points, function() {
 
